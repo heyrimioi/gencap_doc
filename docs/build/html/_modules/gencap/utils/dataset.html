@@ -1,0 +1,456 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gencap.utils.dataset &mdash; GENCAP 0.9.0-dev documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=6c04cfde"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GENCAP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">🛠️ API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">gencap</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GENCAP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">gencap.utils.dataset</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for gencap.utils.dataset</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="c1"># ==============================</span>
+<span class="c1"># Dataset verification related functions</span>
+<span class="c1"># ==============================</span>
+
+<div class="viewcode-block" id="check_col_type">
+<a class="viewcode-back" href="../../../gencap.utils.html#gencap.utils.dataset.check_col_type">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_col_type</span><span class="p">(</span><span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate that each column in the DataFrame has a uniform data type.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dataframe (pd.DataFrame): </span>
+<span class="sd">            The DataFrame to validate.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if all columns have uniform types.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If a column contains mixed data types.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        * NaN values are ignored during type checking.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># For each column, check if all non-null values have the same type</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="c1"># Drop NaNs, then get the set of unique types</span>
+        <span class="n">unique_types</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_types</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&#39; has mixed types: </span><span class="si">{</span><span class="n">unique_types</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="validate_required_files">
+<a class="viewcode-back" href="../../../gencap.utils.html#gencap.utils.dataset.validate_required_files">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_required_files</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check for required dataset files in the given directory.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): </span>
+<span class="sd">            Path to the dataset directory.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if all required files exist.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        FileNotFoundError: If any required files are missing.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        * For derivative datasets (paths containing &#39;derivatives&#39;), </span>
+<span class="sd">          `data_source.json` is also required.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s1">&#39;derivatives&#39;</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+        <span class="n">required_files</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;data_content.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;data_content.pkl&quot;</span><span class="p">,</span> <span class="s2">&quot;data_description.json&quot;</span><span class="p">,</span><span class="s2">&quot;data_source.json&quot;</span><span class="p">]</span>    
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">required_files</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;data_content.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;data_content.pkl&quot;</span><span class="p">,</span> <span class="s2">&quot;data_description.json&quot;</span><span class="p">]</span>
+    <span class="n">missing_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">required_files</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">f</span><span class="p">))]</span>
+
+    <span class="k">if</span> <span class="n">missing_files</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing files in &#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">missing_files</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="validate_data_description">
+<a class="viewcode-back" href="../../../gencap.utils.html#gencap.utils.dataset.validate_data_description">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_data_description</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">data_desc</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate that `data_description.json` aligns with dataset structure.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str, optional): </span>
+<span class="sd">            Path to dataset directory.</span>
+<span class="sd">        dataframe (pd.DataFrame, optional): </span>
+<span class="sd">            DataFrame representing dataset content.</span>
+<span class="sd">        data_desc (dict, optional): </span>
+<span class="sd">            Metadata dictionary loaded from `data_description.json`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if validation passes.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If essential metadata keys are missing or inconsistent.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        * Either `path` or both `dataframe` and `data_desc` must be provided.</span>
+<span class="sd">        * Checks include unique ID consistency, indexing fields, file location fields, and tags.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Load from path if dataframe and data_desc not provided</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dataframe</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">data_desc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dataframe</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">data_desc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="s2">&quot;data_content.pkl&quot;</span><span class="p">))</span>
+        <span class="n">data_desc</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="s2">&quot;data_description.json&quot;</span><span class="p">),</span><span class="s2">&quot;r&quot;</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="p">(</span><span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dataframe</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">data_desc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;path or both dataframe and data_desc must be provided.&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Validate uniqueID matches folder name</span>
+    <span class="k">if</span> <span class="s2">&quot;uniqueID&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data_desc</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;data_description.json is missing uniqueID&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">data_desc</span><span class="p">[</span><span class="s2">&quot;uniqueID&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The uniqueID described in the data_description.json and name of folder are not the same.&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dataset_name</span><span class="o">=</span><span class="n">data_desc</span><span class="p">[</span><span class="s2">&quot;uniqueID&quot;</span><span class="p">]</span>
+                
+    <span class="c1"># Validate indexing fields</span>
+    <span class="k">if</span> <span class="s2">&quot;indexingFieldList&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data_desc</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;data_description.json is missing indexingFieldList&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">data_desc</span><span class="p">[</span><span class="s2">&quot;indexingFieldList&quot;</span><span class="p">])</span> <span class="o">!=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">dataframe</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;indexingFieldList described in the data_description.json and index of data_content.pkl is not same.&quot;</span><span class="p">)</span>
+            
+    <span class="c1"># Validate file location fields</span>
+    <span class="k">if</span> <span class="s2">&quot;fileLocationFieldList&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data_desc</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;data_description.json is missing fileLocationFieldList&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_desc</span><span class="p">[</span><span class="s2">&quot;fileLocationFieldList&quot;</span><span class="p">],</span><span class="nb">list</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">data_desc</span><span class="p">[</span><span class="s2">&quot;fileLocationFieldList&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;data_content.pkl doesn&#39;t have </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2"> described on fileLocationFieldList of data_description.json&quot;</span><span class="p">)</span>
+                    
+    <span class="c1"># Validate tags</span>
+    <span class="k">if</span> <span class="s2">&quot;tagList&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data_desc</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;data_description.json is missing tagList&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+
+
+<div class="viewcode-block" id="validate_data_content">
+<a class="viewcode-back" href="../../../gencap.utils.html#gencap.utils.dataset.validate_data_content">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_data_content</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">data_desc</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate consistency between `data_content.csv`, `data_content.pkl`, and metadata.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str, optional): </span>
+<span class="sd">            Path to dataset directory.</span>
+<span class="sd">        dataframe (pd.DataFrame, optional): </span>
+<span class="sd">            Dataset content loaded into a DataFrame.</span>
+<span class="sd">        data_desc (dict, optional): </span>
+<span class="sd">            Metadata dictionary loaded from `data_description.json`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if content validation passes.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If data content or indexing fields are inconsistent.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        * Ensures CSV and PKL content match, multi-index validity, and uniqueness of indexing fields.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">align_dtypes</span><span class="p">(</span><span class="n">df1</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">df2</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Align dtypes between two DataFrames for accurate comparison.&quot;&quot;&quot;</span>
+        <span class="n">df2_aligned</span> <span class="o">=</span> <span class="n">df2</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df1</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df2_aligned</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">df2_aligned</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">df2_aligned</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">df1</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;⚠️ Warning: Failed to convert column &#39;</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&#39; — </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df2_aligned</span>
+    
+    <span class="c1"># load data_content and data_description</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dataframe</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">data_desc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="s2">&quot;data_content.pkl&quot;</span><span class="p">))</span>
+        <span class="n">data_desc</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="s2">&quot;data_description.json&quot;</span><span class="p">),</span><span class="s2">&quot;r&quot;</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;path or both dataframe and data_desc must be provided.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check CSV and PKL match</span>
+    <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dataframe_csv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;data_content.csv&quot;</span><span class="p">),</span><span class="n">index_col</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">dataframe</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data_desc</span><span class="p">[</span><span class="s1">&#39;fileLocationFieldList&#39;</span><span class="p">]:</span>
+            <span class="n">dataframe</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[(</span><span class="n">data_desc</span><span class="p">[</span><span class="s1">&#39;fileLocationFieldList&#39;</span><span class="p">])]</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[(</span><span class="n">data_desc</span><span class="p">[</span><span class="s1">&#39;fileLocationFieldList&#39;</span><span class="p">])]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+            <span class="n">dataframe_csv</span> <span class="o">=</span> <span class="n">dataframe_csv</span><span class="p">[(</span><span class="n">data_desc</span><span class="p">[</span><span class="s1">&#39;fileLocationFieldList&#39;</span><span class="p">])]</span> <span class="o">=</span> <span class="n">dataframe_csv</span><span class="p">[(</span><span class="n">data_desc</span><span class="p">[</span><span class="s1">&#39;fileLocationFieldList&#39;</span><span class="p">])]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+        <span class="n">dataframe_csv</span> <span class="o">=</span> <span class="n">dataframe_csv</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">NA</span><span class="p">)</span>
+        <span class="n">dataframe_converted</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">NA</span><span class="p">)</span>
+        <span class="n">dataframe_converted</span> <span class="o">=</span> <span class="n">align_dtypes</span><span class="p">(</span><span class="n">dataframe_csv</span><span class="p">,</span> <span class="n">dataframe_converted</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataframe_converted</span><span class="o">.</span><span class="n">compare</span><span class="p">(</span><span class="n">dataframe_csv</span><span class="p">))</span> <span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;data_content.csv is not same with data_content.pkl.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Ensure multi-indexed structure</span>
+    <span class="k">if</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;data_content.pkl is not a multi-indexed DataFrame.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Validate indexing fields ensure row uniqueness</span>
+    <span class="n">indexingFieldList</span><span class="o">=</span><span class="n">data_desc</span><span class="p">[</span><span class="s2">&quot;indexingFieldList&quot;</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">dataframe</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">indexingFieldList</span><span class="p">,</span> <span class="n">verify_integrity</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The indexes of the dataframe do not ensure row uniqueness. error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Validate column types</span>
+    <span class="k">if</span> <span class="n">check_col_type</span><span class="p">(</span><span class="n">dataframe</span><span class="o">=</span><span class="n">dataframe</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+
+
+<div class="viewcode-block" id="validate_file_existence">
+<a class="viewcode-back" href="../../../gencap.utils.html#gencap.utils.dataset.validate_file_existence">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_file_existence</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">data_desc</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate that files listed in `fileLocationFieldList` exist and match directory contents.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str, optional): </span>
+<span class="sd">            Path to dataset directory.</span>
+<span class="sd">        dataframe (pd.DataFrame, optional): </span>
+<span class="sd">            DataFrame containing file paths.</span>
+<span class="sd">        data_desc (dict, optional): </span>
+<span class="sd">            Metadata including file location fields.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if all files exist and are consistent.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        FileNotFoundError: If listed files do not exist.</span>
+<span class="sd">        ValueError: If inconsistencies are detected between listed files and actual files.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Load data_content and data_description</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dataframe</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">data_desc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="s2">&quot;data_content.pkl&quot;</span><span class="p">))</span>
+        <span class="n">data_desc</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="s2">&quot;data_description.json&quot;</span><span class="p">),</span><span class="s2">&quot;r&quot;</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;path or both dataframe and data_desc must be provided.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check if referenced files exist</span>
+    <span class="k">if</span> <span class="n">data_desc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fileLocationFieldList&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fileLocationField</span> <span class="o">=</span> <span class="n">data_desc</span><span class="p">[</span><span class="s2">&quot;fileLocationFieldList&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">fileLocationField</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="n">col</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File does not exist: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Verify file listing matches actual files</span>
+    <span class="c1"># Recursively find all files</span>
+    <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">exclude_files</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;quality_control.html&#39;</span><span class="p">,</span> <span class="s1">&#39;information.html&#39;</span><span class="p">,</span><span class="s1">&#39;debug.log&#39;</span><span class="p">,</span><span class="s1">&#39;data_source.json&#39;</span><span class="p">,</span><span class="s1">&#39;data_description.json&#39;</span><span class="p">,</span><span class="s1">&#39;data_content.pkl&#39;</span><span class="p">,</span><span class="s1">&#39;data_content.csv&#39;</span><span class="p">]</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">is_in_hidden_folder</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span>
+        <span class="n">actual_files</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span>
+                                                                <span class="ow">and</span> <span class="n">file</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exclude_files</span>
+                                                                <span class="ow">and</span> <span class="s2">&quot;intermediate_data&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+                                                                <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_in_hidden_folder</span><span class="p">(</span><span class="n">file</span><span class="p">)]</span>
+        <span class="n">resolved_actual_files</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">actual_files</span><span class="p">]</span>
+        
+        <span class="n">data_list</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">data_desc</span><span class="p">[</span><span class="s2">&quot;fileLocationFieldList&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="k">if</span> <span class="n">data_desc</span><span class="p">[</span><span class="s2">&quot;fileLocationFieldList&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="p">[]</span>
+        <span class="n">data_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">data_list</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span> <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">()]</span>
+        <span class="n">resolved_data_list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">data_list</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">resolved_data_list</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">set</span><span class="p">(</span><span class="n">resolved_actual_files</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">resolved_data_list</span><span class="p">)</span><span class="o">-</span><span class="nb">set</span><span class="p">(</span><span class="n">resolved_actual_files</span><span class="p">))</span> <span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">set</span><span class="p">(</span><span class="n">resolved_data_list</span><span class="p">)</span><span class="o">-</span><span class="nb">set</span><span class="p">(</span><span class="n">resolved_actual_files</span><span class="p">)</span><span class="si">}</span><span class="s2"> can not be found in this folder.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">resolved_actual_files</span><span class="p">)</span><span class="o">-</span><span class="nb">set</span><span class="p">(</span><span class="n">resolved_data_list</span><span class="p">))</span> <span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">set</span><span class="p">(</span><span class="n">resolved_actual_files</span><span class="p">)</span><span class="o">-</span><span class="nb">set</span><span class="p">(</span><span class="n">resolved_data_list</span><span class="p">)</span><span class="si">}</span><span class="s2"> weren&#39;t listed on the fileLocationFields in data_content.pkl&quot;</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="launch_validation_dataset">
+<a class="viewcode-back" href="../../../gencap.utils.html#gencap.utils.dataset.launch_validation_dataset">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">launch_validation_dataset</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run a full validation suite on a dataset directory.</span>
+
+<span class="sd">    This function performs a sequence of validation checks to ensure dataset integrity</span>
+<span class="sd">    and compliance with GENCAP dataset structure standards. It executes the following steps:</span>
+
+<span class="sd">        1. **Required File Check**:</span>
+<span class="sd">            Verifies the presence of essential files (e.g., ``data_content.csv``, </span>
+<span class="sd">            ``data_content.pkl``, ``data_description.json``). </span>
+<span class="sd">            For derivative datasets, ``data_source.json`` is also required.</span>
+<span class="sd">        </span>
+<span class="sd">        2. **Data Description Validation**:</span>
+<span class="sd">            Confirms that ``data_description.json`` includes required metadata keys </span>
+<span class="sd">            (e.g., uniqueID, indexingFieldList) and that they match the dataset structure.</span>
+<span class="sd">        </span>
+<span class="sd">        3. **Data Content Validation**:</span>
+<span class="sd">            Ensures that the content in ``data_content.csv`` and ``data_content.pkl`` </span>
+<span class="sd">            are consistent, indexing fields are valid, and all columns have uniform data types.</span>
+<span class="sd">        </span>
+<span class="sd">        4. **File Existence Validation**:</span>
+<span class="sd">            Checks that files listed in ``fileLocationFieldList`` exist and that no </span>
+<span class="sd">            extra or missing files are present in the dataset directory.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): </span>
+<span class="sd">            Path to the dataset directory to validate.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list of bool: </span>
+<span class="sd">            A list of boolean values indicating whether each validation step passed </span>
+<span class="sd">            (``True``) or failed (``False``).</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception:</span>
+<span class="sd">            Any underlying exception raised during validation (e.g., </span>
+<span class="sd">            ``FileNotFoundError``, ``ValueError``) is caught and reported per step.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        * This function prints validation results step-by-step with clear pass/fail messages.</span>
+<span class="sd">        * It does not stop at the first failure but continues to run all checks, </span>
+<span class="sd">          providing a comprehensive validation report.</span>
+<span class="sd">        * The return list contains results in the order of the checks performed.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; results = launch_validation_dataset(&quot;/path/to/dataset&quot;)</span>
+<span class="sd">        🔵 my_dataset - Passed [Required Files] validation.</span>
+<span class="sd">        🔴 my_dataset - Failed [Data Content] validation: Mismatch between CSV and PKL.</span>
+<span class="sd">        &gt;&gt;&gt; print(results)</span>
+<span class="sd">        [True, True, False, False]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">validation_result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">validation_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">validate_required_files</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; 🔵 </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s2"> - succeed to pass [RequiredFiles] validation process.&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🔴 </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s2"> - failed to pass [RequiredFiles] validation process. Check the reason: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">validation_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">validate_data_description</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; 🔵 </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s2"> - succeed to pass [DataDescription] validation process.&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🔴 </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s2"> - failed to pass [DataDescription] validation process. Check the reason: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">validation_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">validate_data_content</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; 🔵 </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s2"> - succeed to pass [DataContent] validation process.&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🔴 </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s2"> - failed to pass [DataContent] validation process. Check the reason: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">validation_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">validate_file_existence</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; 🔵 </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s2"> - succeed to pass [FileExistence] validation process.&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🔴 </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="si">}</span><span class="s2"> - failed to pass [FileExistence] validation process. Check the reason: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Hye-Lim LEE (Epione team, Inria).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

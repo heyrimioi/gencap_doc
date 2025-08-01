@@ -1,0 +1,347 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gencap.globals.task_manager &mdash; GENCAP 0.9.0-dev documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=6c04cfde"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GENCAP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">🛠️ API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">gencap</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GENCAP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">gencap.globals.task_manager</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for gencap.globals.task_manager</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">importlib.util</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">IPython</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_ipython</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">packaging.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">gencap.core.task</span><span class="w"> </span><span class="kn">import</span> <span class="n">Task</span>
+
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TaskRegistry">
+<a class="viewcode-back" href="../../../gencap.globals.html#gencap.globals.task_manager.TaskRegistry">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TaskRegistry</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Registry for managing task classes and their versions.</span>
+
+<span class="sd">    This class allows registration, retrieval, and instantiation of tasks.</span>
+<span class="sd">    It also supports grouping tasks by ID, retrieving available versions, </span>
+<span class="sd">    and loading built-in tasks automatically.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        _registry (Dict[Tuple[str, str], Task]): </span>
+<span class="sd">            Dictionary mapping (task_id, version) pairs to task classes.</span>
+<span class="sd">        _grouped_registry (Dict[str, List[str]]): </span>
+<span class="sd">            Dictionary grouping task IDs with their available versions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize an empty task registry.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>  <span class="n">Task</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        
+
+<div class="viewcode-block" id="TaskRegistry.register">
+<a class="viewcode-back" href="../../../gencap.globals.html#gencap.globals.task_manager.TaskRegistry.register">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Register a new task class in the registry.</span>
+
+<span class="sd">        This is used as a decorator for task classes. It verifies that the </span>
+<span class="sd">        `unique_id` and `version` attributes of the class instance match </span>
+<span class="sd">        the provided arguments.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            task_id (str): </span>
+<span class="sd">                Unique identifier of the task.</span>
+<span class="sd">            version (str): </span>
+<span class="sd">                Version string of the task.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Callable: A decorator function for registering the task.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError:</span>
+<span class="sd">                - If `task_id` does not match the class&#39;s `unique_id`.</span>
+<span class="sd">                - If `version` does not match the class&#39;s `version`.</span>
+<span class="sd">                - If the task with the same ID and version is already registered </span>
+<span class="sd">                  (except for predefined examples).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">decorator</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Task</span><span class="p">]):</span>
+            <span class="c1"># instantiate to get instance attributes</span>
+            <span class="n">inst</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+            
+            <span class="c1"># Validate ID and version</span>
+            <span class="k">if</span> <span class="n">task_id</span> <span class="o">!=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="s2">&quot;unique_id&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Task &#39;</span><span class="si">{</span><span class="n">task_id</span><span class="si">}</span><span class="s2">&#39; in the decorator is different with unique_id defined in the Task class. Configured unique_id: </span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;task_id&#39;</span><span class="p">,</span><span class="w"> </span><span class="kc">None</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">version</span> <span class="o">!=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="s2">&quot;version&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Version &#39;</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&#39; in the decorator is different with version defined in the Task class. Configured version: </span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;version&#39;</span><span class="p">,</span><span class="w"> </span><span class="kc">None</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+            <span class="c1"># Register task unless already present (allow exceptions for examples)</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">version</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Example-FullBatch-Resize&#39;</span><span class="p">,</span><span class="s1">&#39;Example-MiniBatch-Resize&#39;</span><span class="p">]:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Task &#39;</span><span class="si">{</span><span class="n">task_id</span><span class="si">}</span><span class="s2">&#39; version </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2"> is already registered.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
+            
+            <span class="k">return</span> <span class="bp">cls</span>
+        <span class="k">return</span> <span class="n">decorator</span></div>
+
+
+<div class="viewcode-block" id="TaskRegistry.create">
+<a class="viewcode-back" href="../../../gencap.globals.html#gencap.globals.task_manager.TaskRegistry.create">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create an instance of a registered task.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            task_id (str): </span>
+<span class="sd">                The unique task identifier.</span>
+<span class="sd">            version (str, optional): </span>
+<span class="sd">                Task version. If None, the latest version will be used.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Task: An instantiated task object.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError:</span>
+<span class="sd">                - If the task is not registered.</span>
+<span class="sd">                - If the specified version does not exist.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_registry</span><span class="p">()</span>
+        
+        <span class="c1"># Use the latest version if not specified</span>
+        <span class="k">if</span> <span class="n">version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">task_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouped_registry</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No Task registered under name &#39;</span><span class="si">{</span><span class="n">task_id</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+            <span class="n">version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouped_registry</span><span class="p">[</span><span class="n">task_id</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">supports</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span><span class="n">version</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No Task registered under name &#39;</span><span class="si">{</span><span class="n">task_id</span><span class="si">}</span><span class="s2">&#39; with version </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">version</span><span class="p">)]()</span></div>
+
+
+<div class="viewcode-block" id="TaskRegistry.supports">
+<a class="viewcode-back" href="../../../gencap.globals.html#gencap.globals.task_manager.TaskRegistry.supports">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">supports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if a task with a specific ID and version is registered.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            task_id (str): </span>
+<span class="sd">                Unique task identifier.</span>
+<span class="sd">            version (str): </span>
+<span class="sd">                Version string.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if supported, otherwise False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">version</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span></div>
+
+
+<div class="viewcode-block" id="TaskRegistry.get_tasks">
+<a class="viewcode-back" href="../../../gencap.globals.html#gencap.globals.task_manager.TaskRegistry.get_tasks">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show_version</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve all registered tasks.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            show_version (bool): </span>
+<span class="sd">                If True, return tasks with their versions grouped. </span>
+<span class="sd">                If False, return only task IDs.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Union[Dict[str, List[str]], List[str]]: </span>
+<span class="sd">                Grouped task versions or a list of task IDs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_registry</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouped_registry</span> <span class="k">if</span> <span class="n">show_version</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_grouped_registry</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="TaskRegistry.get_versions">
+<a class="viewcode-back" href="../../../gencap.globals.html#gencap.globals.task_manager.TaskRegistry.get_versions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_versions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve all available versions of a specific task.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            task_id (str): </span>
+<span class="sd">                Unique task identifier.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[str]: Sorted list of available versions.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            KeyError: If the task is not registered.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_group_registry</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouped_registry</span><span class="p">[</span><span class="n">task_id</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="TaskRegistry.get_description">
+<a class="viewcode-back" href="../../../gencap.globals.html#gencap.globals.task_manager.TaskRegistry.get_description">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Print a detailed description of a registered task.</span>
+
+<span class="sd">        The description includes:</span>
+<span class="sd">            - Task description text</span>
+<span class="sd">            - Fields information (mandatory/optional input/output fields)</span>
+<span class="sd">            - Parameter details</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            task_id (str): </span>
+<span class="sd">                Unique task identifier.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError:</span>
+<span class="sd">                If the task ID is not registered.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">tmp_task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">task_id</span><span class="p">)</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="n">tmp_task</span><span class="o">.</span><span class="n">get_fields</span><span class="p">()</span>
+        
+        <span class="c1"># Task description</span>
+        <span class="n">message</span> <span class="o">+=</span> <span class="n">tmp_task</span><span class="o">.</span><span class="n">description</span>
+        <span class="n">message</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> Fields Information: </span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; - </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
+                
+        <span class="c1"># Task parameters</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="n">tmp_task</span><span class="o">.</span><span class="n">parameter_info</span>
+        <span class="n">message</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> Parameter Information: </span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; - </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_group_registry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Group registered tasks by ID and sort their versions.</span>
+
+<span class="sd">        This method reorganizes `_registry` into `_grouped_registry` for easier lookup.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">grouped_tasks</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">task_id</span><span class="p">,</span> <span class="n">version</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">grouped_tasks</span><span class="p">[</span><span class="n">task_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">task_id</span> <span class="ow">in</span> <span class="n">grouped_tasks</span><span class="p">:</span>
+            <span class="n">grouped_tasks</span><span class="p">[</span><span class="n">task_id</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">grouped_tasks</span><span class="p">[</span><span class="n">task_id</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="n">parse</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_grouped_registry</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">grouped_tasks</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+        
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_builtin_tasks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load all built-in tasks from predefined modules.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            This method imports default task modules automatically during registry initialization.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">builtin_modules</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;gencap.tasks.generic&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">mod_name</span> <span class="ow">in</span> <span class="n">builtin_modules</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">mod_name</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[Warning] Failed to import builtin task module </span><span class="si">{</span><span class="n">mod_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+                
+<span class="c1"># Create a global registry instance</span>
+<span class="n">task_manager</span> <span class="o">=</span> <span class="n">TaskRegistry</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Hye-Lim LEE (Epione team, Inria).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

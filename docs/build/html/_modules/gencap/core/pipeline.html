@@ -1,0 +1,1192 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gencap.core.pipeline &mdash; GENCAP 0.9.0-dev documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=6c04cfde"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GENCAP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">🛠️ API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">gencap</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GENCAP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">gencap.core.pipeline</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for gencap.core.pipeline</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">gencap</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gencap.utils.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">assign_alias_ids</span><span class="p">,</span>
+    <span class="n">build_dependency_graph</span><span class="p">,</span>
+    <span class="n">build_dependency_graph_dataset</span><span class="p">,</span>
+    <span class="n">get_sorted_execution_order</span><span class="p">,</span>
+    <span class="n">trace_pipeline_tree</span><span class="p">,</span>
+    <span class="n">convert_all_tuples_to_strings</span><span class="p">,</span>
+    <span class="n">ensure_unique_instances</span><span class="p">,</span>
+    <span class="n">find_dataset_path</span><span class="p">,</span>
+    <span class="n">generate_empty_output_df</span><span class="p">,</span>
+    <span class="n">get_name_mapper</span><span class="p">,</span>
+    <span class="n">rename_io_mapping</span><span class="p">,</span>
+    <span class="n">resolve_io_mapping</span><span class="p">,</span>
+    <span class="n">resolve_parameter_dict</span><span class="p">,</span>
+    <span class="n">visualize_pipeline</span><span class="p">,</span>
+    <span class="n">get_username</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gencap.utils.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">update_path_cache</span>
+
+
+<div class="viewcode-block" id="Pipeline">
+<a class="viewcode-back" href="../../../gencap.core.html#gencap.Pipeline">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Pipeline</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A sequential, DAG-based pipeline for chaining GENCAP tasks.</span>
+
+<span class="sd">    This class manages task orchestration within a Directed Acyclic Graph (DAG),</span>
+<span class="sd">    enabling sequential or branching task execution following the GENCAP specification.</span>
+<span class="sd">    It can be instantiated either from a series of task objects or by loading</span>
+<span class="sd">    a previously saved pipeline/dataset configuration.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">first_task</span><span class="p">:</span> <span class="s2">&quot;Task&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">following_tasks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">input_filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">unique_ID</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dataset_filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a GENCAP-compliant task pipeline.</span>
+
+<span class="sd">        A pipeline can be initialized in two ways:</span>
+<span class="sd">        1. **From task objects**: Provide a `first_task` and optionally `following_tasks`.</span>
+<span class="sd">        2. **From saved configuration**: Provide `input_filename`, `unique_ID`, or `dataset_filename`</span>
+<span class="sd">           referencing an existing GENCAP pipeline or derived dataset.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            first_task (Task, optional): </span>
+<span class="sd">                The initial task object in the pipeline.</span>
+<span class="sd">            following_tasks (list[list], optional): </span>
+<span class="sd">                A list of `[Task, io_mapping_dict]` pairs for subsequent tasks.</span>
+<span class="sd">            input_filename (str, optional): </span>
+<span class="sd">                Path to a saved pipeline JSON file.</span>
+<span class="sd">            unique_ID (str, optional): </span>
+<span class="sd">                Unique pipeline ID to load from the GENCAP pipeline manager.</span>
+<span class="sd">            dataset_filename (str, optional): </span>
+<span class="sd">                Path to a GENCAP-derived dataset folder (must include `data_source.json`).</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError:</span>
+<span class="sd">                - If no valid initialization source is provided.</span>
+<span class="sd">                - If multiple initialization options (`input_filename`, `unique_ID`, `dataset_filename`)</span>
+<span class="sd">                  are provided simultaneously.</span>
+<span class="sd">                - If `dataset_filename` or `input_filename` is malformed or missing required keys.</span>
+<span class="sd">            TypeError:</span>
+<span class="sd">                - If provided paths are invalid (not a file or directory).</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            * When initialized from saved state (`input_filename`, `unique_ID`, or `dataset_filename`),</span>
+<span class="sd">              the pipeline reconstructs tasks, IO mappings, and parameters automatically.</span>
+<span class="sd">            * When initialized from tasks (`first_task`), IO mappings and alias IDs are assigned dynamically.</span>
+<span class="sd">            * Internally constructs a DAG (`networkx.DiGraph`) to validate and determine execution order.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            **Initialize from tasks:**</span>
+<span class="sd">            &gt;&gt;&gt; pipe = Pipeline(</span>
+<span class="sd">            ...     first_task=PreprocessingTask(),</span>
+<span class="sd">            ...     following_tasks=[[SegmentationTask(), {&quot;output&quot;: &quot;input&quot;}]]</span>
+<span class="sd">            ... )</span>
+
+<span class="sd">            **Initialize from saved dataset:**</span>
+<span class="sd">            &gt;&gt;&gt; pipe = Pipeline(dataset_filename=&quot;/path/to/derived_dataset&quot;)</span>
+
+<span class="sd">            **Initialize from pipeline JSON:**</span>
+<span class="sd">            &gt;&gt;&gt; pipe = Pipeline(input_filename=&quot;/path/to/saved_pipeline.json&quot;)</span>
+
+<span class="sd">            **Initialize from pipeline ID:**</span>
+<span class="sd">            &gt;&gt;&gt; pipe = Pipeline(unique_ID=&quot;pipeline_1234&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Update cache for dataset paths</span>
+        <span class="n">update_path_cache</span><span class="p">()</span>
+        
+        <span class="c1"># Initialize pipeline metadata</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipe_info</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Load pipeline from saved configuration if first_task is not provided</span>
+        <span class="k">if</span> <span class="n">first_task</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Validate input sources</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">dataset_filename</span><span class="p">,</span> <span class="n">unique_ID</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Task objects, input_filename, unique_ID or dataset_filename should be given in the arguments&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="n">input_filename</span><span class="p">,</span> <span class="n">dataset_filename</span><span class="p">,</span> <span class="n">unique_ID</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only one among input_filename, unique_ID, or dataset_filename should be provided.&quot;</span><span class="p">)</span>
+            
+            <span class="c1"># Case 1: Initialize from a derived dataset folder</span>
+            <span class="k">if</span> <span class="n">dataset_filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">dataset_filename</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;dataset_filename should be a path of dataset derived by GENCAP.&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">dataset_filename</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="s2">&quot;data_source.json&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dataset_filename</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;dataset_filename &#39;</span><span class="si">{</span><span class="n">dataset_filename</span><span class="si">}</span><span class="s2">&#39; doesn&#39;t have data_source.json. Is this dataset derived by GENCAP?&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">pipe_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataset_filename</span><span class="p">,</span><span class="s2">&quot;data_source.json&quot;</span><span class="p">),</span> <span class="s2">&quot;r&quot;</span><span class="p">))</span>
+                        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pipe_json</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;pipelineID&quot;</span><span class="p">,</span> <span class="s2">&quot;tasks&quot;</span><span class="p">,</span> <span class="s2">&quot;io_mappings&quot;</span><span class="p">]):</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;dataset_filename should be a path of dataset derived by GENCAP.&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dataset_filename</span><span class="si">}</span><span class="s2"> is not a file or directory&quot;</span><span class="p">)</span>
+            <span class="c1"># Case 2: Initialize from pipeline ID</span>
+            <span class="k">elif</span> <span class="n">unique_ID</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">pipe_json</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">pipeline_manager</span><span class="o">.</span><span class="n">load_pipeline</span><span class="p">(</span><span class="n">pipeline_id</span><span class="o">=</span><span class="n">unique_ID</span><span class="p">)</span>
+                
+            <span class="c1"># Case 3: Initialize from pipeline JSON file</span>
+            <span class="k">elif</span> <span class="n">input_filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">input_filename</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;input_filename should be a path of pipeline-saved json file.&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">input_filename</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="s2">&quot;data_source.json&quot;</span> <span class="ow">in</span> <span class="n">input_filename</span> <span class="ow">or</span> <span class="s2">&quot;.json&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">input_filename</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;input_filename should be a path of pipeline-saved json file.&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">pipe_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">input_filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">))</span>
+                        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pipe_json</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;pipelineID&quot;</span><span class="p">,</span> <span class="s2">&quot;tasks&quot;</span><span class="p">,</span> <span class="s2">&quot;io_mappings&quot;</span><span class="p">,</span> <span class="s2">&quot;parameter_dict&quot;</span><span class="p">]):</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;input_filename should be a path of pipeline-saved json file.&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">input_filename</span><span class="si">}</span><span class="s2"> is not a file or directory&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Map task names to Python tuple identifiers        </span>
+            <span class="n">name_mapper</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">pipe_json</span><span class="p">[</span><span class="s2">&quot;tasks&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+            <span class="n">name_mapper</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">name_mapper</span><span class="p">,</span><span class="s2">&quot;(&#39;Cohort&#39;,)&quot;</span><span class="p">:(</span><span class="s2">&quot;Cohort&quot;</span><span class="p">,)}</span>
+            
+            <span class="c1"># Load parameters if they exist</span>
+            <span class="k">if</span> <span class="s2">&quot;parameter_dict&quot;</span> <span class="ow">in</span> <span class="n">pipe_json</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">parameter_dict</span> <span class="o">=</span> <span class="n">pipe_json</span><span class="p">[</span><span class="s2">&quot;parameter_dict&quot;</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="s2">&quot;pipelineArguments&quot;</span> <span class="ow">in</span> <span class="n">pipe_json</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">parameter_dict</span> <span class="o">=</span> <span class="n">pipe_json</span><span class="p">[</span><span class="s2">&quot;pipelineArguments&quot;</span><span class="p">][</span><span class="s2">&quot;parameter_dict&quot;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">parameter_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            
+            <span class="c1"># Instantiate tasks from pipeline JSON</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span> <span class="o">=</span> <span class="p">{</span><span class="n">name_mapper</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span> <span class="n">gc</span><span class="o">.</span><span class="n">task_manager</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">pipe_json</span><span class="p">[</span><span class="s2">&quot;tasks&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">io_mappings</span> <span class="o">=</span> <span class="n">rename_io_mapping</span><span class="p">(</span><span class="n">pipe_json</span><span class="p">[</span><span class="s2">&quot;io_mappings&quot;</span><span class="p">],</span> <span class="n">name_mapper</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_id</span> <span class="o">=</span> <span class="n">pipe_json</span><span class="p">[</span><span class="s2">&quot;pipelineID&quot;</span><span class="p">]</span>
+
+            <span class="c1"># Convert parameter keys to tuples</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parameter_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">parameter_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">parsed_key</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="n">parsed_key</span> <span class="o">=</span> <span class="n">key</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parameter_dict</span><span class="p">[</span><span class="n">parsed_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Initialize pipeline from task objects</span>
+            <span class="n">all_pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="n">first_task</span><span class="p">,</span> <span class="p">{})]</span> <span class="o">+</span> <span class="p">(</span><span class="n">following_tasks</span> <span class="ow">or</span> <span class="p">[])</span>
+            <span class="n">all_pairs</span> <span class="o">=</span> <span class="n">ensure_unique_instances</span><span class="p">(</span><span class="n">all_pairs</span><span class="p">)</span> <span class="c1"># Deep copy any reused task objects to ensure instance isolation</span>
+            <span class="n">tasks</span><span class="p">,</span> <span class="n">io_mappings</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">all_pairs</span><span class="p">)</span> <span class="c1"># Separate tasks and their corresponding I/O mappings</span>
+            
+            <span class="c1"># Assign alias IDs and resolve IO mappings</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">io_mappings</span> <span class="o">=</span> <span class="n">assign_alias_ids</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">io_mappings</span><span class="p">)</span> <span class="c1"># {key:alias_id value:task} and {key:alias_id value: io_dict}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">io_mappings</span> <span class="o">=</span> <span class="n">resolve_io_mapping</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">io_mappings</span><span class="p">)</span> <span class="c1"># generate graph by alias_id to sort the task</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parameter_dict</span><span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Assign alias_id to each task instance</span>
+        <span class="k">for</span> <span class="n">alias_id</span><span class="p">,</span> <span class="n">task</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">task</span><span class="o">.</span><span class="n">alias_id</span> <span class="o">=</span> <span class="n">alias_id</span>
+
+        <span class="c1"># Build task dependency graph and execution order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="n">build_dependency_graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">io_mappings</span><span class="p">)</span> <span class="c1"># configure order to process by topology of network</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exec_order</span> <span class="o">=</span> <span class="p">[</span><span class="n">task</span> <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">topological_sort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">)</span> <span class="k">if</span> <span class="n">task</span> <span class="o">!=</span><span class="p">(</span><span class="s2">&quot;Cohort&quot;</span><span class="p">,)]</span> <span class="c1"># sort order to execute</span>
+
+        <span class="c1"># Validate pipeline DAG integrity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_pipeline</span><span class="p">(</span><span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">nicePlots</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Pipeline.get_output_dataframe">
+<a class="viewcode-back" href="../../../gencap.core.html#gencap.Pipeline.get_output_dataframe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_output_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve the pipeline&#39;s final output dataframe.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            pd.DataFrame:</span>
+<span class="sd">                The dataframe produced by the pipeline&#39;s execution, </span>
+<span class="sd">                containing task outputs merged according to the pipeline structure.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; output_df = pipeline.get_output_dataframe()</span>
+<span class="sd">            &gt;&gt;&gt; print(output_df.head())</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_dataframe</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.get_error_dataframe">
+<a class="viewcode-back" href="../../../gencap.core.html#gencap.Pipeline.get_error_dataframe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_error_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve the pipeline&#39;s error dataframe.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            pd.DataFrame:</span>
+<span class="sd">                The dataframe containing error logs collected during task execution.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; error_df = pipeline.get_error_dataframe()</span>
+<span class="sd">            &gt;&gt;&gt; print(error_df)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_dataframe</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.to_json">
+<a class="viewcode-back" href="../../../gencap.core.html#gencap.Pipeline.to_json">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_json</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">unique_ID</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">version</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">force_replacement</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">information_string</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Export the pipeline definition to a JSON file.</span>
+
+<span class="sd">        The JSON file contains:</span>
+<span class="sd">            * Task configurations (unique ID, version).</span>
+<span class="sd">            * IO mappings between tasks.</span>
+<span class="sd">            * Task parameters and pipeline metadata.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            output_dir (str, optional):</span>
+<span class="sd">                Directory where the JSON file will be saved.</span>
+<span class="sd">                If None, uses the default GENCAP cache directory under ``pipelines/``.</span>
+<span class="sd">            unique_ID (str, optional):</span>
+<span class="sd">                Unique pipeline identifier. Defaults to a combination of username and timestamp.</span>
+<span class="sd">            version (float):</span>
+<span class="sd">                Pipeline version identifier. Default is ``1``.</span>
+<span class="sd">            force_replacement (bool):</span>
+<span class="sd">                If True, overwrite existing JSON file if it already exists.</span>
+<span class="sd">            information_string (str):</span>
+<span class="sd">                Additional descriptive information about the pipeline (metadata field).</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError:</span>
+<span class="sd">                If `output_dir` is None and no `GENCAP_CACHE_DIR` is configured.</span>
+<span class="sd">            RuntimeError:</span>
+<span class="sd">                If the JSON file already exists and `force_replacement` is False.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            * Automatically registers the pipeline in the `gc.pipeline_manager` after saving.</span>
+<span class="sd">            * Pipeline JSON includes versioned tasks, IO mappings, and parameter definitions.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; pipeline.to_json(</span>
+<span class="sd">            ...     output_dir=&quot;/path/to/save&quot;,</span>
+<span class="sd">            ...     unique_ID=&quot;preproc_pipeline_v1&quot;,</span>
+<span class="sd">            ...     force_replacement=True,</span>
+<span class="sd">            ...     information_string=&quot;Preprocessing pipeline for MRI data&quot;</span>
+<span class="sd">            ... )</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">savedTime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%S&quot;</span><span class="p">)</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">get_username</span><span class="p">()</span>
+        
+        <span class="c1"># Determine output directory</span>
+        <span class="k">if</span> <span class="n">output_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Get the path to the package</span>
+            <span class="k">if</span> <span class="n">gc</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="s2">&quot;GENCAP_CACHE_DIR&quot;</span><span class="p">):</span>
+                <span class="c1"># Create a path to a specific subfolder inside the package</span>
+                <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gc</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="s2">&quot;GENCAP_CACHE_DIR&quot;</span><span class="p">),</span> <span class="s2">&quot;pipelines&quot;</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Assign output_dir of add &#39;MODULE_DIR&#39; with gencap.write_config&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Generate unique pipeline ID if not provided</span>
+        <span class="k">if</span> <span class="n">unique_ID</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">unique_ID</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">savedTime</span><span class="si">}</span><span class="s2">&quot;</span>
+        
+        <span class="c1"># Resolve tasks and IO mappings</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s2">&quot;parameter_dict&quot;</span><span class="p">):</span>
+            <span class="n">name_mapper</span> <span class="o">=</span> <span class="n">get_name_mapper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">)</span>
+            <span class="n">resolved_task</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">name_mapper</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">)):</span> <span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span><span class="n">v</span><span class="o">.</span><span class="n">version</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="n">resolved_io_mappings</span> <span class="o">=</span> <span class="n">convert_all_tuples_to_strings</span><span class="p">(</span><span class="n">rename_io_mapping</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">io_mappings</span><span class="p">,</span> <span class="n">name_mapper</span><span class="p">))</span>
+            <span class="n">parameter_dict</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">alias_id</span><span class="p">):</span><span class="n">parameter</span> <span class="k">for</span> <span class="n">alias_id</span><span class="p">,</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">resolved_task</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">):[</span><span class="n">v</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span><span class="n">v</span><span class="o">.</span><span class="n">version</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="n">resolved_io_mappings</span> <span class="o">=</span> <span class="n">convert_all_tuples_to_strings</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">io_mappings</span><span class="p">)</span>
+            <span class="n">parameter_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            
+        <span class="c1"># Construct pipeline JSON structure</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipe_json</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;time&quot;</span> <span class="p">:</span> <span class="n">savedTime</span><span class="p">,</span>
+                          <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="n">user</span><span class="p">,</span>
+                          <span class="s2">&quot;pipelineID&quot;</span><span class="p">:</span><span class="n">unique_ID</span><span class="p">,</span>
+                          <span class="s2">&quot;pipelineVersion&quot;</span><span class="p">:</span><span class="s2">&quot;-&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">resolved_task</span><span class="o">.</span><span class="n">values</span><span class="p">()]),</span>
+                          <span class="s2">&quot;pipelineInformation&quot;</span><span class="p">:</span><span class="n">information_string</span><span class="p">,</span>
+                          <span class="s2">&quot;tasks&quot;</span><span class="p">:</span><span class="n">resolved_task</span><span class="p">,</span>
+                          <span class="s2">&quot;io_mappings&quot;</span><span class="p">:</span><span class="n">resolved_io_mappings</span><span class="p">,</span>
+                          <span class="s2">&quot;parameter_dict&quot;</span><span class="p">:</span> <span class="n">parameter_dict</span><span class="p">}</span>
+        
+        <span class="n">json_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">unique_ID</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Handle overwrite scenarios</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">json_path</span><span class="p">)</span> <span class="ow">and</span> <span class="n">force_replacement</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;logger&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Deleting previous file...</span><span class="si">{</span><span class="n">json_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">json_path</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">json_path</span><span class="p">)</span> <span class="ow">and</span> <span class="n">force_replacement</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File already exists </span><span class="si">{</span><span class="n">json_path</span><span class="si">}</span><span class="s2">. Replace output_dir or unique_ID&quot;</span><span class="p">)</span>
+            
+        <span class="c1"># Save to file</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pipe_json</span><span class="p">,</span> <span class="n">json_file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            
+        <span class="c1"># Register pipeline in the pipeline manager</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">pipeline_manager</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">pipeline_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pipe_json</span><span class="p">[</span><span class="s2">&quot;pipelineID&quot;</span><span class="p">],</span> <span class="n">json_path</span><span class="o">=</span><span class="n">json_path</span><span class="p">,</span><span class="n">force_replacement</span><span class="o">=</span><span class="n">force_replacement</span><span class="p">)</span></div>
+
+        
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_runtime</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">cohort_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">input_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">pathname_policy_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">pathname_policy_dict</span><span class="p">:</span> <span class="nb">dict</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate the runtime configuration, including task input consistency,</span>
+<span class="sd">        pathname policy correctness, and field availability across tasks.</span>
+
+<span class="sd">        This method ensures that:</span>
+
+<span class="sd">        1. **Mandatory field validation**:</span>
+<span class="sd">           - All mandatory input fields for the first task are provided either in `input_dict` or `cohort_df`.</span>
+
+<span class="sd">        2. **Optional field validation**:</span>
+<span class="sd">           - Logs warnings if optional input fields are missing.</span>
+
+<span class="sd">        3. **Pathname policy validation**:</span>
+<span class="sd">           - Checks that `pathname_policy_dict` covers all required keywords defined in the selected `pathname_policy_id`.</span>
+<span class="sd">           - Ensures keys are correctly typed (string or tuple for nested dicts).</span>
+<span class="sd">           - Ensures values are strings or lists of field names.</span>
+
+<span class="sd">        4. **Index consistency validation**:</span>
+<span class="sd">           - Validates that index structures across branched tasks are aligned.</span>
+<span class="sd">           - Prevents merging tasks with mismatched dataframe indices.</span>
+
+<span class="sd">        5. **Pathname field availability**:</span>
+<span class="sd">           - Confirms that each field referenced in `pathname_policy_dict` exists in:</span>
+<span class="sd">             * Task inputs or outputs.</span>
+<span class="sd">             * Previous task outputs.</span>
+<span class="sd">             * Cohort fields (as a fallback).</span>
+<span class="sd">           - Fields not found are treated as constants with warnings logged.</span>
+
+<span class="sd">        6. **Final indexing coverage**:</span>
+<span class="sd">           - Ensures all indexing fields of the final output dataframe are included in the pathname policy.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cohort_df (pd.DataFrame): </span>
+<span class="sd">                The input cohort dataframe containing base fields and indexing.</span>
+<span class="sd">            input_dict (dict): </span>
+<span class="sd">                Dictionary mapping task input fields to their assigned values or sources.</span>
+<span class="sd">            pathname_policy_id (str): </span>
+<span class="sd">                Identifier of the pathname policy to validate against.</span>
+<span class="sd">            pathname_policy_dict (dict): </span>
+<span class="sd">                Dictionary defining mappings of keywords to dataset fields, constants, or lists of fields.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError:</span>
+<span class="sd">                - Missing mandatory input fields in the first task.</span>
+<span class="sd">                - Missing keywords in `pathname_policy_dict`.</span>
+<span class="sd">                - Mismatched index structures between branched tasks.</span>
+<span class="sd">                - Final indexing fields not covered by `pathname_policy_dict`.</span>
+<span class="sd">            TypeError:</span>
+<span class="sd">                - Invalid key or value types in `pathname_policy_dict`.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            * Supports both flat and nested `pathname_policy_dict` formats.</span>
+<span class="sd">            * Automatically sets `constant_keyword` fields for tasks where a referenced keyword cannot be resolved.</span>
+<span class="sd">            * Helps prevent filename collisions by verifying indexing field coverage.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; pipeline._validate_runtime(</span>
+<span class="sd">            ...     cohort_df=cohort.get_dataframe(),</span>
+<span class="sd">            ...     input_dict={&quot;Image File&quot;: &quot;Image Path&quot;},</span>
+<span class="sd">            ...     pathname_policy_id=&quot;Default Pathname Policy&quot;,</span>
+<span class="sd">            ...     pathname_policy_dict={&quot;Index&quot;: &quot;output indexing fields&quot;, &quot;Modality&quot;: &quot;Modality&quot;}</span>
+<span class="sd">            ... )</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Validate that all mandatory input fields for the first task are present either in input_dict or cohort_df</span>
+        <span class="n">first_task_id</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">mandatory_inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">first_task_id</span><span class="p">]</span><span class="o">.</span><span class="n">mandatory_input_fields</span>
+        <span class="n">missing_mandatory_inputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">mandatory_inputs</span> <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">input_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cohort_df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">missing_mandatory_inputs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Task &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">first_task_id</span><span class="p">]</span><span class="o">.</span><span class="n">alias_id</span><span class="si">}</span><span class="s2">&#39; missing input mappings for mandatory fields: </span><span class="si">{</span><span class="n">missing_mandatory_inputs</span><span class="si">}</span><span class="s2"> Use input_dict for run() to manage this inconsistency.&quot;</span><span class="p">)</span>
+
+        <span class="n">optional_inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">first_task_id</span><span class="p">]</span><span class="o">.</span><span class="n">optional_input_fields</span>
+        <span class="n">missing_optional_inputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">optional_inputs</span> <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">input_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cohort_df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">missing_optional_inputs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Task &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">first_task_id</span><span class="p">]</span><span class="o">.</span><span class="n">alias_id</span><span class="si">}</span><span class="s2">&#39; missing input mappings for optional fields: </span><span class="si">{</span><span class="n">missing_optional_inputs</span><span class="si">}</span><span class="s2">. Use input_dict for run() to manage this inconsistency.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Validate the structure and required keys of the pathname_policy_dict for the selected policy ID</span>
+        <span class="n">supported_keywords</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">default_pathname_policy_manager</span><span class="o">.</span><span class="n">get_keywords</span><span class="p">(</span><span class="n">pathname_policy_id</span><span class="p">)</span>
+        <span class="n">missing_keywords</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">supported_keywords</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">pathname_policy_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_keywords</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;pathname_policy_dict is missing key for </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">missing_keywords</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pathname_policy_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span> <span class="c1"># nested dictionary case</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">((</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="nb">tuple</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">pathname_policy_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;pathname_policy_dict took unexpected type of key. Key of nested pathname_policy_dict should be string or tuple.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>                                                               <span class="c1"># flatten dictionary case</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">pathname_policy_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;pathname_policy_dict took unexpected type of key. Key of flatten pathname_policy_dict should be string.&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">pathname_policy_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">pass</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;pathname_policy_dict took unexpected type of value </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">. Value of pathname_policy_dict should be string or list.&quot;</span><span class="p">)</span>
+        <span class="n">keyword_fields</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pathname_policy_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        
+        <span class="c1"># Flatten keyword_fields list by expanding nested lists and removing the &quot;output indexing fields&quot; keyword</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keyword_fields</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="o">==</span> <span class="s2">&quot;output indexing fields&quot;</span><span class="p">:</span>
+                <span class="n">keyword_fields</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">keyword_fields</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">field</span><span class="p">:</span>
+                    <span class="n">keyword_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="c1"># Validate index consistency across tasks using pseudo (empty) output dataframes derived from previous tasks</span>
+        <span class="k">for</span> <span class="n">task_dataset_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_order</span><span class="p">:</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">task_dataset_id</span><span class="p">]</span>
+
+            <span class="c1"># For tasks with multiple branches, verify that their input dataframes share identical index structures</span>
+            <span class="n">prev_tasks</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">task_info_dict</span><span class="p">[</span><span class="s2">&quot;prev_task&quot;</span><span class="p">]</span>
+            <span class="n">base_indexing_field</span> <span class="o">=</span> <span class="n">generate_empty_output_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prev_tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">input_dict</span><span class="o">=</span><span class="n">input_dict</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">prev_tasks</span><span class="p">)</span> <span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">pre_task</span> <span class="ow">in</span> <span class="n">prev_tasks</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+                    <span class="n">task_df_index</span> <span class="o">=</span>  <span class="n">generate_empty_output_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pre_task</span><span class="p">,</span><span class="n">input_dict</span><span class="o">=</span><span class="n">input_dict</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span>
+                    <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">base_indexing_field</span><span class="p">)</span><span class="o">!=</span><span class="nb">set</span><span class="p">(</span><span class="n">task_df_index</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">prev_tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">pre_task</span><span class="si">}</span><span class="s2"> have different index of dataframe, so it&#39; can&#39;t be merged.&quot;</span><span class="p">)</span>
+
+
+            <span class="c1"># Validate that all fields referenced in pathname_policy_dict exist in task inputs, outputs, previous task outputs, or cohort fields</span>
+            <span class="n">constant_keyword</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">keyword_fields</span><span class="p">:</span>
+                <span class="c1"># check the field of df_input of the current task</span>
+                <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">base_indexing_field</span><span class="o">+</span><span class="n">task</span><span class="o">.</span><span class="n">mandatory_input_fields</span> <span class="o">+</span> <span class="n">task</span><span class="o">.</span><span class="n">optional_input_fields</span><span class="p">:</span>
+                    <span class="c1"># check the field of df_output of the current task</span>
+                    <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">base_indexing_field</span><span class="o">+</span><span class="n">task</span><span class="o">.</span><span class="n">additional_output_indexing_fields</span><span class="o">+</span><span class="n">task</span><span class="o">.</span><span class="n">mandatory_output_fields</span> <span class="o">+</span> <span class="n">task</span><span class="o">.</span><span class="n">optional_output_fields</span><span class="p">:</span>
+                        <span class="c1"># check the field if it is available in output field of the previous task</span>
+                        <span class="k">if</span> <span class="n">prev_tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="p">(</span><span class="s2">&quot;Cohort&quot;</span><span class="p">,):</span>
+                            <span class="n">prev_task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">prev_tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+                            <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">prev_task</span><span class="o">.</span><span class="n">additional_input_indexing_fields</span><span class="o">+</span><span class="n">prev_task</span><span class="o">.</span><span class="n">mandatory_input_fields</span> <span class="o">+</span> <span class="n">prev_task</span><span class="o">.</span><span class="n">optional_input_fields</span><span class="p">:</span>
+                                <span class="c1"># check the field if it is available in the cohort:</span>
+                                <span class="n">converted_cohort_df</span> <span class="o">=</span> <span class="n">generate_empty_output_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;Cohort&quot;</span><span class="p">,))</span>
+                                <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">converted_cohort_df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                                    <span class="n">constant_keyword</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Field [</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">] assigned on the pathname_policy_dict is not available in the cohort and output indexing fields of the task [</span><span class="si">{</span><span class="n">task_dataset_id</span><span class="si">}</span><span class="s2">]. This keyword is filled with the constant value as [</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">converted_cohort_df</span> <span class="o">=</span> <span class="n">generate_empty_output_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;Cohort&quot;</span><span class="p">,))</span>
+                            <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">converted_cohort_df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                                <span class="n">constant_keyword</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Field [</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">] assigned on the pathname_policy_dict is not available in the cohort and output indexing fields of the task [</span><span class="si">{</span><span class="n">task_dataset_id</span><span class="si">}</span><span class="s2">]. This keyword is filled with the constant value as [</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">task_dataset_id</span><span class="p">]</span><span class="o">.</span><span class="n">constant_keyword</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">constant_keyword</span><span class="p">))</span>
+
+
+        <span class="c1"># Ensure that the pathname policy keywords include all indexing fields of the final output dataframe to avoid file overwriting</span>
+        <span class="k">if</span> <span class="s2">&quot;output indexing fields&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pathname_policy_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">final_df_indexing_fields</span> <span class="o">=</span> <span class="n">base_indexing_field</span><span class="o">+</span><span class="n">task</span><span class="o">.</span><span class="n">additional_output_indexing_fields</span>
+            <span class="n">need_keywords</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="n">pathname_policy_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="n">sub</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">sub</span><span class="p">])]</span>
+            <span class="n">missing_indexing_fields</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">final_df_indexing_fields</span><span class="p">)</span><span class="o">-</span><span class="nb">set</span><span class="p">(</span><span class="n">need_keywords</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_indexing_fields</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PathnamePolicyManager [</span><span class="si">{</span><span class="n">pathname_policy_id</span><span class="si">}</span><span class="s2">] doesn&#39;t consider the indexing field </span><span class="si">{</span><span class="n">missing_indexing_fields</span><span class="si">}</span><span class="s2">. Include </span><span class="si">{</span><span class="n">missing_indexing_fields</span><span class="si">}</span><span class="s2"> in the pathname_policy_dict.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Valid input_dict and cohort.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">nicePlots</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate the integrity of the pipeline&#39;s Directed Acyclic Graph (DAG) and task I/O mappings.</span>
+
+<span class="sd">        This method performs the following checks:</span>
+
+<span class="sd">        1. **DAG Validation**:</span>
+<span class="sd">           - Ensures the task graph is acyclic (no circular dependencies).</span>
+<span class="sd">           - Confirms that there is exactly one sink node (single output task).</span>
+
+<span class="sd">        2. **I/O Mapping Validation**:</span>
+<span class="sd">           - Validates that each task&#39;s `io_mappings` references valid upstream fields.</span>
+<span class="sd">           - Checks that mappings either:</span>
+<span class="sd">             * Directly reference output fields from the previous task, or</span>
+<span class="sd">             * Explicitly reference a `[task_id, field_name]` pair from any upstream task.</span>
+<span class="sd">           - Ensures referenced fields exist in the source task&#39;s output fields.</span>
+
+<span class="sd">        3. **Mandatory and Optional Input Validation**:</span>
+<span class="sd">           - Confirms all mandatory inputs of each task are mapped.</span>
+<span class="sd">           - Logs warnings for missing optional inputs.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            show (bool): </span>
+<span class="sd">                If True, display a visualization of the pipeline DAG.</span>
+<span class="sd">            nicePlots (bool): </span>
+<span class="sd">                If True, render the DAG visualization with styled plots.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError:</span>
+<span class="sd">                - If the pipeline contains cyclic dependencies.</span>
+<span class="sd">                - If multiple sink nodes (outputs) exist in the pipeline.</span>
+<span class="sd">                - If an I/O mapping references a non-existent task or field.</span>
+<span class="sd">                - If mandatory inputs are not mapped correctly.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            * Visualization uses `visualize_pipeline` if `show=True`.</span>
+<span class="sd">            * Missing optional inputs will log warnings but will not stop validation.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; pipeline._validate_pipeline(show=True, nicePlots=True)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize logger (use instance logger if available)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s2">&quot;logger&quot;</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">=</span><span class="kc">None</span>
+
+        <span class="c1"># Optionally display pipeline DAG visualization</span>
+        <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+            <span class="n">visualize_pipeline</span><span class="p">(</span>
+                <span class="n">graph</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span>
+                <span class="n">pipeline_info</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pipe_info</span><span class="p">,</span>
+                <span class="n">nicePlots</span><span class="o">=</span><span class="n">nicePlots</span><span class="p">,</span>
+                <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">logger</span><span class="o">=</span><span class="n">logger</span>
+            <span class="p">)</span>
+
+        <span class="c1"># ── Step 1: Validate DAG structure ──</span>
+        <span class="c1"># Ensure the pipeline graph is acyclic (no circular dependencies)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_directed_acyclic_graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">):</span>
+            <span class="n">cycle</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">find_cycle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pipeline has cyclic dependency: </span><span class="si">{</span><span class="n">cycle</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Ensure only one sink node exists (single output task)</span>
+        <span class="n">sinks</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">out_degree</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sinks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Pipeline should have only one output node. &quot;</span>
+                <span class="s2">&quot;Consider adding a CombineOutputTask or restructuring the pipeline.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># ── Step 2: Validate task I/O mappings ──</span>
+        <span class="n">task_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="c1"># Iterate through tasks in sequential order to validate I/O consistency</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">task_list</span><span class="p">)):</span>
+            <span class="n">prev_task_name</span> <span class="o">=</span> <span class="n">task_list</span><span class="p">[</span><span class="n">idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">curr_task_name</span> <span class="o">=</span> <span class="n">task_list</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+            <span class="n">prev_task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">prev_task_name</span><span class="p">]</span>
+            <span class="n">curr_task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">curr_task_name</span><span class="p">]</span>
+            <span class="n">io_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">io_mappings</span><span class="p">[</span><span class="n">curr_task_name</span><span class="p">]</span>
+
+            <span class="c1"># Validate each destination field mapping</span>
+            <span class="k">for</span> <span class="n">dest_field</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">io_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="c1"># Explicit [task_id, field_name] mapping</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Each IO mapping list must have exactly 2 elements: [task_id, field_name].&quot;</span><span class="p">)</span>
+                    <span class="n">src_id</span><span class="p">,</span> <span class="n">field</span> <span class="o">=</span> <span class="n">spec</span>
+                    <span class="k">if</span> <span class="n">src_id</span> <span class="o">!=</span> <span class="p">(</span><span class="s2">&quot;Cohort&quot;</span><span class="p">,):</span>
+                        <span class="c1"># Verify source task exists</span>
+                        <span class="k">if</span> <span class="n">src_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Task ID &#39;</span><span class="si">{</span><span class="n">src_id</span><span class="si">}</span><span class="s2">&#39; not found for mapping of &#39;</span><span class="si">{</span><span class="n">dest_field</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+                        <span class="c1"># Verify source field exists in source task outputs</span>
+                        <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">src_id</span><span class="p">]</span><span class="o">.</span><span class="n">mandatory_output_fields</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">src_id</span><span class="p">]</span><span class="o">.</span><span class="n">optional_output_fields</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;Mapping for &#39;</span><span class="si">{</span><span class="n">dest_field</span><span class="si">}</span><span class="s2">&#39; references unknown field &#39;</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">&#39; in task &#39;</span><span class="si">{</span><span class="n">src_id</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+                            <span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="c1"># Direct mapping from previous task outputs</span>
+                    <span class="k">if</span> <span class="n">spec</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">prev_task</span><span class="o">.</span><span class="n">mandatory_output_fields</span> <span class="o">+</span> <span class="n">prev_task</span><span class="o">.</span><span class="n">optional_output_fields</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Mapping for &#39;</span><span class="si">{</span><span class="n">dest_field</span><span class="si">}</span><span class="s2">&#39; references unknown field &#39;</span><span class="si">{</span><span class="n">spec</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;in previous task &#39;</span><span class="si">{</span><span class="n">prev_task</span><span class="o">.</span><span class="n">unique_id</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+                        <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;IO mapping values must be either a string or a list of [task_id, field_name].&quot;</span><span class="p">)</span>
+
+            <span class="c1"># ── Validate mandatory inputs ──</span>
+            <span class="n">mandatory_inputs</span> <span class="o">=</span> <span class="n">curr_task</span><span class="o">.</span><span class="n">mandatory_input_fields</span>
+            <span class="n">missing_mandatory_inputs</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">mandatory_inputs</span>
+                <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">io_dict</span> <span class="ow">and</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">prev_task</span><span class="o">.</span><span class="n">mandatory_output_fields</span> <span class="o">+</span> <span class="n">prev_task</span><span class="o">.</span><span class="n">optional_output_fields</span>
+            <span class="p">]</span>
+            <span class="k">if</span> <span class="n">missing_mandatory_inputs</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Task &#39;</span><span class="si">{</span><span class="n">curr_task</span><span class="o">.</span><span class="n">unique_id</span><span class="si">}</span><span class="s2">&#39; is missing mappings for mandatory inputs: </span><span class="si">{</span><span class="n">missing_mandatory_inputs</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+            <span class="c1"># ── Warn if optional inputs are missing ──</span>
+            <span class="n">optional_inputs</span> <span class="o">=</span> <span class="n">curr_task</span><span class="o">.</span><span class="n">optional_input_fields</span>
+            <span class="n">missing_optional_inputs</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">optional_inputs</span>
+                <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">io_dict</span> <span class="ow">and</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">prev_task</span><span class="o">.</span><span class="n">mandatory_output_fields</span> <span class="o">+</span> <span class="n">prev_task</span><span class="o">.</span><span class="n">optional_output_fields</span>
+            <span class="p">]</span>
+            <span class="k">if</span> <span class="n">missing_optional_inputs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;logger&quot;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning, Task &#39;</span><span class="si">{</span><span class="n">curr_task</span><span class="o">.</span><span class="n">unique_id</span><span class="si">}</span><span class="s2">&#39; missing input mappings for optional fields: </span><span class="si">{</span><span class="n">missing_optional_inputs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning, Task &#39;</span><span class="si">{</span><span class="n">curr_task</span><span class="o">.</span><span class="n">unique_id</span><span class="si">}</span><span class="s2">&#39; missing input mappings for optional fields: </span><span class="si">{</span><span class="n">missing_optional_inputs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Pipeline validation successful</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;logger&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Pipeline validation successful.&quot;</span><span class="p">)</span>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_initialize_logger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">debug_mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a task-specific logger instance.</span>
+
+<span class="sd">        This method sets up a logger configured for console output with an optional </span>
+<span class="sd">        debug mode for verbose logging.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dataset_id (str): </span>
+<span class="sd">                Identifier used to name the logger (e.g., dataset or task ID).</span>
+<span class="sd">            debug_mode (bool): </span>
+<span class="sd">                If True, sets the logger and handler to DEBUG level. </span>
+<span class="sd">                If False, sets handler to ERROR level.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            * Clears existing handlers to prevent duplicate log outputs, especially </span>
+<span class="sd">              when executed in environments such as Jupyter notebooks.</span>
+<span class="sd">            * Logs include timestamps, log levels, and message content.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; self._initialize_logger(dataset_id=&quot;example_task&quot;, debug_mode=True)</span>
+<span class="sd">            2025-07-30 12:00:00 - DEBUG - Logger initialized for example_task</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Create a logger specific to the dataset/task ID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>  <span class="c1"># Always capture all logs at logger level</span>
+
+        <span class="c1"># Remove existing handlers to prevent duplicate logs (useful in notebooks)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">hasHandlers</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="c1"># Create and configure stream handler for console output</span>
+        <span class="n">stream_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+        <span class="n">stream_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span> <span class="k">if</span> <span class="n">debug_mode</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
+
+        <span class="c1"># Define log message format</span>
+        <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span>
+            <span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> - </span><span class="si">%(levelname)s</span><span class="s2"> - </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span>
+        <span class="p">)</span>
+        <span class="n">stream_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+
+        <span class="c1"># Attach handler to logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">stream_handler</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_generate_cohort_from_parameter_dict</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parameter_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">task_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a cohort dataframe based on a task-specific parameter dictionary.</span>
+
+<span class="sd">        This method handles special GENCAP system tasks that require reconstruction </span>
+<span class="sd">        or inspection of datasets, including:</span>
+
+<span class="sd">        - **GENCAP-DatasetReproductionTask**: Traces a dataset pipeline and reconstructs </span>
+<span class="sd">          its execution order and hierarchy.</span>
+<span class="sd">        - **GENCAP-DatasetDisplayTask**: Prepares dataset display with configured database paths.</span>
+<span class="sd">        - **GENCAP-DatasetVerificationTask**: Validates datasets by scanning database directories.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            parameter_dict (dict): </span>
+<span class="sd">                Task-specific parameters, including dataset paths and configuration values.</span>
+<span class="sd">            task_id (str): </span>
+<span class="sd">                Identifier of the system task (e.g., &quot;GENCAP-DatasetReproductionTask&quot;).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple:</span>
+<span class="sd">                * **pd.DataFrame**: A dataframe representing the cohort or dataset metadata.</span>
+<span class="sd">                * **dict**: The updated parameter dictionary with auto-filled or corrected fields.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError:</span>
+<span class="sd">                - If mutually exclusive parameters (`database_dir` and `dataset_path`) are provided.</span>
+<span class="sd">                - If required keys like `dataset_dir`, `database_dir`, or `dataset_path` are missing.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            * Adds missing keys like `n_level`, `eval`, or `database_dir` with defaults if omitted.</span>
+<span class="sd">            * Logs warnings when default values are auto-assigned.</span>
+<span class="sd">            * For `DatasetReproductionTask`, builds a dependency graph and traces the dataset tree.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">task_id</span> <span class="o">==</span> <span class="s2">&quot;GENCAP-DatasetReproductionTask&quot;</span><span class="p">:</span>
+            <span class="c1"># Ensure intermediate dataset retention flag is passed</span>
+            <span class="n">parameter_dict</span><span class="p">[</span><span class="s2">&quot;keep_intermediate_datasets&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_intermediate_datasets</span>
+
+            <span class="c1"># Assign default &#39;n_level&#39; if missing</span>
+            <span class="k">if</span> <span class="s2">&quot;n_level&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parameter_dict</span><span class="p">:</span>
+                <span class="n">parameter_dict</span><span class="p">[</span><span class="s2">&quot;n_level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;[n_level] not provided. Defaulting to </span><span class="si">{</span><span class="n">parameter_dict</span><span class="p">[</span><span class="s1">&#39;n_level&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Assign default &#39;eval&#39; flag if missing</span>
+            <span class="k">if</span> <span class="s2">&quot;eval&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parameter_dict</span><span class="p">:</span>
+                <span class="n">parameter_dict</span><span class="p">[</span><span class="s2">&quot;eval&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;[eval] not provided. Defaulting to </span><span class="si">{</span><span class="n">parameter_dict</span><span class="p">[</span><span class="s1">&#39;eval&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Build dependency graph and execution order for the dataset</span>
+            <span class="n">G</span> <span class="o">=</span> <span class="n">build_dependency_graph_dataset</span><span class="p">(</span>
+                <span class="n">dataset_dir</span><span class="o">=</span><span class="n">parameter_dict</span><span class="p">[</span><span class="s2">&quot;dataset_dir&quot;</span><span class="p">],</span>
+                <span class="n">n_level</span><span class="o">=</span><span class="n">parameter_dict</span><span class="p">[</span><span class="s2">&quot;n_level&quot;</span><span class="p">],</span>
+                <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span>
+            <span class="p">)</span>
+            <span class="n">exec_order</span> <span class="o">=</span> <span class="n">get_sorted_execution_order</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+
+            <span class="c1"># Trace the pipeline tree and compute dataset levels</span>
+            <span class="n">traced_dict</span> <span class="o">=</span> <span class="n">trace_pipeline_tree</span><span class="p">(</span>
+                <span class="n">parameter_dict</span><span class="p">[</span><span class="s2">&quot;dataset_dir&quot;</span><span class="p">],</span> <span class="n">summary</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span>
+            <span class="p">)</span>
+            <span class="n">level_dict</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">dataset_id</span><span class="p">:</span> <span class="n">key</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">dataset_list</span> <span class="ow">in</span> <span class="n">traced_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">dataset_id</span> <span class="ow">in</span> <span class="n">dataset_list</span>
+            <span class="p">}</span>
+
+            <span class="c1"># Build cohort dataframe with execution metadata</span>
+            <span class="n">cohort_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+                <span class="s2">&quot;Original Data&quot;</span><span class="p">:</span> <span class="n">exec_order</span><span class="p">,</span>
+                <span class="s2">&quot;Execution Order&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">exec_order</span><span class="p">)),</span>
+                <span class="s2">&quot;Level&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">level_dict</span><span class="p">[</span><span class="n">data</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">exec_order</span><span class="p">],</span>
+                <span class="s2">&quot;Original Path&quot;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="n">find_dataset_path</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">parameter_dict</span><span class="p">[</span><span class="s2">&quot;dataset_dir&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;derivatives&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">exec_order</span>
+                <span class="p">]</span>
+            <span class="p">})</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;Original Data&quot;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">task_id</span> <span class="o">==</span> <span class="s2">&quot;GENCAP-DatasetDisplayTask&quot;</span><span class="p">:</span>
+            <span class="c1"># Default database_dir if not provided</span>
+            <span class="k">if</span> <span class="s2">&quot;database_dir&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parameter_dict</span><span class="p">:</span>
+                <span class="n">parameter_dict</span><span class="p">[</span><span class="s2">&quot;database_dir&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;derivatives&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;[database_dir] not provided. Defaulting to </span><span class="si">{</span><span class="n">parameter_dict</span><span class="p">[</span><span class="s1">&#39;database_dir&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="p">)</span>
+            <span class="n">cohort_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="n">task_id</span> <span class="o">==</span> <span class="s2">&quot;GENCAP-DatasetVerificationTask&quot;</span><span class="p">:</span>
+            <span class="c1"># Prevent conflicting parameters</span>
+            <span class="k">if</span> <span class="s2">&quot;database_dir&quot;</span> <span class="ow">in</span> <span class="n">parameter_dict</span> <span class="ow">and</span> <span class="s2">&quot;dataset_path&quot;</span> <span class="ow">in</span> <span class="n">parameter_dict</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;database_dir&#39; and &#39;dataset_path&#39; cannot both be specified.&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Auto-generate dataset_path from database_dir</span>
+            <span class="k">if</span> <span class="s2">&quot;database_dir&quot;</span> <span class="ow">in</span> <span class="n">parameter_dict</span><span class="p">:</span>
+                <span class="n">parameter_dict</span><span class="p">[</span><span class="s2">&quot;dataset_path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">Path</span><span class="p">(</span><span class="n">parameter_dict</span><span class="p">[</span><span class="s2">&quot;database_dir&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;data_description.json&quot;</span><span class="p">)</span>
+                <span class="p">]</span>
+
+            <span class="c1"># Require either dataset_path or database_dir</span>
+            <span class="k">if</span> <span class="s2">&quot;dataset_path&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parameter_dict</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;database_dir&#39; or &#39;dataset_path&#39; must be provided.&quot;</span><span class="p">)</span>
+
+            <span class="n">cohort_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Default fallback: empty cohort</span>
+            <span class="n">cohort_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">cohort_df</span><span class="p">,</span> <span class="n">parameter_dict</span>
+
+<div class="viewcode-block" id="Pipeline.run">
+<a class="viewcode-back" href="../../../gencap.core.html#gencap.Pipeline.run">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">dataset_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">cohort</span><span class="p">:</span> <span class="s2">&quot;Cohort&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># type: ignore</span>
+        <span class="n">input_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">parameter_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">additional_tag_list</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">force_dir_replacement</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">keep_intermediate_datasets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">pathname_policy_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Default Pathname Policy&quot;</span><span class="p">,</span>
+        <span class="n">pathname_policy_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Index&quot;</span><span class="p">:</span> <span class="s2">&quot;output indexing fields&quot;</span><span class="p">},</span>
+        <span class="n">use_multithreading</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">nb_max_threads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="n">debug_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute the pipeline by running its tasks sequentially according to the dependency graph.</span>
+
+<span class="sd">        This method orchestrates pipeline execution, managing:</span>
+<span class="sd">          * Runtime initialization (logger, task IDs, graph updates)</span>
+<span class="sd">          * Cohort validation or auto-generation for system tasks</span>
+<span class="sd">          * Parameter resolution and I/O preparation for each task</span>
+<span class="sd">          * Execution of all tasks in topological order</span>
+<span class="sd">          * Logging, error handling, and result consolidation</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            output_dir (str): </span>
+<span class="sd">                Directory to save pipeline outputs and logs.</span>
+<span class="sd">            dataset_id (str): </span>
+<span class="sd">                Unique identifier for the pipeline output dataset.</span>
+<span class="sd">            cohort (Cohort, optional): </span>
+<span class="sd">                Cohort object providing the input dataset for the pipeline.</span>
+<span class="sd">                Required unless running system tasks (e.g., reproduction, display, verification).</span>
+<span class="sd">            input_dict (dict): </span>
+<span class="sd">                Field-to-source mapping for task inputs (overrides cohort fields).</span>
+<span class="sd">            parameter_dict (dict): </span>
+<span class="sd">                Task parameter dictionary (runtime overrides applied).</span>
+<span class="sd">            additional_tag_list (list): </span>
+<span class="sd">                Additional descriptive tags for the derived dataset.</span>
+<span class="sd">            force_dir_replacement (bool): </span>
+<span class="sd">                Overwrite existing output directories if True.</span>
+<span class="sd">            keep_intermediate_datasets (bool): </span>
+<span class="sd">                Retain intermediate datasets if True.</span>
+<span class="sd">            pathname_policy_id (str): </span>
+<span class="sd">                Identifier for the pathname policy used for file generation.</span>
+<span class="sd">            pathname_policy_dict (dict): </span>
+<span class="sd">                Mapping of keywords to dataset fields, constants, or nested policies.</span>
+<span class="sd">            use_multithreading (bool): </span>
+<span class="sd">                Enable multithreading for task-level processing if supported.</span>
+<span class="sd">            nb_max_threads (int): </span>
+<span class="sd">                Maximum number of threads when `use_multithreading` is enabled.</span>
+<span class="sd">            debug_mode (bool): </span>
+<span class="sd">                Enable verbose logging and save debug logs to `debug.log`.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError:</span>
+<span class="sd">                If no cohort is provided for non-system tasks.</span>
+<span class="sd">            ValueError:</span>
+<span class="sd">                If `dataset_id` already exists and `force_dir_replacement` is False.</span>
+<span class="sd">                If multiple tasks reference inconsistent index structures during merging.</span>
+
+<span class="sd">        Notes:</span>
+<span class="sd">            * Maintains pipeline execution state and saves a `processing_in_progress.json` marker.</span>
+<span class="sd">            * Automatically appends cohort tags to output tags.</span>
+<span class="sd">            * Supports dynamic input field renaming based on I/O mappings.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; pipeline.run(</span>
+<span class="sd">            ...     output_dir=&quot;/path/to/derivatives&quot;,</span>
+<span class="sd">            ...     dataset_id=&quot;segmentation_pipeline_output&quot;,</span>
+<span class="sd">            ...     cohort=my_cohort,</span>
+<span class="sd">            ...     input_dict={&quot;Image File&quot;: &quot;Input Image&quot;},</span>
+<span class="sd">            ...     parameter_dict={&quot;SegmentationTask&quot;: {&quot;threshold&quot;: 0.5}},</span>
+<span class="sd">            ...     debug_mode=True</span>
+<span class="sd">            ... )</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># ── Step 0: Initialize runtime arguments and logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_id</span> <span class="o">=</span> <span class="n">dataset_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keep_intermediate_datasets</span> <span class="o">=</span> <span class="n">keep_intermediate_datasets</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_logger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_id</span><span class="p">,</span> <span class="n">debug_mode</span><span class="p">)</span>
+
+        <span class="c1"># ── Step 1: Assign unique task dataset IDs based on execution order</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec_order</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">task_dataset_ids</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">alias_id</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">alias_id</span><span class="p">]</span><span class="o">.</span><span class="n">unique_id</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">for</span> <span class="n">rank</span><span class="p">,</span> <span class="n">alias_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec_order</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">task_dataset_ids</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">exec_order</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">dataset_id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">task_dataset_ids</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">exec_order</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">dataset_id</span><span class="p">}</span>
+
+        <span class="c1"># Assign task-level metadata (prev/next tasks, execution rank)</span>
+        <span class="k">for</span> <span class="n">rank</span><span class="p">,</span> <span class="n">alias_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec_order</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">alias_id</span><span class="p">]</span><span class="o">.</span><span class="n">task_dataset_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_dataset_ids</span><span class="p">[</span><span class="n">alias_id</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">alias_id</span><span class="p">]</span><span class="o">.</span><span class="n">task_info_dict</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;prev_task&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">predecessors</span><span class="p">(</span><span class="n">alias_id</span><span class="p">)),</span>
+                <span class="s2">&quot;next_task&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="o">.</span><span class="n">successors</span><span class="p">(</span><span class="n">alias_id</span><span class="p">)),</span>
+                <span class="s2">&quot;execution_rank&quot;</span><span class="p">:</span> <span class="n">rank</span><span class="p">,</span>
+            <span class="p">}</span>
+
+        <span class="c1"># Update dependency graph after metadata assignment</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="n">build_dependency_graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">io_mappings</span><span class="p">)</span>
+
+        <span class="c1"># ── Step 2: Configure cohort and validate runtime inputs</span>
+        <span class="n">exception_tasks</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;GENCAP-DatasetReproductionTask&quot;</span><span class="p">,</span> <span class="s2">&quot;GENCAP-DatasetDisplayTask&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;GENCAP-TaskDisplayTask&quot;</span><span class="p">,</span> <span class="s2">&quot;GENCAP-PipelineDisplayTask&quot;</span><span class="p">,</span> <span class="s2">&quot;GENCAP-DatasetVerificationTask&quot;</span>
+        <span class="p">]</span>
+        <span class="n">unique_id_tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">alias_id</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">alias_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">exception_tasks</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">unique_id_tasks</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Non-system tasks require an explicit cohort</span>
+            <span class="k">if</span> <span class="n">cohort</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pipeline.run() requires a cohort, except for tasks in: </span><span class="si">{</span><span class="n">exception_tasks</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cohort_df</span> <span class="o">=</span> <span class="n">cohort</span><span class="o">.</span><span class="n">get_dataframe</span><span class="p">()</span>
+            <span class="n">additional_tag_list</span> <span class="o">+=</span> <span class="n">cohort</span><span class="o">.</span><span class="n">tagList</span> <span class="ow">or</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_runtime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cohort_df</span><span class="p">,</span> <span class="n">input_dict</span><span class="p">,</span> <span class="n">pathname_policy_id</span><span class="p">,</span> <span class="n">pathname_policy_dict</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># System tasks auto-generate cohort or skip validation</span>
+            <span class="k">if</span> <span class="n">cohort</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">unique_id_tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> ignores provided cohort at runtime.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cohort_df</span><span class="p">,</span> <span class="n">parameter_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_cohort_from_parameter_dict</span><span class="p">(</span><span class="n">parameter_dict</span><span class="p">,</span> <span class="n">unique_id_tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># Merge runtime parameters with pipeline defaults</span>
+        <span class="n">parameter_dict</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">parameter_dict</span><span class="p">,</span> <span class="o">**</span><span class="n">parameter_dict</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameter_dict</span> <span class="o">=</span> <span class="n">resolve_parameter_dict</span><span class="p">(</span><span class="n">parameter_dict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">)</span>
+
+        <span class="c1"># ── Step 3: Save runtime configuration into pipeline info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipe_info</span><span class="p">[</span><span class="s2">&quot;exec_order&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipe_info</span><span class="p">[</span><span class="s2">&quot;task_dataset_ids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_dataset_ids</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_order</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipe_info</span><span class="p">[</span><span class="s2">&quot;tasks&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">unique_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">version</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_order</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipe_info</span><span class="p">[</span><span class="s2">&quot;io_mappings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">io_mappings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipe_info</span><span class="p">[</span><span class="s2">&quot;graph&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipe_info</span><span class="p">[</span><span class="s2">&quot;pipelineID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;pipeline_id&quot;</span><span class="p">,</span> <span class="s2">&quot;procedurally generated&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipe_info</span><span class="p">[</span><span class="s2">&quot;pipelineVersion&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">version</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_order</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipe_info</span><span class="p">[</span><span class="s2">&quot;output_dir&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">output_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipe_info</span><span class="p">[</span><span class="s2">&quot;dataset_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataset_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipe_info</span><span class="p">[</span><span class="s2">&quot;cohort_arg&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;cohortDatasetList&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">cohort</span><span class="o">.</span><span class="n">dataframes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">cohort</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;cohortArguments&quot;</span><span class="p">:</span> <span class="n">cohort</span><span class="o">.</span><span class="n">get_input_argument</span><span class="p">()</span> <span class="k">if</span> <span class="n">cohort</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;cohortIndex&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cohort_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span><span class="p">)</span> <span class="k">if</span> <span class="n">cohort</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;cohortColumns&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cohort_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="k">if</span> <span class="n">cohort</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipe_info</span><span class="p">[</span><span class="s2">&quot;pipe_run_arg&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;input_dict&quot;</span><span class="p">:</span> <span class="n">input_dict</span><span class="p">,</span>
+            <span class="s2">&quot;parameter_dict&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_dict</span><span class="p">,</span>
+            <span class="s2">&quot;additional_tag_list&quot;</span><span class="p">:</span> <span class="n">additional_tag_list</span><span class="p">,</span>
+            <span class="s2">&quot;keep_intermediate_datasets&quot;</span><span class="p">:</span> <span class="n">keep_intermediate_datasets</span><span class="p">,</span>
+            <span class="s2">&quot;use_multithreading&quot;</span><span class="p">:</span> <span class="n">use_multithreading</span><span class="p">,</span>
+            <span class="s2">&quot;nb_max_threads&quot;</span><span class="p">:</span> <span class="n">nb_max_threads</span><span class="p">,</span>
+            <span class="s2">&quot;debug_mode&quot;</span><span class="p">:</span> <span class="n">debug_mode</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="c1"># ── Step 4: Prepare output directory and log initialization</span>
+        <span class="n">final_output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">dataset_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;derivatives&quot;</span> <span class="ow">in</span> <span class="n">output_dir</span><span class="p">:</span>
+            <span class="c1"># Ensure dataset_id uniqueness within derivatives</span>
+            <span class="n">base_dir</span> <span class="o">=</span> <span class="n">output_dir</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;derivatives&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">find_path</span> <span class="o">=</span> <span class="n">find_dataset_path</span><span class="p">(</span><span class="n">datasetName</span><span class="o">=</span><span class="n">dataset_id</span><span class="p">,</span> <span class="n">databaseDir</span><span class="o">=</span><span class="n">base_dir</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">find_path</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">final_output_dir</span> <span class="o">==</span> <span class="n">find_path</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">force_dir_replacement</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Deleting existing path </span><span class="si">{</span><span class="n">final_output_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">final_output_dir</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Path exists: </span><span class="si">{</span><span class="n">final_output_dir</span><span class="si">}</span><span class="s2">. Use force_dir_replacement=True.&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;dataset_id </span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2"> already exists at </span><span class="si">{</span><span class="n">find_path</span><span class="si">}</span><span class="s2">. Choose another ID.&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">final_output_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Save processing marker file</span>
+        <span class="n">processing_in_progress</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%S&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="n">get_username</span><span class="p">(),</span>
+            <span class="s2">&quot;pipelineID&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipe_info</span><span class="p">[</span><span class="s2">&quot;pipelineID&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;pipelineVersion&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipe_info</span><span class="p">[</span><span class="s2">&quot;pipelineVersion&quot;</span><span class="p">],</span>
+        <span class="p">}</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">final_output_dir</span><span class="p">,</span> <span class="s2">&quot;processing_in_progress.json&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">processing_in_progress</span><span class="p">,</span> <span class="n">json_file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Add file logging if debug_mode enabled</span>
+        <span class="k">if</span> <span class="n">debug_mode</span><span class="p">:</span>
+            <span class="n">log_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">final_output_dir</span><span class="p">,</span> <span class="s2">&quot;debug.log&quot;</span><span class="p">)</span>
+            <span class="nb">open</span><span class="p">(</span><span class="n">log_file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">file_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">log_file_path</span><span class="p">)</span>
+            <span class="n">file_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> - </span><span class="si">%(levelname)s</span><span class="s2"> - </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+                                                        <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">))</span>
+            <span class="n">file_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">file_handler</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pipeline [</span><span class="si">{</span><span class="n">dataset_id</span><span class="si">}</span><span class="s2">] runtime initialized.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># ── Step 5: Task execution loop</span>
+        <span class="n">output_dfs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">base_error_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Base Indexing Value&quot;</span><span class="p">,</span> <span class="s2">&quot;Additional Indexing Value&quot;</span><span class="p">,</span> <span class="s2">&quot;Error Code&quot;</span><span class="p">,</span> <span class="s2">&quot;Description&quot;</span><span class="p">,</span> <span class="s2">&quot;Values&quot;</span><span class="p">])</span>
+        <span class="n">error_df_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">alias_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec_order</span><span class="p">):</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">[</span><span class="n">alias_id</span><span class="p">]</span>
+            <span class="n">io_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">io_mappings</span><span class="p">[</span><span class="n">alias_id</span><span class="p">]</span>
+            <span class="n">task_dataset_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_dataset_ids</span><span class="p">[</span><span class="n">alias_id</span><span class="p">]</span>
+            <span class="n">task</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span>  <span class="c1"># Inherit pipeline logger</span>
+
+            <span class="c1"># Mark last task to adjust output path behavior</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec_order</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">task</span><span class="o">.</span><span class="n">last_task</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="c1"># Prepare task input dataframe</span>
+            <span class="n">prev_tasks</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">task_info_dict</span><span class="p">[</span><span class="s2">&quot;prev_task&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">prev_tasks</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">prev_tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;Cohort&quot;</span><span class="p">,):</span>
+                    <span class="n">input_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cohort_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">inverted_input_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">input_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+                        <span class="n">input_df</span> <span class="o">=</span> <span class="n">input_df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">inverted_input_dict</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">rename_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">spec</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">input_field</span> <span class="k">for</span> <span class="n">input_field</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">io_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+                        <span class="n">input_df</span> <span class="o">=</span> <span class="n">input_df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">rename_dict</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">input_df</span> <span class="o">=</span> <span class="n">output_dfs</span><span class="p">[</span><span class="n">prev_tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
+                        <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">spec</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">input_field</span> <span class="k">for</span> <span class="n">input_field</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">io_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+                    <span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">prev_tasks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># Merge inputs from multiple previous tasks</span>
+                <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">prev_task_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">prev_tasks</span><span class="p">):</span>
+                    <span class="n">interm_df</span> <span class="o">=</span> <span class="n">output_dfs</span><span class="p">[</span><span class="n">prev_task_name</span><span class="p">]</span> <span class="k">if</span> <span class="n">prev_task_name</span> <span class="o">!=</span> <span class="p">(</span><span class="s2">&quot;Cohort&quot;</span><span class="p">,)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">cohort_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                    <span class="n">rename_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">spec</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">input_field</span> <span class="k">for</span> <span class="n">input_field</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">io_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">spec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">prev_task_name</span><span class="p">}</span>
+                    <span class="n">interm_df</span> <span class="o">=</span> <span class="n">interm_df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">rename_dict</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">idx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">input_df</span> <span class="o">=</span> <span class="n">interm_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">overwrite_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">io_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">spec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">prev_task_name</span><span class="p">]</span>
+                        <span class="n">input_df</span> <span class="o">=</span> <span class="n">input_df</span><span class="o">.</span><span class="n">combine_first</span><span class="p">(</span><span class="n">interm_df</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">overwrite_fields</span><span class="p">:</span>
+                            <span class="n">input_df</span><span class="p">[</span><span class="n">overwrite_fields</span><span class="p">]</span> <span class="o">=</span> <span class="n">interm_df</span><span class="p">[</span><span class="n">overwrite_fields</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid prev_tasks configuration detected.&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Set output path for task</span>
+            <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">task_info_dict</span><span class="p">[</span><span class="s2">&quot;next_task&quot;</span><span class="p">]:</span>
+                <span class="n">task_output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">final_output_dir</span><span class="p">,</span> <span class="s2">&quot;intermediate_data&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">task_output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+                <span class="n">task_dataset_id</span> <span class="o">=</span> <span class="n">dataset_id</span>
+                <span class="n">force_dir_replacement</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="c1"># Resolve task-specific parameters</span>
+            <span class="n">task_parameter_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_dict</span><span class="p">[</span><span class="n">task</span><span class="o">.</span><span class="n">alias_id</span><span class="p">]</span>
+
+            <span class="c1"># Determine pathname policy mapping for the task</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pathname_policy_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+                <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">alias_id</span> <span class="ow">in</span> <span class="n">pathname_policy_dict</span><span class="p">:</span>
+                    <span class="n">task_pathname_policy_dict</span> <span class="o">=</span> <span class="n">pathname_policy_dict</span><span class="p">[</span><span class="n">task</span><span class="o">.</span><span class="n">alias_id</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">task</span><span class="o">.</span><span class="n">unique_id</span> <span class="ow">in</span> <span class="n">pathname_policy_dict</span><span class="p">:</span>
+                    <span class="n">task_pathname_policy_dict</span> <span class="o">=</span> <span class="n">pathname_policy_dict</span><span class="p">[</span><span class="n">task</span><span class="o">.</span><span class="n">unique_id</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">task_pathname_policy_dict</span> <span class="o">=</span> <span class="n">pathname_policy_dict</span>
+
+            <span class="c1"># Execute task</span>
+            <span class="n">out_df</span><span class="p">,</span> <span class="n">err_df</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="n">output_dir</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">task_output_dir</span><span class="p">),</span>
+                <span class="n">dataset_unique_id</span><span class="o">=</span><span class="n">task_dataset_id</span><span class="p">,</span>
+                <span class="n">force_dir_replacement</span><span class="o">=</span><span class="n">force_dir_replacement</span><span class="p">,</span>
+                <span class="n">additional_tag_list</span><span class="o">=</span><span class="n">additional_tag_list</span><span class="p">,</span>
+                <span class="n">cohort</span><span class="o">=</span><span class="n">cohort</span><span class="p">,</span>
+                <span class="n">input_dataframe</span><span class="o">=</span><span class="n">input_df</span><span class="p">,</span>
+                <span class="n">output_dataframe</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">error_dataframe</span><span class="o">=</span><span class="n">base_error_df</span><span class="p">,</span>
+                <span class="n">base_indexing_fields</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">input_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span><span class="p">),</span>
+                <span class="n">parameter_dict</span><span class="o">=</span><span class="n">task_parameter_dict</span><span class="p">,</span>
+                <span class="n">pipeline_dict</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pipe_info</span><span class="p">,</span>
+                <span class="n">debug_mode</span><span class="o">=</span><span class="n">debug_mode</span><span class="p">,</span>
+                <span class="n">use_multithreading</span><span class="o">=</span><span class="n">use_multithreading</span><span class="p">,</span>
+                <span class="n">nb_max_threads</span><span class="o">=</span><span class="n">nb_max_threads</span><span class="p">,</span>
+                <span class="n">pathname_policy_id</span><span class="o">=</span><span class="n">pathname_policy_id</span><span class="p">,</span>
+                <span class="n">pathname_policy_dict</span><span class="o">=</span><span class="n">task_pathname_policy_dict</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">error_df_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">err_df</span><span class="p">)</span>
+            <span class="n">output_dfs</span><span class="p">[</span><span class="n">task</span><span class="o">.</span><span class="n">alias_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">out_df</span>
+
+        <span class="c1"># Collect final outputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dataframe</span> <span class="o">=</span> <span class="n">out_df</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error_dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">error_df_list</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Remove processing marker</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">final_output_dir</span><span class="p">,</span> <span class="s2">&quot;processing_in_progress.json&quot;</span><span class="p">))</span></div>
+</div>
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Hye-Lim LEE (Epione team, Inria).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
