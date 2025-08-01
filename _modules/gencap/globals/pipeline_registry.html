@@ -1,0 +1,316 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gencap.globals.pipeline_registry &mdash; GENCAP 0.9.0-dev documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=6c04cfde"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GENCAP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">🛠️ API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">gencap</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GENCAP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">gencap.globals.pipeline_registry</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for gencap.globals.pipeline_registry</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">gencap</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">packaging.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+
+<div class="viewcode-block" id="PipelineRegistry">
+<a class="viewcode-back" href="../../../gencap.globals.html#gencap.globals.pipeline_registry.PipelineRegistry">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PipelineRegistry</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Registry for managing pipeline metadata and cached pipeline configurations.</span>
+
+<span class="sd">    This class maintains a centralized registry of available pipelines, stored </span>
+<span class="sd">    in a local JSON file cache. It supports registering new pipelines, </span>
+<span class="sd">    removing outdated ones, loading pipeline metadata, and describing pipeline details.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        registry_file_path (str): </span>
+<span class="sd">            File path to the pipeline registry JSON cache.</span>
+<span class="sd">        _registry (dict): </span>
+<span class="sd">            In-memory mapping of pipeline IDs to their metadata and file paths.</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        * Cached pipelines are automatically synchronized with JSON files </span>
+<span class="sd">          stored in the pipelines directory.</span>
+<span class="sd">        * The registry persists across sessions by saving its state in `pipeline_registry.json`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the pipeline registry.</span>
+
+<span class="sd">        Loads existing registry data from `pipeline_registry.json` if it exists.</span>
+<span class="sd">        Synchronizes the registry with any `.json` pipeline files stored </span>
+<span class="sd">        in the pipelines cache directory.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">registry_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gc</span><span class="o">.</span><span class="n">get_cache_dir</span><span class="p">(),</span><span class="s2">&quot;pipeline_registry.json&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="c1"># Load registry file if it exists, removing entries with missing paths</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">registry_file_path</span><span class="p">):</span>
+            <span class="n">loaded_registry</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">registry_file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">pipe</span> <span class="ow">in</span> <span class="n">loaded_registry</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pipe</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">])):</span>
+                        <span class="n">pipe</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">pipe</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+            
+        <span class="c1"># Synchronize registry with cached pipelines directory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_cache</span><span class="p">()</span>  
+        
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Synchronize the registry with the cached pipelines directory.</span>
+
+<span class="sd">        Scans the pipelines directory for `.json` files and adds any pipelines </span>
+<span class="sd">        not yet recorded in the registry.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pipelines_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">gc</span><span class="o">.</span><span class="n">get_cache_dir</span><span class="p">(),</span> <span class="s2">&quot;pipelines&quot;</span><span class="p">)</span>  
+        <span class="n">json_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pipelines_dir</span><span class="p">,</span> <span class="s2">&quot;**&quot;</span><span class="p">,</span> <span class="s2">&quot;*.json&quot;</span><span class="p">),</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">json_path</span> <span class="ow">in</span> <span class="n">json_files</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">pipe_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">json_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+                <span class="n">pipeline_id</span> <span class="o">=</span> <span class="n">pipe_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pipelineID&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">pipeline_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">pipeline_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;info&quot;</span><span class="p">:</span><span class="n">pipe_json</span><span class="p">,</span><span class="s2">&quot;path&quot;</span><span class="p">:</span><span class="n">json_path</span><span class="p">}</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="c1"># Save updated registry to file</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">registry_file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+            
+<div class="viewcode-block" id="PipelineRegistry.register">
+<a class="viewcode-back" href="../../../gencap.globals.html#gencap.globals.pipeline_registry.PipelineRegistry.register">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_path</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">pipeline_id</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">force_replacement</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Register a new pipeline in the registry.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            json_path (str): </span>
+<span class="sd">                Path to the pipeline JSON file to register.</span>
+<span class="sd">            pipeline_id (str, optional): </span>
+<span class="sd">                Explicit pipeline ID to register. If None, reads from the JSON file.</span>
+<span class="sd">            force_replacement (bool): </span>
+<span class="sd">                If True, overwrite an existing pipeline with the same ID.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError:</span>
+<span class="sd">                * If the pipeline file is invalid or missing required keys.</span>
+<span class="sd">                * If the pipeline already exists and `force_replacement` is False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pipeline_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">pipe_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">json_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+                <span class="n">pipeline_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pipe_json</span><span class="p">[</span><span class="s2">&quot;pipelineID&quot;</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to resolve </span><span class="si">{</span><span class="n">json_path</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pipeline_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span> <span class="ow">and</span> <span class="n">force_replacement</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pipeline &#39;</span><span class="si">{</span><span class="n">pipeline_id</span><span class="si">}</span><span class="s2">&#39; is already registered.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pipe_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">json_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;pipelineID&quot;</span><span class="p">,</span><span class="s2">&quot;tasks&quot;</span><span class="p">,</span><span class="s2">&quot;io_mappings&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">pipe_json</span><span class="o">.</span><span class="n">keys</span><span class="p">())):</span>
+                <span class="n">missing_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="s2">&quot;pipelineID&quot;</span><span class="p">,</span><span class="s2">&quot;tasks&quot;</span><span class="p">,</span><span class="s2">&quot;io_mappings&quot;</span><span class="p">])</span><span class="o">-</span><span class="nb">set</span><span class="p">(</span><span class="n">pipe_json</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">json_path</span><span class="si">}</span><span class="s2"> can not be registered since it doesn&#39;t include </span><span class="si">{</span><span class="n">missing_list</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            
+            <span class="c1"># Save updated registry to file</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">pipeline_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;info&quot;</span><span class="p">:</span><span class="n">pipe_json</span><span class="p">,</span><span class="s2">&quot;path&quot;</span><span class="p">:</span><span class="n">json_path</span><span class="p">}</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">registry_file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
+
+            
+<div class="viewcode-block" id="PipelineRegistry.remove">
+<a class="viewcode-back" href="../../../gencap.globals.html#gencap.globals.pipeline_registry.PipelineRegistry.remove">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove a pipeline from the registry.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pipeline_id (str): </span>
+<span class="sd">                The ID of the pipeline to remove.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError:</span>
+<span class="sd">                If the specified pipeline is not found in the registry.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pipeline_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">pipeline_id</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No pipeline registered under name &#39;</span><span class="si">{</span><span class="n">pipeline_id</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">registry_file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
+
+        
+<div class="viewcode-block" id="PipelineRegistry.load_pipeline">
+<a class="viewcode-back" href="../../../gencap.globals.html#gencap.globals.pipeline_registry.PipelineRegistry.load_pipeline">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load pipeline metadata for a registered pipeline.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pipeline_id (str): </span>
+<span class="sd">                ID of the pipeline to load.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: The pipeline JSON metadata.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError:</span>
+<span class="sd">                If the pipeline is not registered.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pipeline_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No Pipeline registered under name &#39;</span><span class="si">{</span><span class="n">pipeline_id</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">pipeline_id</span><span class="p">][</span><span class="s1">&#39;info&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="PipelineRegistry.get_pipelines">
+<a class="viewcode-back" href="../../../gencap.globals.html#gencap.globals.pipeline_registry.PipelineRegistry.get_pipelines">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_pipelines</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve a list of registered pipeline IDs.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: List of registered pipeline IDs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">registry_file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+        
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="PipelineRegistry.get_description">
+<a class="viewcode-back" href="../../../gencap.globals.html#gencap.globals.pipeline_registry.PipelineRegistry.get_description">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Print a human-readable description of a registered pipeline.</span>
+
+<span class="sd">        The description includes:</span>
+<span class="sd">          * Pipeline information text (if available)</span>
+<span class="sd">          * Task alias IDs with associated task unique IDs and versions</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pipeline_id (str): </span>
+<span class="sd">                ID of the pipeline to describe.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError:</span>
+<span class="sd">                If the pipeline ID is not registered.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">tmp_pipe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_pipeline</span><span class="p">(</span><span class="n">pipeline_id</span><span class="p">)</span>
+        
+        <span class="c1"># Include pipeline description text</span>
+        <span class="k">if</span> <span class="s2">&quot;pipelineInformation&quot;</span> <span class="ow">in</span> <span class="n">tmp_pipe</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">+=</span> <span class="n">tmp_pipe</span><span class="p">[</span><span class="s2">&quot;pipelineInformation&quot;</span><span class="p">]</span>
+            
+        <span class="c1"># Add task details</span>
+        <span class="n">message</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> Tasks Information (Task_alias_id:[Task_Unique_ID, version]): </span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fields</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; - </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
+</div>
+
+
+    
+<span class="c1"># Create a global registry</span>
+<span class="n">pipeline_manager</span> <span class="o">=</span> <span class="n">PipelineRegistry</span><span class="p">()</span>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Hye-Lim LEE (Epione team, Inria).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,2031 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gencap.utils &mdash; GENCAP 0.9.0-dev documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=6c04cfde"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Core objects" href="gencap.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GENCAP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">🛠️ API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">gencap</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="gencap.html">Core objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gencap.html#global-managers">Global managers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gencap.html#project-builder">Project Builder</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="gencap.html#utilities">Utilities</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="gencap.html#gencap.add_module"><code class="docutils literal notranslate"><span class="pre">add_module</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gencap.html#gencap.auto_import_from"><code class="docutils literal notranslate"><span class="pre">auto_import_from</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">gencap.utils</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#module-gencap.utils.builder">gencap.utils.builder module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-gencap.utils.config">gencap.utils.config module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-gencap.utils.dataset">gencap.utils.dataset module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-gencap.utils.helpers">gencap.utils.helpers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-gencap.utils.htmlReport">gencap.utils.htmlReport module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-gencap.utils.module">gencap.utils.module module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GENCAP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">gencap</a></li>
+          <li class="breadcrumb-item"><a href="gencap.html">Core objects</a></li>
+      <li class="breadcrumb-item active">gencap.utils</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/gencap.utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-gencap.utils">
+<span id="gencap-utils"></span><h1>gencap.utils<a class="headerlink" href="#module-gencap.utils" title="Link to this heading"></a></h1>
+<section id="module-gencap.utils.builder">
+<span id="gencap-utils-builder-module"></span><h2>gencap.utils.builder module<a class="headerlink" href="#module-gencap.utils.builder" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="gencap.utils.builder.ProjectBuilder">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gencap.utils.builder.</span></span><span class="sig-name descname"><span class="pre">ProjectBuilder</span></span><a class="reference internal" href="_modules/gencap/utils/builder.html#ProjectBuilder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.builder.ProjectBuilder" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A utility class to bootstrap GENCAP-compliant project structures.</p>
+<dl class="simple">
+<dt>This class provides helper methods to:</dt><dd><ul class="simple">
+<li><p>Initialize a standardized database directory structure.</p></li>
+<li><p>Create a Python module scaffold for tasks and pipelines.</p></li>
+<li><p>Generate example datasets and tasks.</p></li>
+<li><p>Build task templates and code scaffolding for pipelines.</p></li>
+<li><p>Interactively create GENCAP-compliant datasets from files or dataframes.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.utils.builder.ProjectBuilder.create_database">
+<span class="sig-name descname"><span class="pre">create_database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/builder.html#ProjectBuilder.create_database"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.builder.ProjectBuilder.create_database" title="Link to this definition"></a></dt>
+<dd><p>Create a standardized GENCAP database directory structure.</p>
+<p>This includes:
+- <code class="docutils literal notranslate"><span class="pre">source_data</span></code>: Original unprocessed files.
+- <code class="docutils literal notranslate"><span class="pre">raw_data</span></code>: Raw data in GENCAP dataset format.
+- <code class="docutils literal notranslate"><span class="pre">derivatives/shared</span></code>: Shared derivative datasets.
+- <code class="docutils literal notranslate"><span class="pre">derivatives/users</span></code>: User-specific derivative datasets.</p>
+<p>Additionally, a sample dataset (<cite>dummy_digits</cite>) is generated in <cite>raw_data</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data_dir</strong> (<em>str</em>) – Path to the root directory where the database will be created.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Automatically creates the example dataset via <cite>_create_dataset_example</cite>.</p></li>
+<li><p>Existing directories are reused if already present.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.utils.builder.ProjectBuilder.create_dataset_from_dataframe">
+<span class="sig-name descname"><span class="pre">create_dataset_from_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_replace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indexing_field_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_location_field_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_way</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/builder.html#ProjectBuilder.create_dataset_from_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.builder.ProjectBuilder.create_dataset_from_dataframe" title="Link to this definition"></a></dt>
+<dd><p>Create a GENCAP-compliant dataset from a given Pandas DataFrame.</p>
+<dl class="simple">
+<dt>This method:</dt><dd><ul class="simple">
+<li><p>Saves the DataFrame as <cite>data_content.csv</cite> and <cite>data_content.pkl</cite>.</p></li>
+<li><p>Generates the <cite>data_description.json</cite> metadata file.</p></li>
+<li><p>Optionally copies or links files referenced in file location fields.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataframe</strong> (<em>pd.DataFrame</em>) – Input DataFrame containing dataset records.</p></li>
+<li><p><strong>dataset_dir</strong> (<em>str</em><em>, </em><em>optional</em>) – Root directory to save the dataset (e.g., <cite>/path/to/raw_data</cite>).
+If not provided, prompts the user interactively.</p></li>
+<li><p><strong>dataset_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the dataset folder. If not provided, prompts interactively.</p></li>
+<li><p><strong>force_replace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to overwrite an existing dataset folder (default: prompts interactively).</p></li>
+<li><p><strong>tag_list</strong> (<em>list</em><em>, </em><em>optional</em>) – List of tags describing the dataset (e.g., <cite>[“MRI”, “Brain”]</cite>).
+If not provided, prompts interactively.</p></li>
+<li><p><strong>indexing_field_list</strong> (<em>list</em><em>, </em><em>optional</em>) – Columns to be used as MultiIndex for the dataset.
+If not provided, attempts to infer from the DataFrame or prompts the user.</p></li>
+<li><p><strong>file_location_field_list</strong> (<em>list</em><em>, </em><em>optional</em>) – Columns containing file paths to copy/link (e.g., <cite>[“Image Path”]</cite>).</p></li>
+<li><p><strong>copy_file</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to physically copy or link files referenced in file location fields.
+Prompts the user if not provided.</p></li>
+<li><p><strong>copy_way</strong> (<em>{&quot;file&quot;</em><em>, </em><em>&quot;link&quot;}</em><em>, </em><em>optional</em>) – How to handle file copying.
+- <cite>“file”</cite>: Copy files into the dataset directory.
+- <cite>“link”</cite>: Create symbolic links to files.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If indexing fields are invalid or file paths in <cite>file_location_field_list</cite> are missing.</p></li>
+<li><p><strong>RuntimeError</strong> – If the dataset directory already exists and overwrite is declined.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Files with deep directory nesting (more than 3 levels) are flattened automatically.</p></li>
+<li><p>Invalid or missing file paths are dropped along with their corresponding rows.</p></li>
+</ul>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">builder</span> <span class="o">=</span> <span class="n">ProjectBuilder</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;ID&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;Image&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;/path/image.nii.gz&quot;</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">builder</span><span class="o">.</span><span class="n">create_dataset_from_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;/db/raw_data&quot;</span><span class="p">,</span> <span class="s2">&quot;MyDataset&quot;</span><span class="p">,</span>
+<span class="go">                                          indexing_field_list=[&quot;ID&quot;], file_location_field_list=[&quot;Image&quot;])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.utils.builder.ProjectBuilder.create_dataset_from_file">
+<span class="sig-name descname"><span class="pre">create_dataset_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_replace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indexing_field_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_location_field_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_way</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/builder.html#ProjectBuilder.create_dataset_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.builder.ProjectBuilder.create_dataset_from_file" title="Link to this definition"></a></dt>
+<dd><p>Create a GENCAP-compliant dataset from a file.</p>
+<p>This method reads a file into a Pandas DataFrame, then generates:
+- <cite>data_content.csv</cite> and <cite>data_content.pkl</cite>
+- <cite>data_description.json</cite> metadata file
+- (Optional) Copies or links referenced files from file-location columns.</p>
+<p>Supported file formats:
+* CSV (<cite>.csv</cite>, <cite>.tsv</cite>)
+* Excel (<cite>.xls</cite>, <cite>.xlsx</cite>)
+* Pickle (<cite>.pkl</cite>, <cite>.pickle</cite>)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_path</strong> (<em>str</em><em>, </em><em>optional</em>) – Path to the input file. If not provided, prompts the user interactively.</p></li>
+<li><p><strong>sep</strong> (<em>str</em><em>, </em><em>optional</em>) – Delimiter for CSV/TSV files. Default: <cite>,</cite>.</p></li>
+<li><p><strong>encoding</strong> (<em>str</em><em>, </em><em>optional</em>) – Encoding for CSV/TSV files. Default: <cite>utf-8</cite>.</p></li>
+<li><p><strong>dataset_dir</strong> (<em>str</em><em>, </em><em>optional</em>) – Root directory for dataset storage (e.g., <cite>/path/to/raw_data</cite>).</p></li>
+<li><p><strong>dataset_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the dataset folder. If omitted, prompts interactively.</p></li>
+<li><p><strong>force_replace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to overwrite an existing dataset if present.</p></li>
+<li><p><strong>tag_list</strong> (<em>list</em><em>, </em><em>optional</em>) – Tags describing the dataset (e.g., <cite>[“MRI”, “Training”]</cite>).</p></li>
+<li><p><strong>indexing_field_list</strong> (<em>list</em><em>, </em><em>optional</em>) – Columns to use as the MultiIndex.</p></li>
+<li><p><strong>file_location_field_list</strong> (<em>list</em><em>, </em><em>optional</em>) – Columns containing file paths to validate/copy/link.</p></li>
+<li><p><strong>copy_file</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to copy or link files from file-location fields.</p></li>
+<li><p><strong>copy_way</strong> (<em>{&quot;file&quot;</em><em>, </em><em>&quot;link&quot;}</em><em>, </em><em>optional</em>) – File handling method if copying is enabled:
+- <cite>“file”</cite>: Copy files into the dataset folder.
+- <cite>“link”</cite>: Create symbolic links.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If file format is unsupported or indexing fields are invalid.</p></li>
+<li><p><strong>RuntimeError</strong> – If dataset path exists and overwrite is declined.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>For missing files in <cite>file_location_field_list</cite>, corresponding rows are dropped.</p></li>
+<li><p>Files nested deeper than 3 directories are flattened into a single directory.</p></li>
+</ul>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">builder</span> <span class="o">=</span> <span class="n">ProjectBuilder</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">builder</span><span class="o">.</span><span class="n">create_dataset_from_file</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">file_path</span><span class="o">=</span><span class="s2">&quot;patients.csv&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">dataset_dir</span><span class="o">=</span><span class="s2">&quot;./raw_data&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">dataset_name</span><span class="o">=</span><span class="s2">&quot;Patients&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">indexing_field_list</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Patient ID&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">file_location_field_list</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Image Path&quot;</span><span class="p">]</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">[✓] Dataset example saved: ./raw_data/Patients</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.utils.builder.ProjectBuilder.create_module">
+<span class="sig-name descname"><span class="pre">create_module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/builder.html#ProjectBuilder.create_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.builder.ProjectBuilder.create_module" title="Link to this definition"></a></dt>
+<dd><p>Create a Python module scaffold for GENCAP tasks and pipelines.</p>
+<p>This method:
+* Initializes a root package with <cite>__init__.py</cite>.
+* Creates <cite>tasks/</cite> and <cite>pipelines/</cite> subpackages.
+* Auto-generates <cite>plugin.py</cite> for GENCAP integration.
+* Inserts the module into the Python path and imports it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>code_dir</strong> (<em>str</em>) – The directory in which the module structure is created.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ImportError</strong> – If the generated module fails to import.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.utils.builder.ProjectBuilder.create_task_template">
+<span class="sig-name descname"><span class="pre">create_task_template</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/builder.html#ProjectBuilder.create_task_template"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.builder.ProjectBuilder.create_task_template" title="Link to this definition"></a></dt>
+<dd><p>Interactively generate a template Python task file for GENCAP.</p>
+<p>This method prompts the user for task metadata and auto-generates:
+* A Python class skeleton inheriting from <cite>Task</cite>.
+* Boilerplate for either <strong>full-batch</strong> or <strong>mini-batch</strong> mode.
+* A default <cite>_run_quality_control</cite> method section.</p>
+<dl class="simple">
+<dt>The generated task includes:</dt><dd><ul class="simple">
+<li><p>Input/output field definitions.</p></li>
+<li><p>Developer metadata.</p></li>
+<li><p>Parameter documentation stubs.</p></li>
+</ul>
+</dd>
+</dl>
+<p>The template is saved to the <cite>tasks/</cite> directory of the active module or a user-specified directory.</p>
+<section id="prompts">
+<h3>Prompts<a class="headerlink" href="#prompts" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Task name (e.g., <cite>ImageCroppingTask</cite>)</p></li>
+<li><p>Version (default: <cite>1.0</cite>)</p></li>
+<li><p>Description, application domain, tags</p></li>
+<li><p>Developer name and organization</p></li>
+<li><p>Batch processing mode (y/n)</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">raises ValueError<span class="colon">:</span></dt>
+<dd class="field-odd"><p>If the user provides invalid responses (e.g., non-<cite>y/n</cite> confirmation).</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Supports both <strong>mini-batch</strong> and <strong>full-batch</strong> task templates.</p></li>
+<li><p>The generated file includes a ready-to-fill <cite>_run_task</cite> or <cite>_run_task_on_sample</cite> stub.</p></li>
+<li><p>Also includes a <cite>_run_quality_control</cite> stub for visual validation.</p></li>
+</ul>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">builder</span> <span class="o">=</span> <span class="n">ProjectBuilder</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">builder</span><span class="o">.</span><span class="n">create_task_template</span><span class="p">()</span>
+<span class="go">[✓] Task template created: ./my_module/tasks/template.py</span>
+</pre></div>
+</div>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.utils.builder.ProjectBuilder.generate_sample_code">
+<span class="sig-name descname"><span class="pre">generate_sample_code</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/builder.html#ProjectBuilder.generate_sample_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.builder.ProjectBuilder.generate_sample_code" title="Link to this definition"></a></dt>
+<dd><p>Generate and optionally save an example script to run a sample pipeline.</p>
+<p>This code demonstrates:
+* Creating a <cite>Cohort</cite> from the generated database.
+* Initializing an example task.
+* Running a minimal pipeline with <cite>pipeline.run</cite>.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Prompts the user to save the code to a specified directory.</p></li>
+<li><p>Useful as a quick-start guide for new users.</p></li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-gencap.utils.config">
+<span id="gencap-utils-config-module"></span><h2>gencap.utils.config module<a class="headerlink" href="#module-gencap.utils.config" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.config.clean_cache">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.config.</span></span><span class="sig-name descname"><span class="pre">clean_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/config.html#clean_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.config.clean_cache" title="Link to this definition"></a></dt>
+<dd><p>Clean the GENCAP cache directory.</p>
+<p>Removes the current cache directory, including all pipeline and path cache files.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.config.clean_config">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.config.</span></span><span class="sig-name descname"><span class="pre">clean_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/config.html#clean_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.config.clean_config" title="Link to this definition"></a></dt>
+<dd><p>Remove the GENCAP configuration directory.</p>
+<p>Deletes <code class="docutils literal notranslate"><span class="pre">~/.config/gencap</span></code> and all contained files.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.config.get_cache_dir">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.config.</span></span><span class="sig-name descname"><span class="pre">get_cache_dir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/gencap/utils/config.html#get_cache_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.config.get_cache_dir" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the current cache directory.</p>
+<p>Ensures the cache directory exists. If the configured cache directory is missing,
+it resets to the default <code class="docutils literal notranslate"><span class="pre">~/.cache/gencap</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Absolute path to the active cache directory.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.config.initialize_cache">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.config.</span></span><span class="sig-name descname"><span class="pre">initialize_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/config.html#initialize_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.config.initialize_cache" title="Link to this definition"></a></dt>
+<dd><p>Initialize the default cache directory.</p>
+<p>Creates <code class="docutils literal notranslate"><span class="pre">~/.cache/gencap</span></code> if it does not already exist.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.config.initialize_config">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.config.</span></span><span class="sig-name descname"><span class="pre">initialize_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/config.html#initialize_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.config.initialize_config" title="Link to this definition"></a></dt>
+<dd><p>Initialize the GENCAP configuration file.</p>
+<p>Creates the configuration file at <code class="docutils literal notranslate"><span class="pre">~/.config/gencap/conf.json</span></code> if it does not exist.
+Sets the default cache directory to <code class="docutils literal notranslate"><span class="pre">&lt;sys.prefix&gt;/.cache/gencap</span></code> and initializes
+an empty <cite>MODULE</cite> field.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Automatically calls <a class="reference internal" href="#gencap.utils.config.initialize_cache" title="gencap.utils.config.initialize_cache"><code class="xref py py-func docutils literal notranslate"><span class="pre">initialize_cache()</span></code></a> to ensure cache directory creation.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.config.load_config">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.config.</span></span><span class="sig-name descname"><span class="pre">load_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/config.html#load_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.config.load_config" title="Link to this definition"></a></dt>
+<dd><p>Load a configuration value or the entire config.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>key</strong> (<em>str</em><em>, </em><em>optional</em>) – The configuration key to retrieve. If None, the entire config is returned.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Entire configuration dict if <code class="docutils literal notranslate"><span class="pre">key</span></code> is None, or the value for the specified key.
+Returns None if the key does not exist.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict or Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.config.load_path_cache">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.config.</span></span><span class="sig-name descname"><span class="pre">load_path_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/gencap/utils/config.html#load_path_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.config.load_path_cache" title="Link to this definition"></a></dt>
+<dd><p>Load the path cache from the cache directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Mapping of dataset/task keys to cached paths.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.config.save_path_cache">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.config.</span></span><span class="sig-name descname"><span class="pre">save_path_cache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/config.html#save_path_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.config.save_path_cache" title="Link to this definition"></a></dt>
+<dd><p>Save the updated path cache to disk.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cache</strong> (<em>dict</em>) – The updated path cache dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.config.set_cache_dir">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.config.</span></span><span class="sig-name descname"><span class="pre">set_cache_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cache_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/config.html#set_cache_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.config.set_cache_dir" title="Link to this definition"></a></dt>
+<dd><p>Set a new cache directory path.</p>
+<p>Moves files from the existing cache directory into the new path
+and updates the configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cache_path</strong> (<em>Path</em>) – The new cache directory path.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Automatically creates the new cache directory if it does not exist.</p></li>
+<li><p>Moves contents of the old cache directory to the new location.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.config.update_path_cache">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.config.</span></span><span class="sig-name descname"><span class="pre">update_path_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/config.html#update_path_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.config.update_path_cache" title="Link to this definition"></a></dt>
+<dd><p>Validate and update the path cache.</p>
+<p>Removes entries with invalid or non-existing paths from <code class="docutils literal notranslate"><span class="pre">path.json</span></code>.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Automatically writes a cleaned version of <code class="docutils literal notranslate"><span class="pre">path.json</span></code> if changes are detected.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.config.write_config">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.config.</span></span><span class="sig-name descname"><span class="pre">write_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/config.html#write_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.config.write_config" title="Link to this definition"></a></dt>
+<dd><p>Write or update a configuration entry in the config file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) – The configuration key (e.g., <code class="docutils literal notranslate"><span class="pre">GENCAP_CACHE_DIR</span></code>).</p></li>
+<li><p><strong>value</strong> (<em>Any</em>) – The value to assign for the specified key.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>FileNotFoundError</strong> – If the config file does not exist.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-gencap.utils.dataset">
+<span id="gencap-utils-dataset-module"></span><h2>gencap.utils.dataset module<a class="headerlink" href="#module-gencap.utils.dataset" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.dataset.check_col_type">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.dataset.</span></span><span class="sig-name descname"><span class="pre">check_col_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/gencap/utils/dataset.html#check_col_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.dataset.check_col_type" title="Link to this definition"></a></dt>
+<dd><p>Validate that each column in the DataFrame has a uniform data type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dataframe</strong> (<em>pd.DataFrame</em>) – The DataFrame to validate.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if all columns have uniform types.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If a column contains mixed data types.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>NaN values are ignored during type checking.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.dataset.launch_validation_dataset">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.dataset.</span></span><span class="sig-name descname"><span class="pre">launch_validation_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/dataset.html#launch_validation_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.dataset.launch_validation_dataset" title="Link to this definition"></a></dt>
+<dd><p>Run a full validation suite on a dataset directory.</p>
+<p>This function performs a sequence of validation checks to ensure dataset integrity
+and compliance with GENCAP dataset structure standards. It executes the following steps:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><dl class="simple">
+<dt><strong>Required File Check</strong>:</dt><dd><p>Verifies the presence of essential files (e.g., <code class="docutils literal notranslate"><span class="pre">data_content.csv</span></code>,
+<code class="docutils literal notranslate"><span class="pre">data_content.pkl</span></code>, <code class="docutils literal notranslate"><span class="pre">data_description.json</span></code>).
+For derivative datasets, <code class="docutils literal notranslate"><span class="pre">data_source.json</span></code> is also required.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Data Description Validation</strong>:</dt><dd><p>Confirms that <code class="docutils literal notranslate"><span class="pre">data_description.json</span></code> includes required metadata keys
+(e.g., uniqueID, indexingFieldList) and that they match the dataset structure.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Data Content Validation</strong>:</dt><dd><p>Ensures that the content in <code class="docutils literal notranslate"><span class="pre">data_content.csv</span></code> and <code class="docutils literal notranslate"><span class="pre">data_content.pkl</span></code>
+are consistent, indexing fields are valid, and all columns have uniform data types.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>File Existence Validation</strong>:</dt><dd><p>Checks that files listed in <code class="docutils literal notranslate"><span class="pre">fileLocationFieldList</span></code> exist and that no
+extra or missing files are present in the dataset directory.</p>
+</dd>
+</dl>
+</li>
+</ol>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – Path to the dataset directory to validate.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of boolean values indicating whether each validation step passed
+(<code class="docutils literal notranslate"><span class="pre">True</span></code>) or failed (<code class="docutils literal notranslate"><span class="pre">False</span></code>).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of bool</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – Any underlying exception raised during validation (e.g.,
+    <code class="docutils literal notranslate"><span class="pre">FileNotFoundError</span></code>, <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>) is caught and reported per step.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>This function prints validation results step-by-step with clear pass/fail messages.</p></li>
+<li><p>It does not stop at the first failure but continues to run all checks,
+providing a comprehensive validation report.</p></li>
+<li><p>The return list contains results in the order of the checks performed.</p></li>
+</ul>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">launch_validation_dataset</span><span class="p">(</span><span class="s2">&quot;/path/to/dataset&quot;</span><span class="p">)</span>
+<span class="go">🔵 my_dataset - Passed [Required Files] validation.</span>
+<span class="go">🔴 my_dataset - Failed [Data Content] validation: Mismatch between CSV and PKL.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+<span class="go">[True, True, False, False]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.dataset.validate_data_content">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.dataset.</span></span><span class="sig-name descname"><span class="pre">validate_data_content</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_desc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/gencap/utils/dataset.html#validate_data_content"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.dataset.validate_data_content" title="Link to this definition"></a></dt>
+<dd><p>Validate consistency between <cite>data_content.csv</cite>, <cite>data_content.pkl</cite>, and metadata.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em><em>, </em><em>optional</em>) – Path to dataset directory.</p></li>
+<li><p><strong>dataframe</strong> (<em>pd.DataFrame</em><em>, </em><em>optional</em>) – Dataset content loaded into a DataFrame.</p></li>
+<li><p><strong>data_desc</strong> (<em>dict</em><em>, </em><em>optional</em>) – Metadata dictionary loaded from <cite>data_description.json</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if content validation passes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If data content or indexing fields are inconsistent.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Ensures CSV and PKL content match, multi-index validity, and uniqueness of indexing fields.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.dataset.validate_data_description">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.dataset.</span></span><span class="sig-name descname"><span class="pre">validate_data_description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_desc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/gencap/utils/dataset.html#validate_data_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.dataset.validate_data_description" title="Link to this definition"></a></dt>
+<dd><p>Validate that <cite>data_description.json</cite> aligns with dataset structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em><em>, </em><em>optional</em>) – Path to dataset directory.</p></li>
+<li><p><strong>dataframe</strong> (<em>pd.DataFrame</em><em>, </em><em>optional</em>) – DataFrame representing dataset content.</p></li>
+<li><p><strong>data_desc</strong> (<em>dict</em><em>, </em><em>optional</em>) – Metadata dictionary loaded from <cite>data_description.json</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if validation passes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If essential metadata keys are missing or inconsistent.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Either <cite>path</cite> or both <cite>dataframe</cite> and <cite>data_desc</cite> must be provided.</p></li>
+<li><p>Checks include unique ID consistency, indexing fields, file location fields, and tags.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.dataset.validate_file_existence">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.dataset.</span></span><span class="sig-name descname"><span class="pre">validate_file_existence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_desc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/gencap/utils/dataset.html#validate_file_existence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.dataset.validate_file_existence" title="Link to this definition"></a></dt>
+<dd><p>Validate that files listed in <cite>fileLocationFieldList</cite> exist and match directory contents.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em><em>, </em><em>optional</em>) – Path to dataset directory.</p></li>
+<li><p><strong>dataframe</strong> (<em>pd.DataFrame</em><em>, </em><em>optional</em>) – DataFrame containing file paths.</p></li>
+<li><p><strong>data_desc</strong> (<em>dict</em><em>, </em><em>optional</em>) – Metadata including file location fields.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if all files exist and are consistent.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If listed files do not exist.</p></li>
+<li><p><strong>ValueError</strong> – If inconsistencies are detected between listed files and actual files.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.dataset.validate_required_files">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.dataset.</span></span><span class="sig-name descname"><span class="pre">validate_required_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/gencap/utils/dataset.html#validate_required_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.dataset.validate_required_files" title="Link to this definition"></a></dt>
+<dd><p>Check for required dataset files in the given directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – Path to the dataset directory.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if all required files exist.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>FileNotFoundError</strong> – If any required files are missing.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>For derivative datasets (paths containing ‘derivatives’),
+<cite>data_source.json</cite> is also required.</p></li>
+</ul>
+</dd></dl>
+
+</section>
+<section id="module-gencap.utils.helpers">
+<span id="gencap-utils-helpers-module"></span><h2>gencap.utils.helpers module<a class="headerlink" href="#module-gencap.utils.helpers" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.assign_alias_ids">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">assign_alias_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">io_mappings_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#assign_alias_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.assign_alias_ids" title="Link to this definition"></a></dt>
+<dd><p>Assign unique alias IDs to tasks and convert them into dictionaries.</p>
+<p>Alias IDs are tuples of the form <code class="docutils literal notranslate"><span class="pre">(unique_id,</span> <span class="pre">instance_number)</span></code> where
+<code class="docutils literal notranslate"><span class="pre">instance_number</span></code> increments for multiple instances of the same task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tasks_list</strong> (<em>list</em><em>[</em><a class="reference internal" href="gencap.core.html#gencap.core.task.Task" title="gencap.core.task.Task"><em>Task</em></a><em>]</em>) – List of Task objects.</p></li>
+<li><p><strong>io_mappings_list</strong> (<em>list</em><em>[</em><em>dict</em><em>]</em>) – List of I/O mapping dictionaries corresponding to each task.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>tasks_dict (dict):</strong> Mapping of alias_id -&gt; Task object.</p></li>
+<li><p><strong>io_mappings_dict (dict):</strong> Mapping of alias_id -&gt; I/O mapping dict.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tasks_dict</span><span class="p">,</span> <span class="n">io_mappings_dict</span> <span class="o">=</span> <span class="n">assign_alias_ids</span><span class="p">([</span><span class="n">task1</span><span class="p">,</span> <span class="n">task2</span><span class="p">],</span> <span class="p">[</span><span class="n">io1</span><span class="p">,</span> <span class="n">io2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">tasks_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="go">[(task1_id, 1), (task2_id, 1)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.build_dependency_graph">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">build_dependency_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">io_mappings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#build_dependency_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.build_dependency_graph" title="Link to this definition"></a></dt>
+<dd><p>Build a Directed Acyclic Graph (DAG) representing task dependencies in a pipeline.</p>
+<p>This function generates a NetworkX graph to represent task execution order, inputs,
+and outputs. It includes:</p>
+<ul class="simple">
+<li><p>A synthetic “Cohort” input node.</p></li>
+<li><p>Task nodes annotated with input/output field labels.</p></li>
+<li><p>Directed edges based on I/O mappings.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tasks</strong> (<em>dict</em>) – Mapping of task alias IDs to task objects. Each task must define:
+- <code class="docutils literal notranslate"><span class="pre">mandatory_input_fields</span></code>
+- <code class="docutils literal notranslate"><span class="pre">optional_input_fields</span></code>
+- <code class="docutils literal notranslate"><span class="pre">mandatory_output_fields</span></code>
+- <code class="docutils literal notranslate"><span class="pre">optional_output_fields</span></code></p></li>
+<li><p><strong>io_mappings</strong> (<em>dict</em>) – Mapping of task alias IDs to I/O field connections.
+Each value is a dict where keys are destination fields and values
+are lists of the form <code class="docutils literal notranslate"><span class="pre">[source_task_alias,</span> <span class="pre">source_field]</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A DAG where:
+- Nodes represent tasks or the synthetic Cohort input.
+- Edges represent data dependencies between tasks.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>networkx.DiGraph</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Ensures DAG acyclicity.</p></li>
+<li><p>Includes metadata for visualization (labels, highlighting).</p></li>
+</ul>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">build_dependency_graph</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">io_mappings</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+<span class="go">[(&#39;Cohort&#39;,), (&#39;Task1&#39;,), (&#39;Task2&#39;,)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.build_dependency_graph_dataset">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">build_dependency_graph_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">database_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#build_dependency_graph_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.build_dependency_graph_dataset" title="Link to this definition"></a></dt>
+<dd><p>Build a directed graph representing dataset dependencies within GENCAP.</p>
+<p>This function traces the pipeline tree of a dataset (using <a class="reference internal" href="#gencap.utils.helpers.trace_pipeline_tree" title="gencap.utils.helpers.trace_pipeline_tree"><code class="xref py py-func docutils literal notranslate"><span class="pre">trace_pipeline_tree()</span></code></a>)
+and constructs a NetworkX directed graph where:</p>
+<ul class="simple">
+<li><p>Nodes represent datasets (raw data, intermediate derivatives, or final outputs).</p></li>
+<li><p>Edges represent pipeline operations linking datasets.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset_dir</strong> (<em>str</em><em> or </em><em>list</em>) – Path (or list of paths) to the target dataset directory (final dataset or intermediate).</p></li>
+<li><p><strong>database_dir</strong> (<em>str</em><em>, </em><em>optional</em>) – Root directory containing the dataset database.
+If not provided, it is inferred from the dataset path.</p></li>
+<li><p><strong>n_level</strong> (<em>int</em><em>, </em><em>optional</em>) – Depth of traversal in the dependency graph.
+<code class="docutils literal notranslate"><span class="pre">-1</span></code> (default) traverses all levels.</p></li>
+<li><p><strong>logger</strong> (<em>logging.Logger</em><em>, </em><em>optional</em>) – Logger instance for logging progress.</p></li>
+<li><p><strong>graph</strong> (<em>nx.DiGraph</em><em>, </em><em>optional</em>) – Existing graph to append to. If None, creates a new graph.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A directed graph with:</dt><dd><ul class="simple">
+<li><p>Nodes labeled by dataset ID and annotated with <code class="docutils literal notranslate"><span class="pre">ntype</span></code> (raw_data, derivatives, Output).</p></li>
+<li><p>Edges labeled with pipeline ID and version.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>networkx.DiGraph</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">build_dependency_graph_dataset</span><span class="p">(</span><span class="s2">&quot;/data/derivatives/final_dataset&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+<span class="go">[&#39;raw_dataset1&#39;, &#39;raw_dataset2&#39;, &#39;intermediate1&#39;, &#39;final_dataset&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.calculate_total_size">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">calculate_total_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_location_fields</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#calculate_total_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.calculate_total_size" title="Link to this definition"></a></dt>
+<dd><p>Calculate the total size of files and directories referenced in a DataFrame.</p>
+<p>This function sums the sizes of files and directories listed in the specified
+file location fields of a dataset and returns the result in megabytes (MB).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – DataFrame containing file path references.</p></li>
+<li><p><strong>file_location_fields</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – List of column names in the DataFrame that contain file or directory paths.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Total size of all files and directories (in MB), rounded to two decimal places.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>File sizes are calculated using <code class="docutils literal notranslate"><span class="pre">os.path.getsize</span></code>.</p></li>
+<li><p>Directory sizes are calculated recursively by summing all contained files.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">size_mb</span> <span class="o">=</span> <span class="n">calculate_total_size</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Image Path&quot;</span><span class="p">,</span> <span class="s2">&quot;Mask Path&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">size_mb</span><span class="p">)</span>
+<span class="go">125.73</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.compare_datasets">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">compare_datasets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reproduced_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#compare_datasets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.compare_datasets" title="Link to this definition"></a></dt>
+<dd><p>Compare an original dataset against a reproduced dataset for structural and file-level equivalence.</p>
+<dl class="simple">
+<dt>This function performs:</dt><dd><ol class="arabic simple">
+<li><p>Comparison of indexing fields and columns.</p></li>
+<li><p>Metadata comparison (excluding file paths).</p></li>
+<li><p>Bitwise file comparison for files listed in <cite>fileLocationFieldList</cite>.</p></li>
+</ol>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>original_dir</strong> (<em>str</em>) – Path to the original dataset directory.</p></li>
+<li><p><strong>reproduced_dir</strong> (<em>str</em>) – Path to the reproduced dataset directory.</p></li>
+<li><p><strong>logger</strong> (<em>logging.Logger</em><em>, </em><em>optional</em>) – Logger instance for info/warning messages.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>valid_code (list[int])</strong>: List of codes indicating issues (1=index mismatch, 2=column mismatch, etc.).</p></li>
+<li><p><strong>result_df (pd.DataFrame)</strong>: File comparison results.</p></li>
+<li><p><strong>error_df (pd.DataFrame)</strong>: File-level errors encountered.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Uses bitwise file comparison to ensure file content integrity.</p></li>
+<li><p>Displays table-level differences using pandas <cite>DataFrame.compare()</cite> for debugging.</p></li>
+</ul>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">codes</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="n">compare_datasets</span><span class="p">(</span><span class="s2">&quot;/path/orig&quot;</span><span class="p">,</span> <span class="s2">&quot;/path/reprod&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">codes</span><span class="p">)</span>
+<span class="go">[1, 3]  # Index mismatch and table content differences detected.</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.convert_all_tuples_to_strings">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">convert_all_tuples_to_strings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#convert_all_tuples_to_strings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.convert_all_tuples_to_strings" title="Link to this definition"></a></dt>
+<dd><p>Recursively convert all tuple keys and values in nested structures to strings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>obj</strong> (<em>dict</em><em>, </em><em>list</em><em>, </em><em>tuple</em><em>, or </em><em>any</em>) – The object to recursively process.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Object with tuples converted to strings, preserving other types.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict, list, str, or any</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">convert_all_tuples_to_strings</span><span class="p">({(</span><span class="s2">&quot;Task&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span> <span class="p">{</span><span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Task&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)}})</span>
+<span class="go">{&quot;(&#39;Task&#39;, 1)&quot;: {&quot;field&quot;: &quot;(&#39;Task&#39;, 2)&quot;}}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.count_total_files">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">count_total_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_location_fields</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#count_total_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.count_total_files" title="Link to this definition"></a></dt>
+<dd><p>Count the total number of files referenced in a DataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – DataFrame containing file path references.</p></li>
+<li><p><strong>file_location_fields</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – List of column names in the DataFrame that contain file paths.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Total count of valid (non-“None”) file paths.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">count</span> <span class="o">=</span> <span class="n">count_total_files</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Image Path&quot;</span><span class="p">,</span> <span class="s2">&quot;Mask Path&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+<span class="go">342</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.deduplicate_paths">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">deduplicate_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#deduplicate_paths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.deduplicate_paths" title="Link to this definition"></a></dt>
+<dd><p>Remove redundant paths that refer to the same underlying file or directory.</p>
+<p>This function uses <code class="docutils literal notranslate"><span class="pre">os.path.samefile</span></code> to detect and remove duplicate paths
+that resolve to the same physical file or directory (e.g., symbolic links
+pointing to the same target).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path_list</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – List of file or directory paths.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Deduplicated list containing one path per unique physical file/directory.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[str]</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Non-existing paths are skipped silently.</p></li>
+<li><p>Any errors during resolution are caught, and warnings are printed.</p></li>
+</ul>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;/data/dataset1&quot;</span><span class="p">,</span> <span class="s2">&quot;/mnt/link_to_dataset1&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">deduplicate_paths</span><span class="p">(</span><span class="n">paths</span><span class="p">)</span>
+<span class="go">[&#39;/data/dataset1&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.ensure_unique_instances">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">ensure_unique_instances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks_io</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#ensure_unique_instances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.ensure_unique_instances" title="Link to this definition"></a></dt>
+<dd><p>Ensure that each Task object instance is unique within the pipeline.</p>
+<p>If the same Task object is reused multiple times in the pipeline definition
+(i.e., the same Python object reference), it creates a deep copy to prevent
+shared state between different pipeline steps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tasks_io</strong> (<em>list</em><em>[</em><em>tuple</em><em>]</em>) – A list of tuples, where each tuple is of the form <code class="docutils literal notranslate"><span class="pre">(Task,</span> <span class="pre">io_mapping)</span></code>:
+* <code class="docutils literal notranslate"><span class="pre">Task</span></code>: Task object instance.
+* <code class="docutils literal notranslate"><span class="pre">io_mapping</span></code>: I/O mapping dictionary for that task.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new list of <code class="docutils literal notranslate"><span class="pre">(Task,</span> <span class="pre">io_mapping)</span></code> pairs with duplicate Task objects
+deep-copied.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[tuple]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tasks_io</span> <span class="o">=</span> <span class="p">[(</span><span class="n">task_a</span><span class="p">,</span> <span class="p">{}),</span> <span class="p">(</span><span class="n">task_a</span><span class="p">,</span> <span class="p">{})]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">unique_tasks</span> <span class="o">=</span> <span class="n">ensure_unique_instances</span><span class="p">(</span><span class="n">tasks_io</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">unique_tasks</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="n">unique_tasks</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.find_dataset_path">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">find_dataset_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datasetName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">databaseDir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#find_dataset_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.find_dataset_path" title="Link to this definition"></a></dt>
+<dd><p>Locate a dataset directory or JSON file by name within a database directory.</p>
+<dl class="simple">
+<dt>This function searches recursively for:</dt><dd><ul class="simple">
+<li><p>A directory matching the dataset name.</p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">.json</span></code> file with the same dataset name.</p></li>
+</ul>
+</dd>
+</dl>
+<p>It also leverages a path cache to speed up repeated lookups.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>datasetName</strong> (<em>str</em>) – Name of the dataset (without extension).</p></li>
+<li><p><strong>databaseDir</strong> (<em>str</em><em>, </em><em>optional</em>) – Root directory for dataset search.
+If None, uses <code class="docutils literal notranslate"><span class="pre">GENCAP_DATABASE_DIR</span></code> environment variable or falls back to the home directory.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>Absolute path to the matched dataset directory or JSON file if exactly one match is found.</p></li>
+<li><p>None if no matches are found.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str or None</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – If multiple matches are found for the same dataset name.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Results are cached to avoid redundant filesystem scans.</p></li>
+<li><p>Uses <code class="docutils literal notranslate"><span class="pre">deduplicate_paths</span></code> to remove symbolic path duplicates.</p></li>
+</ul>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">find_dataset_path</span><span class="p">(</span><span class="s2">&quot;dataset1&quot;</span><span class="p">,</span> <span class="n">databaseDir</span><span class="o">=</span><span class="s2">&quot;/data&quot;</span><span class="p">)</span>
+<span class="go">&#39;/data/study1/dataset1&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.find_dataset_path_with_prefix">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">find_dataset_path_with_prefix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datasetName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">databaseDir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#find_dataset_path_with_prefix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.find_dataset_path_with_prefix" title="Link to this definition"></a></dt>
+<dd><p>Search for dataset directories matching a prefix pattern.</p>
+<dl class="simple">
+<dt>This function looks for directories with names following these patterns:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;prefix&gt;-&lt;datasetName&gt;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;prefix&gt;#*-&lt;datasetName&gt;</span></code> (multi-version format)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>datasetName</strong> (<em>str</em>) – Base name of the dataset.</p></li>
+<li><p><strong>databaseDir</strong> (<em>str</em><em>, </em><em>optional</em>) – Root directory to search. Defaults to the home directory if None.</p></li>
+<li><p><strong>prefix</strong> (<em>str</em>) – Prefix string used for naming datasets (e.g., study IDs).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of matched dataset directory paths. Empty if no matches are found.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[str]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">find_dataset_path_with_prefix</span><span class="p">(</span><span class="s2">&quot;dataset1&quot;</span><span class="p">,</span> <span class="n">databaseDir</span><span class="o">=</span><span class="s2">&quot;/data&quot;</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;study&quot;</span><span class="p">)</span>
+<span class="go">[&#39;/data/study-study1-dataset1&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.fix_mixed_column_types">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">fix_mixed_column_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#fix_mixed_column_types"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.fix_mixed_column_types" title="Link to this definition"></a></dt>
+<dd><p>Detect and fix mixed-type columns in a DataFrame.</p>
+<p>For any column with mixed data types, converts all non-null values to the most
+frequent (dominant) type. Null values are preserved.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>pandas.DataFrame</em>) – Input DataFrame to check and fix.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new DataFrame where columns with mixed types have been converted to a uniform type.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Uses the most frequent data type in the column to resolve mixed types.</p></li>
+<li><p>Null (NaN) values are preserved without conversion.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;col&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="kc">None</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fixed_df</span> <span class="o">=</span> <span class="n">fix_mixed_column_types</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fixed_df</span><span class="p">[</span><span class="s2">&quot;col&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="go">[&lt;class &#39;int&#39;&gt;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.format_size">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">format_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#format_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.format_size" title="Link to this definition"></a></dt>
+<dd><p>Convert a byte size to a human-readable format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>size</strong> (<em>int</em><em> or </em><em>float</em>) – Size in bytes.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Formatted string with size and unit (B, KB, MB, GB, TB).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">format_size</span><span class="p">(</span><span class="mi">2048</span><span class="p">)</span>
+<span class="go">&#39;2.00 KB&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.generate_empty_output_df">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">generate_empty_output_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Pipeline</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pathname_policy_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#generate_empty_output_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.generate_empty_output_df" title="Link to this definition"></a></dt>
+<dd><p>Generate an empty DataFrame structured like the output of a target task.</p>
+<p>This is useful for pipeline validation, allowing checks on expected indexing
+fields and column structure without running actual tasks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Pipeline</strong> (<a class="reference internal" href="gencap.core.html#gencap.core.pipeline.Pipeline" title="gencap.core.pipeline.Pipeline"><em>Pipeline</em></a>) – Pipeline object containing task definitions, graph, and cohort data.</p></li>
+<li><p><strong>target_task</strong> (<em>tuple</em>) – Alias ID of the target task (e.g., <code class="docutils literal notranslate"><span class="pre">('TaskID',</span> <span class="pre">1)</span></code>).</p></li>
+<li><p><strong>input_dict</strong> (<em>dict</em><em>, </em><em>optional</em>) – Input mapping from pipeline input fields to task fields.</p></li>
+<li><p><strong>pathname_policy_dict</strong> (<em>dict</em><em>, </em><em>optional</em>) – Pathname policy dict, used to include supplementary fields.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An empty DataFrame matching the expected structure of the target task’s output.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>The returned DataFrame includes:</dt><dd><ul>
+<li><p>Properly configured multi-index based on task indexing fields.</p></li>
+<li><p>Mandatory, optional, and supplementary columns.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">generate_empty_output_df</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;MyTask&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+<span class="go">Index([&#39;mandatory_field1&#39;, &#39;optional_field1&#39;, ...])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.generate_unique_name_with_prefix">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">generate_unique_name_with_prefix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">databaseDir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#generate_unique_name_with_prefix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.generate_unique_name_with_prefix" title="Link to this definition"></a></dt>
+<dd><p>Generate a unique dataset name with a given prefix.</p>
+<p>This function ensures that the new dataset name does not conflict with existing
+datasets in the specified database directory. If a conflict is detected, it
+increments the version number using a <cite>#</cite> suffix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>databaseDir</strong> (<em>str</em>) – Root directory of the dataset database.</p></li>
+<li><p><strong>data</strong> (<em>str</em>) – Base dataset name.</p></li>
+<li><p><strong>prefix</strong> (<em>str</em>) – Prefix string to prepend to the dataset name.</p></li>
+<li><p><strong>logger</strong> (<em>logging.Logger</em><em>, </em><em>optional</em>) – Logger instance for warnings and messages.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A unique dataset name including the prefix.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – If the generated dataset name unexpectedly resolves to an existing path.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">generate_unique_name_with_prefix</span><span class="p">(</span><span class="s2">&quot;/data/db&quot;</span><span class="p">,</span> <span class="s2">&quot;BrainMRI&quot;</span><span class="p">,</span> <span class="s2">&quot;Study&quot;</span><span class="p">)</span>
+<span class="go">&#39;Study-#2-BrainMRI&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.get_name_mapper">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">get_name_mapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#get_name_mapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.get_name_mapper" title="Link to this definition"></a></dt>
+<dd><p>Generate a mapping from task keys to their alias IDs.</p>
+<p>This function maps each task key in a task dictionary to its corresponding
+alias ID. For Task objects, their <cite>alias_id</cite> attribute is used directly;
+for tuples/lists, it generates an alias by counting occurrences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tasks</strong> (<em>dict</em>) – Dictionary mapping task keys to Task objects or task identifiers.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Mapping of original task keys to alias IDs as tuples (task_id, instance_number).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tasks</span> <span class="o">=</span> <span class="p">{(</span><span class="s2">&quot;TaskA&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span> <span class="n">taskA</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;TaskB&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span> <span class="n">taskB</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_name_mapper</span><span class="p">(</span><span class="n">tasks</span><span class="p">)</span>
+<span class="go">{(&quot;TaskA&quot;, 1): (&quot;TaskA&quot;, 1), (&quot;TaskB&quot;, 1): (&quot;TaskB&quot;, 1)}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.get_sorted_execution_order">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">get_sorted_execution_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">G</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#get_sorted_execution_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.get_sorted_execution_order" title="Link to this definition"></a></dt>
+<dd><p>Retrieve topologically sorted execution order from a DAG.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>G</strong> (<em>networkx.DiGraph</em>) – Directed acyclic graph representing task dependencies.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Ordered list of nodes (tasks) excluding raw_data nodes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Filters out nodes tagged with <code class="docutils literal notranslate"><span class="pre">ntype='raw_data'</span></code>.</p></li>
+<li><p>Useful for determining pipeline execution order.</p></li>
+</ul>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">exec_order</span> <span class="o">=</span> <span class="n">get_sorted_execution_order</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">exec_order</span><span class="p">)</span>
+<span class="go">[(&#39;Task1&#39;,), (&#39;Task2&#39;,), (&#39;Task3&#39;,)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.get_username">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">get_username</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#get_username"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.get_username" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the current system username.</p>
+<p>This function attempts to retrieve the username using environment variables,
+<cite>psutil</cite>, or <cite>os.getlogin</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Username of the current system user, or <cite>“unknown”</cite> if it cannot be determined.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_username</span><span class="p">()</span>
+<span class="go">&#39;johndoe&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.make_key">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">make_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">databaseDir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datasetName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#make_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.make_key" title="Link to this definition"></a></dt>
+<dd><p>Generate a unique cache key for a dataset path search.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>databaseDir</strong> (<em>str</em>) – Absolute path to the dataset database root directory.</p></li>
+<li><p><strong>datasetName</strong> (<em>str</em>) – Name of the dataset.</p></li>
+<li><p><strong>prefix</strong> (<em>str</em><em>, </em><em>optional</em>) – Optional prefix string to include in the key.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>MD5 hash string representing a unique key for the given inputs.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">make_key</span><span class="p">(</span><span class="s2">&quot;/data&quot;</span><span class="p">,</span> <span class="s2">&quot;my_dataset&quot;</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;study&quot;</span><span class="p">)</span>
+<span class="go">&#39;5d41402abc4b2a76b9719d911017c592&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.remove_used_intermediate_data">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">remove_used_intermediate_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeline_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_info_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_task_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#remove_used_intermediate_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.remove_used_intermediate_data" title="Link to this definition"></a></dt>
+<dd><p>Remove intermediate task outputs no longer required in a pipeline.</p>
+<p>This function deletes intermediate files or directories produced by
+previous tasks in a pipeline if all their dependent downstream tasks
+have been completed. Certain files (e.g., QC or traceability reports)
+are excluded from deletion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>logger</strong> (<em>logging.Logger</em>) – Logger instance for warnings or info messages.</p></li>
+<li><p><strong>pipeline_dict</strong> (<em>dict</em>) – Dictionary containing pipeline metadata, including graph structure,
+task execution order, and task output directories.</p></li>
+<li><p><strong>task_info_dict</strong> (<em>dict</em>) – Metadata for the current task (including <code class="docutils literal notranslate"><span class="pre">prev_task</span></code> dependencies).</p></li>
+<li><p><strong>output_dir</strong> (<em>str</em>) – Root output directory containing task results.</p></li>
+<li><p><strong>current_task_id</strong> (<em>tuple</em>) – Alias ID of the current task in the pipeline.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Files <code class="docutils literal notranslate"><span class="pre">information.html</span></code> and <code class="docutils literal notranslate"><span class="pre">quality_control.html</span></code> are preserved.</p></li>
+<li><p>Only deletes intermediate task outputs if <strong>all downstream tasks</strong>
+dependent on that output have been executed.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">remove_used_intermediate_data</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">pipeline_dict</span><span class="p">,</span> <span class="n">task_info_dict</span><span class="p">,</span> <span class="s2">&quot;/outputs&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;Task2&quot;</span><span class="p">,))</span>
+<span class="go">[INFO] Intermediate files for Task1 have been cleaned up.</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.rename_io_mapping">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">rename_io_mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">io_mappings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_mapper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#rename_io_mapping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.rename_io_mapping" title="Link to this definition"></a></dt>
+<dd><p>Rename task keys and source references in I/O mappings using alias IDs.</p>
+<p>This function updates task keys in the I/O mappings and normalizes
+references to source tasks based on a provided <cite>name_mapper</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>io_mappings</strong> (<em>dict</em>) – Original I/O mappings. Keys are task identifiers (tuples or lists) and
+values are dictionaries of field mappings.</p></li>
+<li><p><strong>name_mapper</strong> (<em>dict</em>) – Dictionary mapping old task identifiers (tuple, list, or string) to
+their normalized alias IDs.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Updated I/O mappings with task keys and references renamed using the alias IDs.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Supports legacy JSON pipeline formats where keys or references may appear as lists.</p></li>
+<li><p>Automatically handles nested task references inside field specifications.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">io_mappings</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s2">&quot;TaskA&quot;</span><span class="p">]:</span> <span class="p">{</span><span class="s2">&quot;field1&quot;</span><span class="p">:</span> <span class="p">[[</span><span class="s2">&quot;TaskB&quot;</span><span class="p">],</span> <span class="s2">&quot;output_field&quot;</span><span class="p">]}</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">name_mapper</span> <span class="o">=</span> <span class="p">{(</span><span class="s2">&quot;TaskA&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span> <span class="p">(</span><span class="s2">&quot;TaskA&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;TaskB&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span> <span class="p">(</span><span class="s2">&quot;TaskB&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rename_io_mapping</span><span class="p">(</span><span class="n">io_mappings</span><span class="p">,</span> <span class="n">name_mapper</span><span class="p">)</span>
+<span class="go">{(&quot;TaskA&quot;, 1): {&quot;field1&quot;: [(&quot;TaskB&quot;, 1), &quot;output_field&quot;]}}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.resolve_io_mapping">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">resolve_io_mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tasks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">io_mappings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#resolve_io_mapping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.resolve_io_mapping" title="Link to this definition"></a></dt>
+<dd><p>Resolve ambiguous or shorthand task references in I/O mappings.</p>
+<p>This function updates I/O mappings to ensure that all references point to
+fully qualified alias IDs of tasks, resolving shorthand notations such as:
+* “pipeline_input” -&gt; Cohort alias.
+* Task unique_id (string) -&gt; most recent matching task alias.
+* Task index (int) -&gt; positional lookup.
+* Explicit alias tuple -&gt; validated reference.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tasks</strong> (<em>dict</em>) – Mapping of alias IDs to Task objects.</p></li>
+<li><p><strong>io_mappings</strong> (<em>dict</em>) – Mapping of alias IDs to their corresponding I/O mappings.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Updated I/O mappings with resolved references.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If a reference cannot be resolved or is invalid.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">resolved</span> <span class="o">=</span> <span class="n">resolve_io_mapping</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">io_mappings</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">resolved</span><span class="p">[(</span><span class="s2">&quot;TaskB&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
+<span class="go">{&quot;input_field&quot;: [(&quot;TaskA&quot;, 1), &quot;output_field&quot;]}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.resolve_parameter_dict">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">resolve_parameter_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tasks</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#resolve_parameter_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.resolve_parameter_dict" title="Link to this definition"></a></dt>
+<dd><p>Resolve task parameter dictionary into a task-alias-keyed format.</p>
+<p>This function ensures that task parameters are correctly mapped to their alias IDs.
+It supports:
+* Single-task pipelines where parameters may be provided as a flat dict.
+* Multi-task pipelines where parameters may be keyed by unique IDs, alias tuples,</p>
+<blockquote>
+<div><p>or both.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parameter_dict</strong> (<em>dict</em>) – Dictionary of parameters. Keys can be:
+* Task unique IDs (str)
+* Alias tuples (task_id, instance_number)</p></li>
+<li><p><strong>tasks</strong> (<em>dict</em>) – Dictionary of tasks keyed by alias IDs.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Resolved parameter dictionary keyed by alias IDs.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If an invalid key is provided or does not correspond to any task in the pipeline.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;MyTask&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;param1&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">resolved</span> <span class="o">=</span> <span class="n">resolve_parameter_dict</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">tasks</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">resolved</span><span class="p">)</span>
+<span class="go">{(&quot;MyTask&quot;, 1): {&quot;param1&quot;: 10}}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.trace_pipeline_tree">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">trace_pipeline_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">database_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">summary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#trace_pipeline_tree"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.trace_pipeline_tree" title="Link to this definition"></a></dt>
+<dd><p>Trace the dataset reproduction tree by following its pipeline lineage.</p>
+<p>This function recursively traverses dataset dependencies using their <code class="docutils literal notranslate"><span class="pre">data_source.json</span></code> files
+and constructs a hierarchical lineage (tree) showing the datasets and their source cohorts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset_dir</strong> (<em>str</em><em> or </em><em>list</em>) – Path (or list of paths) to the starting dataset directory (final or intermediate).</p></li>
+<li><p><strong>database_dir</strong> (<em>str</em><em>, </em><em>optional</em>) – Root database directory containing all datasets.
+Defaults to the parent directory above <code class="docutils literal notranslate"><span class="pre">derivatives</span></code>.</p></li>
+<li><p><strong>n_level</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum depth of tracing (<code class="docutils literal notranslate"><span class="pre">-1</span></code> for unlimited depth).</p></li>
+<li><p><strong>summary</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, returns only dataset IDs per level.</p></li>
+<li><p><strong>logger</strong> (<em>logging.Logger</em><em>, </em><em>optional</em>) – Logger instance for progress reporting.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A mapping of levels to lists of dataset details. Each dataset entry includes:
+* <code class="docutils literal notranslate"><span class="pre">dataset_dir</span></code>: Absolute path to the dataset.
+* <code class="docutils literal notranslate"><span class="pre">dataset_id</span></code>: Dataset folder name.
+* <code class="docutils literal notranslate"><span class="pre">cohortDatasetList</span></code>: List of source datasets.
+* <code class="docutils literal notranslate"><span class="pre">pipelineID</span></code>: Associated pipeline ID.
+* <code class="docutils literal notranslate"><span class="pre">pipelineVersion</span></code>: Pipeline version.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">summary=True</span></code>, maps levels to lists of dataset IDs only.</p>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>FileNotFoundError</strong> – If a dataset listed in <code class="docutils literal notranslate"><span class="pre">cohortDatasetList</span></code> cannot be located.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">trace_pipeline_tree</span><span class="p">(</span><span class="s2">&quot;/data/derivatives/final_dataset&quot;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    1: [&#39;final_dataset&#39;],</span>
+<span class="go">    2: [&#39;intermediate1&#39;],</span>
+<span class="go">    &#39;raw_data&#39;: [&#39;raw_dataset1&#39;, &#39;raw_dataset2&#39;]</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.validate_dict_or_list_of_dict">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">validate_dict_or_list_of_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataframes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#validate_dict_or_list_of_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.validate_dict_or_list_of_dict" title="Link to this definition"></a></dt>
+<dd><p>Validate an argument that can be either a dictionary or a list of dictionaries.</p>
+<p>This function ensures that the input object is of valid type (dict or list of dicts),
+optionally checks its length against the provided dataframes, and validates that
+dictionary keys exist in the dataframe columns if requested.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> (<em>dict</em><em> or </em><em>list</em><em>[</em><em>dict</em><em>]</em>) – The object to validate. Can be a single dictionary or a list of dictionaries.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the argument (used for informative error messages).</p></li>
+<li><p><strong>dataframes</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>pd.DataFrame</em><em>]</em><em>, </em><em>optional</em>) – Mapping of dataframe names to dataframe objects.
+If provided, its length must match the length of <code class="docutils literal notranslate"><span class="pre">obj</span></code> when <code class="docutils literal notranslate"><span class="pre">obj</span></code> is a list.</p></li>
+<li><p><strong>check_keys</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, validates that each key in the dictionaries exists in the corresponding
+dataframe’s columns (via <code class="docutils literal notranslate"><span class="pre">df.reset_index().columns</span></code>).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if validation passes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – If <code class="docutils literal notranslate"><span class="pre">obj</span></code> is not a dict or list of dicts, or if any element in the list is not a dict.</p></li>
+<li><p><strong>ValueError</strong> – If length of <code class="docutils literal notranslate"><span class="pre">obj</span></code> list does not match <code class="docutils literal notranslate"><span class="pre">dataframes</span></code> length,
+    or if any dictionary key does not exist in the dataframe’s columns (when <code class="docutils literal notranslate"><span class="pre">check_keys=True</span></code>).</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">validate_dict_or_list_of_dict</span><span class="p">({</span><span class="s2">&quot;Age&quot;</span><span class="p">:</span> <span class="s2">&quot;int&quot;</span><span class="p">},</span> <span class="s2">&quot;fieldFormatDict&quot;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">validate_dict_or_list_of_dict</span><span class="p">([{</span><span class="s2">&quot;Age&quot;</span><span class="p">:</span> <span class="s2">&quot;int&quot;</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;ID&quot;</span><span class="p">:</span> <span class="s2">&quot;str&quot;</span><span class="p">}],</span> <span class="s2">&quot;fieldFormatDict&quot;</span><span class="p">,</span> <span class="n">dataframes</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;df1&quot;</span><span class="p">:</span> <span class="n">df1</span><span class="p">,</span> <span class="s2">&quot;df2&quot;</span><span class="p">:</span> <span class="n">df2</span><span class="p">})</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.validate_values_are_dict">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">validate_values_are_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#validate_values_are_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.validate_values_are_dict" title="Link to this definition"></a></dt>
+<dd><p>Validate that all values in a dictionary are themselves dictionaries.</p>
+<p>This is typically used to validate nested mapping structures, e.g.,
+value replacement dictionaries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mapping</strong> (<em>dict</em>) – The dictionary to validate.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the argument (used in error messages).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if all values are dictionaries.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>TypeError</strong> – If any value is not a dictionary.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">validate_values_are_dict</span><span class="p">({</span><span class="s2">&quot;Gender&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;M&quot;</span><span class="p">:</span> <span class="s2">&quot;Male&quot;</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">:</span> <span class="s2">&quot;Female&quot;</span><span class="p">}},</span> <span class="s2">&quot;replaceValueDict&quot;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">validate_values_are_dict</span><span class="p">({</span><span class="s2">&quot;Gender&quot;</span><span class="p">:</span> <span class="s2">&quot;Male&quot;</span><span class="p">},</span> <span class="s2">&quot;replaceValueDict&quot;</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="w">    </span><span class="o">...</span>
+<span class="gr">TypeError</span>: <span class="n">In replaceValueDict, value for field &#39;Gender&#39; must be a dictionary for replacement mapping.</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.visualize_graph_dataset">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">visualize_graph_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_fig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nicePlots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#visualize_graph_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.visualize_graph_dataset" title="Link to this definition"></a></dt>
+<dd><p>Visualize the dataset dependency graph.</p>
+<p>This function renders a directed acyclic graph (DAG) of dataset dependencies created
+by <a class="reference internal" href="#gencap.utils.helpers.build_dependency_graph_dataset" title="gencap.utils.helpers.build_dependency_graph_dataset"><code class="xref py py-func docutils literal notranslate"><span class="pre">build_dependency_graph_dataset()</span></code></a> using either:</p>
+<ul class="simple">
+<li><p><strong>Plotly</strong> (if <code class="docutils literal notranslate"><span class="pre">nicePlots=True</span></code>): Interactive visualization.</p></li>
+<li><p><strong>Matplotlib</strong> (default): Static diagram.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>graph</strong> (<em>networkx.DiGraph</em>) – Dataset dependency graph generated by <a class="reference internal" href="#gencap.utils.helpers.build_dependency_graph_dataset" title="gencap.utils.helpers.build_dependency_graph_dataset"><code class="xref py py-func docutils literal notranslate"><span class="pre">build_dependency_graph_dataset()</span></code></a>.</p></li>
+<li><p><strong>return_fig</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, returns the Plotly or Matplotlib figure object.</p></li>
+<li><p><strong>nicePlots</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, uses Plotly for interactive visualization. Otherwise, uses Matplotlib.</p></li>
+<li><p><strong>show</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True (default), displays the figure immediately.</p></li>
+<li><p><strong>logger</strong> (<em>logging.Logger</em><em>, </em><em>optional</em>) – Logger instance for logging messages.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The rendered figure if <code class="docutils literal notranslate"><span class="pre">return_fig=True</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>plotly.graph_objects.Figure or matplotlib.figure.Figure</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Raw datasets are green circles.</p></li>
+<li><p>Intermediate derivatives are orange squares.</p></li>
+<li><p>Final datasets are blue stars.</p></li>
+<li><p>Edges display pipeline IDs and versions.</p></li>
+</ul>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">build_dependency_graph_dataset</span><span class="p">(</span><span class="s2">&quot;/data/derivatives/final_dataset&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">visualize_graph_dataset</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">nicePlots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.helpers.visualize_pipeline">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">visualize_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeline_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_fig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nicePlots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">highlight_node</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/helpers.html#visualize_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.helpers.visualize_pipeline" title="Link to this definition"></a></dt>
+<dd><p>Visualize a pipeline DAG with tasks, inputs, and outputs.</p>
+<p>This function renders the pipeline graph using Plotly (interactive) or Matplotlib (static).
+Nodes are color-coded by type, and edges display their field mapping relationships.</p>
+<dl class="simple">
+<dt>Features:</dt><dd><ul class="simple">
+<li><p>Adds synthetic output nodes for terminal tasks.</p></li>
+<li><p>Distinguishes node types with shapes and colors:
+- Input (Cohort): light gray square
+- Tasks: light blue circles
+- Outputs: light green squares
+- Highlighted task: pink circle</p></li>
+<li><p>Displays input/output field mappings as edge labels.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>graph</strong> (<em>networkx.DiGraph</em>) – Directed acyclic graph built using <a class="reference internal" href="#gencap.utils.helpers.build_dependency_graph" title="gencap.utils.helpers.build_dependency_graph"><code class="xref py py-func docutils literal notranslate"><span class="pre">build_dependency_graph()</span></code></a>.</p></li>
+<li><p><strong>pipeline_info</strong> (<em>dict</em><em>, </em><em>optional</em>) – Pipeline metadata including cohort arguments and runtime inputs.</p></li>
+<li><p><strong>return_fig</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, returns the figure object instead of showing it.</p></li>
+<li><p><strong>nicePlots</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, uses Plotly for interactive visualization; otherwise uses Matplotlib.</p></li>
+<li><p><strong>highlight_node</strong> (<em>tuple</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – Task node to visually highlight in the graph.</p></li>
+<li><p><strong>show</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to display the figure immediately. Defaults to False.</p></li>
+<li><p><strong>logger</strong> (<em>logging.Logger</em><em>, </em><em>optional</em>) – Logger instance for logging workflow visualization steps.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Visualization figure object if <code class="docutils literal notranslate"><span class="pre">return_fig=True</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>plotly.graph_objects.Figure or matplotlib.figure.Figure</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">build_dependency_graph</span><span class="p">(</span><span class="n">tasks</span><span class="p">,</span> <span class="n">io_mappings</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">visualize_pipeline</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">pipeline_info</span><span class="o">=</span><span class="n">pipeline_info</span><span class="p">,</span> <span class="n">nicePlots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">highlight_node</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;Task2&#39;</span><span class="p">,))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="module-gencap.utils.htmlReport">
+<span id="gencap-utils-htmlreport-module"></span><h2>gencap.utils.htmlReport module<a class="headerlink" href="#module-gencap.utils.htmlReport" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="gencap.utils.htmlReport.HTMLReport">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gencap.utils.htmlReport.</span></span><span class="sig-name descname"><span class="pre">HTMLReport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nicePlots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offline_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/htmlReport.html#HTMLReport"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.htmlReport.HTMLReport" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A utility class for generating structured HTML reports with sections, tables, images, and plots.</p>
+<p>This class is designed for creating analysis or validation reports, embedding
+figures, tables, dataframes, and other interactive elements like filterable tables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>str</em>) – Path where the HTML report will be saved.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title of the HTML report.</p></li>
+<li><p><strong>directory</strong> (<em>str</em>) – Directory to store temporary files (e.g., generated images).</p></li>
+<li><p><strong>nicePlots</strong> (<em>bool</em><em>, </em><em>optional</em>) – Enable advanced graphics (Plotly for interactive plots) if True, else static Matplotlib.
+Default is True.</p></li>
+<li><p><strong>offline_mode</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to embed Plotly offline resources in the report. Default is True.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.utils.htmlReport.HTMLReport.filename">
+<span class="sig-name descname"><span class="pre">filename</span></span><a class="headerlink" href="#gencap.utils.htmlReport.HTMLReport.filename" title="Link to this definition"></a></dt>
+<dd><p>File path of the HTML report.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.utils.htmlReport.HTMLReport.basename">
+<span class="sig-name descname"><span class="pre">basename</span></span><a class="headerlink" href="#gencap.utils.htmlReport.HTMLReport.basename" title="Link to this definition"></a></dt>
+<dd><p>Base name of the report file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.utils.htmlReport.HTMLReport.directory">
+<span class="sig-name descname"><span class="pre">directory</span></span><a class="headerlink" href="#gencap.utils.htmlReport.HTMLReport.directory" title="Link to this definition"></a></dt>
+<dd><p>Directory where supporting files (e.g., figures) are stored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.utils.htmlReport.HTMLReport.sections">
+<span class="sig-name descname"><span class="pre">sections</span></span><a class="headerlink" href="#gencap.utils.htmlReport.HTMLReport.sections" title="Link to this definition"></a></dt>
+<dd><p>List of sections and subsections added to the report.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.utils.htmlReport.HTMLReport.figCount">
+<span class="sig-name descname"><span class="pre">figCount</span></span><a class="headerlink" href="#gencap.utils.htmlReport.HTMLReport.figCount" title="Link to this definition"></a></dt>
+<dd><p>Counter for figures added to the report.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.utils.htmlReport.HTMLReport.section_counter">
+<span class="sig-name descname"><span class="pre">section_counter</span></span><a class="headerlink" href="#gencap.utils.htmlReport.HTMLReport.section_counter" title="Link to this definition"></a></dt>
+<dd><p>Counter for sections in the report.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.utils.htmlReport.HTMLReport.subsection_counter">
+<span class="sig-name descname"><span class="pre">subsection_counter</span></span><a class="headerlink" href="#gencap.utils.htmlReport.HTMLReport.subsection_counter" title="Link to this definition"></a></dt>
+<dd><p>Counter for subsections within a section.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.utils.htmlReport.HTMLReport.content">
+<span class="sig-name descname"><span class="pre">content</span></span><a class="headerlink" href="#gencap.utils.htmlReport.HTMLReport.content" title="Link to this definition"></a></dt>
+<dd><p>Internal HTML string buffer for report content.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.utils.htmlReport.HTMLReport.addContent">
+<span class="sig-name descname"><span class="pre">addContent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">html_content</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/htmlReport.html#HTMLReport.addContent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.htmlReport.HTMLReport.addContent" title="Link to this definition"></a></dt>
+<dd><p>Append arbitrary HTML content to the report.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>html_content</strong> (<em>str</em>) – Raw HTML string to be added.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.utils.htmlReport.HTMLReport.addDataFrame">
+<span class="sig-name descname"><span class="pre">addDataFrame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hide</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/htmlReport.html#HTMLReport.addDataFrame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.htmlReport.HTMLReport.addDataFrame" title="Link to this definition"></a></dt>
+<dd><p>Add a pandas DataFrame as an HTML table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – DataFrame to display.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title displayed above the table.</p></li>
+<li><p><strong>hide</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, hide the table by default and provide a toggle button.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.utils.htmlReport.HTMLReport.addDataFrameFilter">
+<span class="sig-name descname"><span class="pre">addDataFrameFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_columns</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/htmlReport.html#HTMLReport.addDataFrameFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.htmlReport.HTMLReport.addDataFrameFilter" title="Link to this definition"></a></dt>
+<dd><p>Add an interactive DataFrame with column-based filters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – DataFrame to display with filters.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Title of the table.</p></li>
+<li><p><strong>filter_columns</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – Columns for which dropdown filters will be generated.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Allows filtering of multi-valued cells (comma-separated).</p></li>
+<li><p>Generates inline JavaScript for client-side filtering.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.utils.htmlReport.HTMLReport.addFigure">
+<span class="sig-name descname"><span class="pre">addFigure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/htmlReport.html#HTMLReport.addFigure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.htmlReport.HTMLReport.addFigure" title="Link to this definition"></a></dt>
+<dd><p>Add a single figure to the report.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fig</strong> (<em>matplotlib.figure.Figure</em><em> or </em><em>plotly.graph_objs.Figure</em>) – The figure to be added.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title displayed above the figure.</p></li>
+<li><p><strong>fig_type</strong> (<em>{'plt'</em><em>, </em><em>'plotly'}</em><em>, </em><em>optional</em>) – Explicitly specify the figure type. Overrides autodetection.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.utils.htmlReport.HTMLReport.addFigurePair">
+<span class="sig-name descname"><span class="pre">addFigurePair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fig1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/htmlReport.html#HTMLReport.addFigurePair"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.htmlReport.HTMLReport.addFigurePair" title="Link to this definition"></a></dt>
+<dd><p>Add a pair of figures displayed side by side in the HTML report.</p>
+<p>This method renders two figures side by side in the report with their respective
+captions. It supports both Matplotlib (static images) and Plotly (interactive graphics),
+depending on the <cite>self.advancedGraphics</cite> setting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fig1</strong> (<em>matplotlib.figure.Figure</em><em> or </em><em>plotly.graph_objects.Figure</em>) – The first figure to be displayed.</p></li>
+<li><p><strong>fig2</strong> (<em>matplotlib.figure.Figure</em><em> or </em><em>plotly.graph_objects.Figure</em>) – The second figure to be displayed.</p></li>
+<li><p><strong>title1</strong> (<em>str</em>) – Caption/title displayed above the first figure.</p></li>
+<li><p><strong>title2</strong> (<em>str</em>) – Caption/title displayed above the second figure.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>When <code class="docutils literal notranslate"><span class="pre">self.advancedGraphics</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>, figures are treated as Matplotlib objects
+and are embedded as static PNG images.</p></li>
+<li><p>When <code class="docutils literal notranslate"><span class="pre">self.advancedGraphics</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, figures are assumed to be Plotly objects
+and are embedded with interactive capabilities.</p></li>
+<li><p>Automatically encodes images to Base64 for inline embedding in the HTML file.</p></li>
+</ul>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fig1</span><span class="p">,</span> <span class="n">ax1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fig2</span><span class="p">,</span> <span class="n">ax2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax2</span><span class="o">.</span><span class="n">bar</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span><span class="o">.</span><span class="n">addFigurePair</span><span class="p">(</span><span class="n">fig1</span><span class="p">,</span> <span class="n">fig2</span><span class="p">,</span> <span class="s2">&quot;Line Plot&quot;</span><span class="p">,</span> <span class="s2">&quot;Bar Chart&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.utils.htmlReport.HTMLReport.addImage">
+<span class="sig-name descname"><span class="pre">addImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figFilenameList</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caption</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/htmlReport.html#HTMLReport.addImage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.htmlReport.HTMLReport.addImage" title="Link to this definition"></a></dt>
+<dd><p>Embed one or more images into the report.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>figFilenameList</strong> (<em>str</em><em> or </em><em>list</em><em>[</em><em>str</em><em>]</em>) – Path(s) to image file(s) to embed.</p></li>
+<li><p><strong>width</strong> (<em>int</em><em>, </em><em>optional</em>) – Container width in pixels. Automatically determined if None.</p></li>
+<li><p><strong>caption</strong> (<em>str</em><em>, </em><em>optional</em>) – Caption displayed below the images.</p></li>
+<li><p><strong>remove</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to delete the source image files after embedding.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.utils.htmlReport.HTMLReport.addSection">
+<span class="sig-name descname"><span class="pre">addSection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sectionName</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/htmlReport.html#HTMLReport.addSection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.htmlReport.HTMLReport.addSection" title="Link to this definition"></a></dt>
+<dd><p>Add a new top-level section to the report.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sectionName</strong> (<em>str</em>) – Title of the section.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.utils.htmlReport.HTMLReport.addSubSection">
+<span class="sig-name descname"><span class="pre">addSubSection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sectionName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_table</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/htmlReport.html#HTMLReport.addSubSection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.htmlReport.HTMLReport.addSubSection" title="Link to this definition"></a></dt>
+<dd><p>Add a subsection under the current section.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sectionName</strong> (<em>str</em>) – Title of the subsection.</p></li>
+<li><p><strong>add_table</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include this subsection in the table of contents.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.utils.htmlReport.HTMLReport.addSummaryTable">
+<span class="sig-name descname"><span class="pre">addSummaryTable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/htmlReport.html#HTMLReport.addSummaryTable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.htmlReport.HTMLReport.addSummaryTable" title="Link to this definition"></a></dt>
+<dd><p>Generate and insert a table of contents based on added sections and subsections.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.utils.htmlReport.HTMLReport.saveToHTML">
+<span class="sig-name descname"><span class="pre">saveToHTML</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/htmlReport.html#HTMLReport.saveToHTML"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.htmlReport.HTMLReport.saveToHTML" title="Link to this definition"></a></dt>
+<dd><p>Finalize and save the HTML report to disk.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Automatically adds a table of contents if sections exist.</p></li>
+<li><p>Writes the report’s accumulated HTML content to <cite>self.filename</cite>.</p></li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-gencap.utils.module">
+<span id="gencap-utils-module-module"></span><h2>gencap.utils.module module<a class="headerlink" href="#module-gencap.utils.module" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.module.add_module">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.module.</span></span><span class="sig-name descname"><span class="pre">add_module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/module.html#add_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.module.add_module" title="Link to this definition"></a></dt>
+<dd><p>Register a custom GENCAP module.</p>
+<p>This function adds a new module to the GENCAP configuration registry, validates
+its structure, and persists it for future automatic imports.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>module_path</strong> (<em>str</em><em> or </em><em>Path</em>) – Absolute or relative path to the module directory.</p></li>
+<li><p><strong>module_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the module. Defaults to the folder name if not provided.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – <ul class="simple">
+<li><p>If the module is already registered.
+    - If the path does not exist.
+    - If the path is missing required subdirectories/files (e.g., <code class="docutils literal notranslate"><span class="pre">tasks</span></code>, <code class="docutils literal notranslate"><span class="pre">pipelines</span></code>, <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code>).</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Automatically retrieves the module’s version from its <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> file.</p></li>
+<li><p>Persists the registration in the global GENCAP config.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.module.auto_import_from">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.module.</span></span><span class="sig-name descname"><span class="pre">auto_import_from</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_package</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_dirs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/module.html#auto_import_from"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.module.auto_import_from" title="Link to this definition"></a></dt>
+<dd><p>Recursively import all tasks and register pipelines from a given base directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base_dir</strong> (<em>str</em>) – Absolute directory path of the module (e.g., <code class="docutils literal notranslate"><span class="pre">os.path.dirname(__file__)</span></code>).</p></li>
+<li><p><strong>base_package</strong> (<em>str</em>) – Base package name (e.g., <code class="docutils literal notranslate"><span class="pre">__package__</span></code>).</p></li>
+<li><p><strong>exclude_dirs</strong> (<em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – Subdirectories to exclude (e.g., [‘__pycache__’, ‘.git’]).</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Imports all <code class="docutils literal notranslate"><span class="pre">.py</span></code> files in the <code class="docutils literal notranslate"><span class="pre">tasks/</span></code> directory.</p></li>
+<li><p>Registers all JSON pipeline files in the <code class="docutils literal notranslate"><span class="pre">pipelines/</span></code> directory with the PipelineRegistry.</p></li>
+<li><p>Logs import and registration errors with traceback details.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.module.list_modules">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.module.</span></span><span class="sig-name descname"><span class="pre">list_modules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/module.html#list_modules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.module.list_modules" title="Link to this definition"></a></dt>
+<dd><p>List registered GENCAP modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>full</strong> (<em>bool</em>) – If False (default), return only module names.
+If True, return full module details including path and version.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>List of module names if <code class="docutils literal notranslate"><span class="pre">full=False</span></code>.</p></li>
+<li><p>Dictionary of modules with metadata if <code class="docutils literal notranslate"><span class="pre">full=True</span></code>.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list or dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.utils.module.remove_module">
+<span class="sig-prename descclassname"><span class="pre">gencap.utils.module.</span></span><span class="sig-name descname"><span class="pre">remove_module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/utils/module.html#remove_module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.utils.module.remove_module" title="Link to this definition"></a></dt>
+<dd><p>Remove a registered module from GENCAP.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – The name of the module to remove.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Updates the config file to reflect the removal.</p></li>
+</ul>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="gencap.html" class="btn btn-neutral float-left" title="Core objects" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Hye-Lim LEE (Epione team, Inria).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,1374 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gencap.utils.builder &mdash; GENCAP 0.9.0-dev documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=6c04cfde"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GENCAP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">🛠️ API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">gencap</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GENCAP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">gencap.utils.builder</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for gencap.utils.builder</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">importlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_digits</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PIL</span><span class="w"> </span><span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">importlib.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">version</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+<div class="viewcode-block" id="ProjectBuilder">
+<a class="viewcode-back" href="../../../gencap.html#gencap.ProjectBuilder">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ProjectBuilder</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A utility class to bootstrap GENCAP-compliant project structures.</span>
+
+<span class="sd">    This class provides helper methods to:</span>
+<span class="sd">      * Initialize a standardized database directory structure.</span>
+<span class="sd">      * Create a Python module scaffold for tasks and pipelines.</span>
+<span class="sd">      * Generate example datasets and tasks.</span>
+<span class="sd">      * Build task templates and code scaffolding for pipelines.</span>
+<span class="sd">      * Interactively create GENCAP-compliant datasets from files or dataframes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ProjectBuilder.create_database">
+<a class="viewcode-back" href="../../../gencap.html#gencap.ProjectBuilder.create_database">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_database</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a standardized GENCAP database directory structure.</span>
+
+<span class="sd">        This includes:</span>
+<span class="sd">        - ``source_data``: Original unprocessed files.</span>
+<span class="sd">        - ``raw_data``: Raw data in GENCAP dataset format.</span>
+<span class="sd">        - ``derivatives/shared``: Shared derivative datasets.</span>
+<span class="sd">        - ``derivatives/users``: User-specific derivative datasets.</span>
+
+<span class="sd">        Additionally, a sample dataset (`dummy_digits`) is generated in `raw_data`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data_dir : str</span>
+<span class="sd">            Path to the root directory where the database will be created.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        * Automatically creates the example dataset via `_create_dataset_example`.</span>
+<span class="sd">        * Existing directories are reused if already present.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
+        
+        <span class="c1"># Create source_data, raw_data, derivatives/shared, derivatives/users</span>
+        <span class="n">subdirs</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;source_data&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;raw_data&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;derivatives/shared&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;derivatives/users&quot;</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">subdir</span> <span class="ow">in</span> <span class="n">subdirs</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span> <span class="o">/</span> <span class="n">subdir</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_dataset_example</span><span class="p">(</span><span class="n">output_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span> <span class="s2">&quot;raw_data&quot;</span><span class="p">))</span></div>
+
+        
+<div class="viewcode-block" id="ProjectBuilder.create_module">
+<a class="viewcode-back" href="../../../gencap.html#gencap.ProjectBuilder.create_module">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_module</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a Python module scaffold for GENCAP tasks and pipelines.</span>
+
+<span class="sd">        This method:</span>
+<span class="sd">        * Initializes a root package with `__init__.py`.</span>
+<span class="sd">        * Creates `tasks/` and `pipelines/` subpackages.</span>
+<span class="sd">        * Auto-generates `plugin.py` for GENCAP integration.</span>
+<span class="sd">        * Inserts the module into the Python path and imports it.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        code_dir : str</span>
+<span class="sd">            The directory in which the module structure is created.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ImportError</span>
+<span class="sd">            If the generated module fails to import.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">code_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">code_dir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">code_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Create base package structure</span>
+        <span class="n">root_init_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">code_dir</span> <span class="o">/</span> <span class="s2">&quot;__init__.py&quot;</span>
+        <span class="n">root_init_path</span><span class="o">.</span><span class="n">touch</span><span class="p">()</span>
+
+        <span class="n">subdirs</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;tasks&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;pipelines&quot;</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">subdir</span> <span class="ow">in</span> <span class="n">subdirs</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">code_dir</span> <span class="o">/</span> <span class="n">subdir</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;__init__.py&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">touch</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># tasks/__init__.py: </span>
+        <span class="n">task_init_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">code_dir</span> <span class="o">/</span> <span class="s2">&quot;tasks&quot;</span> <span class="o">/</span> <span class="s2">&quot;__init__.py&quot;</span>
+        <span class="n">init_py_code</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">task_init_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">init_py_code</span><span class="p">)</span>
+        
+        <span class="c1"># pipelines/__init__.py</span>
+        <span class="n">pipe_init_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">code_dir</span> <span class="o">/</span> <span class="s2">&quot;pipelines&quot;</span> <span class="o">/</span> <span class="s2">&quot;__init__.py&quot;</span>
+        <span class="n">init_py_code</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">pipe_init_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">init_py_code</span><span class="p">)</span>
+        
+        <span class="c1"># root/__init__.py</span>
+        <span class="n">init_root_code</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
+<span class="s1"># Auto-import all task modules upon package import</span>
+<span class="s1">from .plugin import register</span>
+
+<span class="s1">__version__ = &quot;</span><span class="si">{</span><span class="n">version</span><span class="p">(</span><span class="s2">&quot;gencap&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot;</span>
+<span class="s1">__gencap_module__ = True</span>
+<span class="s1">&#39;&#39;&#39;</span>
+        
+        <span class="c1"># code_dir/__init__.py: Calling auto_import_tasks from tasks</span>
+        <span class="n">root_init_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">init_root_code</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[✓] __init__.py file was generated in: </span><span class="si">{</span><span class="n">root_init_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="n">root_plugin_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">code_dir</span> <span class="o">/</span> <span class="s2">&quot;plugin.py&quot;</span>
+        <span class="n">plugin_root_code</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
+<span class="s1"># Auto-import all task modules upon package import</span>
+<span class="s1">import os</span>
+<span class="s1">import gencap as gc</span>
+<span class="s1">def register():</span>
+<span class="s1">    base_dir = os.path.dirname(__file__)</span>
+<span class="s1">    gc.auto_import_from(base_dir, __package__)</span>
+
+<span class="s1">&#39;&#39;&#39;</span>
+        <span class="n">root_plugin_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">plugin_root_code</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[✓] plugin.py file was generated in: </span><span class="si">{</span><span class="n">root_plugin_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_task_example</span><span class="p">(</span><span class="n">output_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code_dir</span><span class="p">,</span> <span class="s2">&quot;tasks&quot;</span><span class="p">))</span>
+        
+        <span class="n">parent_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code_dir</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> 
+        <span class="n">module_name</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code_dir</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+        <span class="c1"># import the created module</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">parent_path</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">parent_path</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[✗] Failed to import module &#39;</span><span class="si">{</span><span class="n">module_name</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ProjectBuilder.generate_sample_code">
+<a class="viewcode-back" href="../../../gencap.html#gencap.ProjectBuilder.generate_sample_code">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_sample_code</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate and optionally save an example script to run a sample pipeline.</span>
+
+<span class="sd">        This code demonstrates:</span>
+<span class="sd">        * Creating a `Cohort` from the generated database.</span>
+<span class="sd">        * Initializing an example task.</span>
+<span class="sd">        * Running a minimal pipeline with `pipeline.run`.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        * Prompts the user to save the code to a specified directory.</span>
+<span class="sd">        * Useful as a quick-start guide for new users.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;data_dir&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the database directory created by the GENCAP ProjectBuilder: &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Generating the sample code to launch the example pipeline&quot;</span><span class="p">)</span>
+        <span class="n">sample_code_block</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&#39;&#39;import gencap as gc</span>
+
+<span class="s1">cohort = gc.Cohort(datasetDir=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="si">}</span><span class="s1">,</span>
+<span class="s1">                  datasetList=[&quot;dummy_digits&quot;])</span>
+
+<span class="s1">exampleTask = gc.task_manager.create(&#39;Example-MiniBatch-Resize&#39;)</span>
+
+<span class="s1">pipeline = gc.Pipeline(exampleTask)</span>
+
+<span class="s1">pipeline.run(cohort = cohort,</span>
+<span class="s1">            output_dir= </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dir</span><span class="p">,</span><span class="s2">&quot;derivatives&quot;</span><span class="p">,</span><span class="s2">&quot;shared&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">,</span>
+<span class="s1">           dataset_id= &quot;ExamplePipeline&quot;,</span>
+<span class="s1">           additional_tag_list=[&quot;My first Pipeline&quot;],</span>
+<span class="s1">           force_dir_replacement = False,</span>
+<span class="s1">           keep_intermediate_datasets = True)</span>
+<span class="s1">&#39;&#39;&#39;</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">sample_code_block</span><span class="p">)</span>
+        <span class="n">save_code</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Do you want to save this code? [y/n]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> 
+        <span class="k">if</span> <span class="n">save_code</span> <span class="o">==</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span>
+            <span class="n">save_path</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the path of directory to save this code.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span><span class="s1">&#39;sample.py&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">sample_code_block</span><span class="p">)</span></div>
+
+            
+<div class="viewcode-block" id="ProjectBuilder.create_dataset_from_dataframe">
+<a class="viewcode-back" href="../../../gencap.html#gencap.ProjectBuilder.create_dataset_from_dataframe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_dataset_from_dataframe</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">dataset_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dataset_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">force_replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">tag_list</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">indexing_field_list</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">file_location_field_list</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">copy_file</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">copy_way</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a GENCAP-compliant dataset from a given Pandas DataFrame.</span>
+
+<span class="sd">        This method:</span>
+<span class="sd">          * Saves the DataFrame as `data_content.csv` and `data_content.pkl`.</span>
+<span class="sd">          * Generates the `data_description.json` metadata file.</span>
+<span class="sd">          * Optionally copies or links files referenced in file location fields.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataframe : pd.DataFrame</span>
+<span class="sd">            Input DataFrame containing dataset records.</span>
+<span class="sd">        dataset_dir : str, optional</span>
+<span class="sd">            Root directory to save the dataset (e.g., `/path/to/raw_data`).</span>
+<span class="sd">            If not provided, prompts the user interactively.</span>
+<span class="sd">        dataset_name : str, optional</span>
+<span class="sd">            Name of the dataset folder. If not provided, prompts interactively.</span>
+<span class="sd">        force_replace : bool, optional</span>
+<span class="sd">            Whether to overwrite an existing dataset folder (default: prompts interactively).</span>
+<span class="sd">        tag_list : list, optional</span>
+<span class="sd">            List of tags describing the dataset (e.g., `[&quot;MRI&quot;, &quot;Brain&quot;]`).</span>
+<span class="sd">            If not provided, prompts interactively.</span>
+<span class="sd">        indexing_field_list : list, optional</span>
+<span class="sd">            Columns to be used as MultiIndex for the dataset. </span>
+<span class="sd">            If not provided, attempts to infer from the DataFrame or prompts the user.</span>
+<span class="sd">        file_location_field_list : list, optional</span>
+<span class="sd">            Columns containing file paths to copy/link (e.g., `[&quot;Image Path&quot;]`).</span>
+<span class="sd">        copy_file : bool, optional</span>
+<span class="sd">            Whether to physically copy or link files referenced in file location fields.</span>
+<span class="sd">            Prompts the user if not provided.</span>
+<span class="sd">        copy_way : {&quot;file&quot;, &quot;link&quot;}, optional</span>
+<span class="sd">            How to handle file copying. </span>
+<span class="sd">            - `&quot;file&quot;`: Copy files into the dataset directory.</span>
+<span class="sd">            - `&quot;link&quot;`: Create symbolic links to files.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If indexing fields are invalid or file paths in `file_location_field_list` are missing.</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If the dataset directory already exists and overwrite is declined.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        * Files with deep directory nesting (more than 3 levels) are flattened automatically.</span>
+<span class="sd">        * Invalid or missing file paths are dropped along with their corresponding rows.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        &gt;&gt;&gt; builder = ProjectBuilder()</span>
+<span class="sd">        &gt;&gt;&gt; df = pd.DataFrame({&quot;ID&quot;: [1], &quot;Image&quot;: [&quot;/path/image.nii.gz&quot;]})</span>
+<span class="sd">        &gt;&gt;&gt; builder.create_dataset_from_dataframe(df, &quot;/db/raw_data&quot;, &quot;MyDataset&quot;,</span>
+<span class="sd">                                                  indexing_field_list=[&quot;ID&quot;], file_location_field_list=[&quot;Image&quot;])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Interactive handling of dataset_dir and dataset_name if not provided</span>
+        <span class="k">if</span> <span class="n">dataset_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dataset_dir</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the output directory to create template dataset: &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">dataset_dir</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[&#39;</span><span class="se">\&quot;</span><span class="s2">]|[&#39;</span><span class="se">\&quot;</span><span class="s2">]$&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">dataset_dir</span><span class="p">)</span>  
+
+        <span class="k">if</span> <span class="n">dataset_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dataset_name</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the name of dataset: &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">dataset_name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[&#39;</span><span class="se">\&quot;</span><span class="s2">]|[&#39;</span><span class="se">\&quot;</span><span class="s2">]$&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">)</span>  
+        <span class="n">dataset_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataset_dir</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">)</span>
+        
+        <span class="c1"># Check for existing dataset folder</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">force_replace</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">force_replace</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Path </span><span class="si">{</span><span class="n">dataset_path</span><span class="si">}</span><span class="s2"> already exists. Do you want to replace the dataset? [y/n]: &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">force_replace</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                    <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">force_replace</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Please enter &#39;y&#39; or &#39;n&#39;.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">force_replace</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">]:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Deleting </span><span class="si">{</span><span class="n">dataset_path</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">force_replace</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="kc">False</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Operation cancelled.&quot;</span><span class="p">)</span>
+        
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> 
+        <span class="n">df</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        
+        <span class="c1"># Tag list setup</span>
+        <span class="k">if</span> <span class="n">tag_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tag</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the tag of the dataframe. (comma-separated, e.g., MRI, Test Cohort)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">tag</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[&#39;</span><span class="se">\&quot;</span><span class="s2">]|[&#39;</span><span class="se">\&quot;</span><span class="s2">]$&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">tag</span><span class="p">)</span> 
+            <span class="n">tag_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">tag</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+        
+        <span class="c1"># Indexing fields setup</span>
+        <span class="k">if</span> <span class="n">indexing_field_list</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">indexing_field_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">indexing_field_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">indexing_field</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the indexing fields of the dataframe. (comma-separated, e.g., Patient ID, Series ID)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;index&quot;</span>
+            <span class="n">indexing_field</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[&#39;</span><span class="se">\&quot;</span><span class="s2">]|[&#39;</span><span class="se">\&quot;</span><span class="s2">]$&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">indexing_field</span><span class="p">)</span> 
+            <span class="n">indexing_field_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">indexing_field</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">indexing_field_list</span><span class="p">,</span><span class="n">verify_integrity</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given indexing field(s) </span><span class="si">{</span><span class="n">indexing_field_list</span><span class="si">}</span><span class="s2"> is wrong. Check if there&#39;s other fields for indexing. </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+        
+        <span class="c1"># File location handling</span>
+        <span class="k">if</span> <span class="n">file_location_field_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">file_location_field</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the file location fields of the dataframe. (comma-separated, e.g., Image Path, Image Mask Path)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">file_location_field</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[&#39;</span><span class="se">\&quot;</span><span class="s2">]|[&#39;</span><span class="se">\&quot;</span><span class="s2">]$&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">file_location_field</span><span class="p">)</span> 
+            <span class="n">file_location_field_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">file_location_field</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+        <span class="k">if</span> <span class="n">file_location_field_list</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">drop_field</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">drop_indices</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">file_location_field_list</span><span class="p">:</span>
+                    <span class="n">total_files</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+                        <span class="n">path</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">):</span>
+                            <span class="n">drop_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">total_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">total_files</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;All file paths recorded in the field &#39;</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">&#39; doesn&#39;t exist. Removed &#39;</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">&#39; from the entries.&quot;</span><span class="p">)</span>
+                        <span class="n">drop_field</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">copy_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">copy_file</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">total_files</span><span class="p">))</span><span class="si">}</span><span class="s2"> files on the field [</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">]. Do you want to copy them? Otherwise, this field [</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">] will be dropped. [y/n]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">copy_file</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                                    <span class="k">break</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="n">copy_file</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Please enter &#39;y&#39; or &#39;n&#39;.&quot;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">copy_file</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">,</span><span class="kc">True</span><span class="p">]:</span>
+                            <span class="n">copy_way</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;How to copy them into the dataset? [link/file] (default: file): &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;file&quot;</span>
+                            <span class="n">copy_way</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[&#39;</span><span class="se">\&quot;</span><span class="s2">]|[&#39;</span><span class="se">\&quot;</span><span class="s2">]$&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">copy_way</span><span class="p">)</span> 
+                            <span class="n">path_mapper</span> <span class="o">=</span> <span class="p">{}</span>
+                            <span class="n">common_prefix</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">commonpath</span><span class="p">(</span><span class="n">total_files</span><span class="p">)</span>
+                            <span class="n">flat_path</span> <span class="o">=</span> <span class="kc">False</span>
+                            <span class="k">if</span> <span class="n">flat_path</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                                <span class="k">for</span> <span class="n">old_path</span> <span class="ow">in</span> <span class="n">total_files</span><span class="p">:</span>
+                                    <span class="n">new_path</span> <span class="o">=</span> <span class="n">old_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">common_prefix</span><span class="p">,</span><span class="n">dataset_path</span><span class="p">)</span>
+                                    <span class="n">dir_levels</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">new_path</span><span class="p">,</span> <span class="n">dataset_path</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dir_levels</span><span class="p">)</span> <span class="o">&gt;</span><span class="mi">3</span><span class="p">:</span>
+                                        <span class="n">flat_path</span> <span class="o">=</span> <span class="kc">True</span>
+                                        <span class="n">path_mapper</span> <span class="o">=</span> <span class="p">{}</span>
+                                        <span class="k">break</span>
+                                    <span class="n">path_mapper</span><span class="p">[</span><span class="n">old_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_path</span>
+                            <span class="k">if</span> <span class="n">flat_path</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                                <span class="k">for</span> <span class="n">old_path</span> <span class="ow">in</span> <span class="n">total_files</span><span class="p">:</span>
+                                    <span class="n">new_path</span> <span class="o">=</span> <span class="n">old_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">old_path</span><span class="p">),</span><span class="n">dataset_path</span><span class="p">)</span>
+                                    <span class="n">path_mapper</span><span class="p">[</span><span class="n">old_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_path</span>
+                            
+                            <span class="k">if</span> <span class="n">copy_way</span> <span class="o">==</span> <span class="s2">&quot;link&quot;</span><span class="p">:</span>
+                                <span class="k">for</span> <span class="n">old_path</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">total_files</span><span class="p">):</span>
+                                    <span class="n">new_path</span> <span class="o">=</span> <span class="n">path_mapper</span><span class="p">[</span><span class="n">old_path</span><span class="p">]</span>
+                                    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">new_path</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                                    <span class="n">os</span><span class="o">.</span><span class="n">symlink</span><span class="p">(</span><span class="n">old_path</span><span class="p">,</span> <span class="n">new_path</span><span class="p">)</span>
+                                <span class="n">df</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">field</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">path_mapper</span><span class="p">)</span>
+                            <span class="k">elif</span> <span class="n">copy_way</span> <span class="o">==</span> <span class="s2">&quot;file&quot;</span><span class="p">:</span>
+                                <span class="k">for</span> <span class="n">old_path</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">total_files</span><span class="p">):</span>
+                                    <span class="n">new_path</span> <span class="o">=</span> <span class="n">path_mapper</span><span class="p">[</span><span class="n">old_path</span><span class="p">]</span>
+                                    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">new_path</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                                    <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">old_path</span><span class="p">,</span> <span class="n">new_path</span><span class="p">)</span>
+                                <span class="n">df</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">field</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">path_mapper</span><span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected answer &#39;</span><span class="si">{</span><span class="n">copy_way</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+                            
+                            
+                        <span class="k">elif</span> <span class="n">copy_file</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="kc">False</span><span class="p">]:</span>
+                            <span class="n">drop_field</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+                <span class="n">drop_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">drop_indices</span><span class="p">))</span>
+                <span class="n">drop_field</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">drop_field</span><span class="p">))</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">drop_indices</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Some rows are deleted since the file path dosn&#39;t exist. Deleted indices: </span><span class="si">{</span><span class="n">drop_indices</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">delete_indices</span><span class="p">))</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">drop_field</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">drop_field</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">file_location_field_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">file_location_field_list</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">drop_field</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given file location field(s) &#39;</span><span class="si">{</span><span class="n">file_location_field</span><span class="si">}</span><span class="s2">&#39; is wrong. check </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Save dataset files</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="s2">&quot;data_content.csv&quot;</span><span class="p">))</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="s2">&quot;data_content.pkl&quot;</span><span class="p">))</span>
+
+        <span class="n">desc</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;uniqueID&quot;</span><span class="p">:</span> <span class="n">dataset_name</span><span class="p">,</span>
+            <span class="s2">&quot;indexingFieldList&quot;</span><span class="p">:</span> <span class="n">indexing_field_list</span><span class="p">,</span>
+            <span class="s2">&quot;fileLocationFieldList&quot;</span><span class="p">:</span> <span class="n">file_location_field_list</span><span class="p">,</span>
+            <span class="s2">&quot;tagList&quot;</span><span class="p">:</span> <span class="n">tag</span>
+        <span class="p">}</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="s2">&quot;data_description.json&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[✓] Dataset saved: </span><span class="si">{</span><span class="n">dataset_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+        
+<div class="viewcode-block" id="ProjectBuilder.create_dataset_from_file">
+<a class="viewcode-back" href="../../../gencap.html#gencap.ProjectBuilder.create_dataset_from_file">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_dataset_from_file</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">sep</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">encoding</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dataset_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dataset_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">force_replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">tag_list</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">indexing_field_list</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">file_location_field_list</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">copy_file</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">copy_way</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a GENCAP-compliant dataset from a file.</span>
+
+<span class="sd">        This method reads a file into a Pandas DataFrame, then generates:</span>
+<span class="sd">        - `data_content.csv` and `data_content.pkl`</span>
+<span class="sd">        - `data_description.json` metadata file</span>
+<span class="sd">        - (Optional) Copies or links referenced files from file-location columns.</span>
+
+<span class="sd">        Supported file formats:</span>
+<span class="sd">        * CSV (`.csv`, `.tsv`)</span>
+<span class="sd">        * Excel (`.xls`, `.xlsx`)</span>
+<span class="sd">        * Pickle (`.pkl`, `.pickle`)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        file_path : str, optional</span>
+<span class="sd">            Path to the input file. If not provided, prompts the user interactively.</span>
+<span class="sd">        sep : str, optional</span>
+<span class="sd">            Delimiter for CSV/TSV files. Default: `,`.</span>
+<span class="sd">        encoding : str, optional</span>
+<span class="sd">            Encoding for CSV/TSV files. Default: `utf-8`.</span>
+<span class="sd">        dataset_dir : str, optional</span>
+<span class="sd">            Root directory for dataset storage (e.g., `/path/to/raw_data`).</span>
+<span class="sd">        dataset_name : str, optional</span>
+<span class="sd">            Name of the dataset folder. If omitted, prompts interactively.</span>
+<span class="sd">        force_replace : bool, optional</span>
+<span class="sd">            Whether to overwrite an existing dataset if present.</span>
+<span class="sd">        tag_list : list, optional</span>
+<span class="sd">            Tags describing the dataset (e.g., `[&quot;MRI&quot;, &quot;Training&quot;]`).</span>
+<span class="sd">        indexing_field_list : list, optional</span>
+<span class="sd">            Columns to use as the MultiIndex.</span>
+<span class="sd">        file_location_field_list : list, optional</span>
+<span class="sd">            Columns containing file paths to validate/copy/link.</span>
+<span class="sd">        copy_file : bool, optional</span>
+<span class="sd">            Whether to copy or link files from file-location fields.</span>
+<span class="sd">        copy_way : {&quot;file&quot;, &quot;link&quot;}, optional</span>
+<span class="sd">            File handling method if copying is enabled:</span>
+<span class="sd">            - `&quot;file&quot;`: Copy files into the dataset folder.</span>
+<span class="sd">            - `&quot;link&quot;`: Create symbolic links.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If file format is unsupported or indexing fields are invalid.</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If dataset path exists and overwrite is declined.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        * For missing files in `file_location_field_list`, corresponding rows are dropped.</span>
+<span class="sd">        * Files nested deeper than 3 directories are flattened into a single directory.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        &gt;&gt;&gt; builder = ProjectBuilder()</span>
+<span class="sd">        &gt;&gt;&gt; builder.create_dataset_from_file(</span>
+<span class="sd">        ...     file_path=&quot;patients.csv&quot;,</span>
+<span class="sd">        ...     dataset_dir=&quot;./raw_data&quot;,</span>
+<span class="sd">        ...     dataset_name=&quot;Patients&quot;,</span>
+<span class="sd">        ...     indexing_field_list=[&quot;Patient ID&quot;],</span>
+<span class="sd">        ...     file_location_field_list=[&quot;Image Path&quot;]</span>
+<span class="sd">        ... )</span>
+<span class="sd">        [✓] Dataset example saved: ./raw_data/Patients</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># Handle interactive dataset_dir</span>
+        <span class="k">if</span> <span class="n">dataset_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dataset_dir</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the output directory to create template dataset: &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">dataset_dir</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[&#39;</span><span class="se">\&quot;</span><span class="s2">]|[&#39;</span><span class="se">\&quot;</span><span class="s2">]$&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">dataset_dir</span><span class="p">)</span>  
+        
+        <span class="c1"># Handle interactive dataset_name</span>
+        <span class="k">if</span> <span class="n">dataset_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dataset_name</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the name of dataset: &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">dataset_name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[&#39;</span><span class="se">\&quot;</span><span class="s2">]|[&#39;</span><span class="se">\&quot;</span><span class="s2">]$&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">)</span>  
+        <span class="n">dataset_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataset_dir</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">)</span>
+        
+        <span class="c1"># Replace existing dataset if user approves</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">force_replace</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">force_replace</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Path </span><span class="si">{</span><span class="n">dataset_path</span><span class="si">}</span><span class="s2"> already exists. Do you want to replace the dataset? [y/n]: &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">force_replace</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                    <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">force_replace</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Please enter &#39;y&#39; or &#39;n&#39;.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">force_replace</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">]:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Deleting </span><span class="si">{</span><span class="n">dataset_path</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">force_replace</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="kc">False</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Operation cancelled.&quot;</span><span class="p">)</span>
+    
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> 
+        
+        <span class="c1"># Read input file</span>
+        <span class="k">if</span> <span class="n">file_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">file_path</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the path of the file. (Available file format:.csv, .tsv, .xls, .xlsx, .pkl, .pickle)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">file_path</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[&#39;</span><span class="se">\&quot;</span><span class="s2">]|[&#39;</span><span class="se">\&quot;</span><span class="s2">]$&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span> 
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;.csv&quot;</span><span class="p">,</span><span class="s2">&quot;.tsv&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">sep</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">sep</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter a delimiter. default: ,&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="n">sep</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[&#39;</span><span class="se">\&quot;</span><span class="s2">]|[&#39;</span><span class="se">\&quot;</span><span class="s2">]$&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="p">)</span> 
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">sep</span><span class="p">:</span>
+                        <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span>
+                <span class="k">if</span> <span class="n">encoding</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">encoding</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter an encoding option. default: utf-8&quot;</span><span class="p">)</span>
+                    <span class="n">encoding</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[&#39;</span><span class="se">\&quot;</span><span class="s2">]|[&#39;</span><span class="se">\&quot;</span><span class="s2">]$&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="p">)</span> 
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">encoding</span><span class="p">:</span>
+                        <span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;utf-8&quot;</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">file_path</span><span class="p">),</span><span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span><span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;.xls&quot;</span><span class="p">,</span><span class="s2">&quot;.xlsx&quot;</span><span class="p">]:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;.pkl&quot;</span><span class="p">,</span><span class="s2">&quot;.pickle&quot;</span><span class="p">]:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_pickle</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">file_path</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given extension </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">suffix</span><span class="p">)</span><span class="si">}</span><span class="s2"> is not supported.&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given path </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="si">}</span><span class="s2"> is not readble. check </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Tag list input</span>
+        <span class="k">if</span> <span class="n">tag_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tag</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the tag of the dataframe. (comma-separated, e.g., MRI, Test Cohort)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">tag</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[&#39;</span><span class="se">\&quot;</span><span class="s2">]|[&#39;</span><span class="se">\&quot;</span><span class="s2">]$&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">tag</span><span class="p">)</span> 
+            <span class="n">tag_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">tag</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+        
+        <span class="c1"># Indexing field setup</span>
+        <span class="k">if</span> <span class="n">indexing_field_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">indexing_field</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the indexing fields of the dataframe. (comma-separated, e.g., Patient ID, Series ID)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;index&quot;</span>
+            <span class="n">indexing_field</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[&#39;</span><span class="se">\&quot;</span><span class="s2">]|[&#39;</span><span class="se">\&quot;</span><span class="s2">]$&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">indexing_field</span><span class="p">)</span> 
+            <span class="n">indexing_field_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">indexing_field</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">indexing_field_list</span><span class="p">,</span><span class="n">verify_integrity</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given indexing field(s) </span><span class="si">{</span><span class="n">indexing_field_list</span><span class="si">}</span><span class="s2"> is wrong. Check if there&#39;s other fields for indexing. </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+        
+        <span class="c1"># File location handling </span>
+        <span class="k">if</span> <span class="n">file_location_field_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">file_location_field</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the file location fields of the dataframe. (comma-separated, e.g., Image Path, Image Mask Path)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">file_location_field</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[&#39;</span><span class="se">\&quot;</span><span class="s2">]|[&#39;</span><span class="se">\&quot;</span><span class="s2">]$&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">file_location_field</span><span class="p">)</span> 
+            <span class="n">file_location_field_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">file_location_field</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+        <span class="k">if</span> <span class="n">file_location_field_list</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">drop_field</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">drop_indices</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">file_location_field_list</span><span class="p">:</span>
+                    <span class="n">total_files</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+                        <span class="n">path</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">field</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">):</span>
+                            <span class="n">drop_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">total_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">total_files</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;All file paths recorded in the field &#39;</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">&#39; doesn&#39;t exist. Removed &#39;</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">&#39; from the entries.&quot;</span><span class="p">)</span>
+                        <span class="n">drop_field</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">copy_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">copy_file</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">total_files</span><span class="p">))</span><span class="si">}</span><span class="s2"> files on the field [</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">]. Do you want to copy them? Otherwise, this field [</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">] will be dropped. [y/n]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">copy_file</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                                    <span class="k">break</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="n">copy_file</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Please enter &#39;y&#39; or &#39;n&#39;.&quot;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">copy_file</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">,</span><span class="kc">True</span><span class="p">]:</span>
+                            <span class="n">copy_way</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;How to copy them into the dataset? [link/file] (default: file): &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;file&quot;</span>
+                            <span class="n">copy_way</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[&#39;</span><span class="se">\&quot;</span><span class="s2">]|[&#39;</span><span class="se">\&quot;</span><span class="s2">]$&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">copy_way</span><span class="p">)</span> 
+                            <span class="n">path_mapper</span> <span class="o">=</span> <span class="p">{}</span>
+                            <span class="n">common_prefix</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">commonpath</span><span class="p">(</span><span class="n">total_files</span><span class="p">)</span>
+                            <span class="n">flat_path</span> <span class="o">=</span> <span class="kc">False</span>
+                            <span class="k">if</span> <span class="n">flat_path</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                                <span class="k">for</span> <span class="n">old_path</span> <span class="ow">in</span> <span class="n">total_files</span><span class="p">:</span>
+                                    <span class="n">new_path</span> <span class="o">=</span> <span class="n">old_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">common_prefix</span><span class="p">,</span><span class="n">dataset_path</span><span class="p">)</span>
+                                    <span class="n">dir_levels</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">new_path</span><span class="p">,</span> <span class="n">dataset_path</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dir_levels</span><span class="p">)</span> <span class="o">&gt;</span><span class="mi">3</span><span class="p">:</span>
+                                        <span class="n">flat_path</span> <span class="o">=</span> <span class="kc">True</span>
+                                        <span class="n">path_mapper</span> <span class="o">=</span> <span class="p">{}</span>
+                                        <span class="k">break</span>
+                                    <span class="n">path_mapper</span><span class="p">[</span><span class="n">old_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_path</span>
+                            <span class="k">if</span> <span class="n">flat_path</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                                <span class="k">for</span> <span class="n">old_path</span> <span class="ow">in</span> <span class="n">total_files</span><span class="p">:</span>
+                                    <span class="n">new_path</span> <span class="o">=</span> <span class="n">old_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">old_path</span><span class="p">),</span><span class="n">dataset_path</span><span class="p">)</span>
+                                    <span class="n">path_mapper</span><span class="p">[</span><span class="n">old_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_path</span>
+                            
+                            <span class="k">if</span> <span class="n">copy_way</span> <span class="o">==</span> <span class="s2">&quot;link&quot;</span><span class="p">:</span>
+                                <span class="k">for</span> <span class="n">old_path</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">total_files</span><span class="p">):</span>
+                                    <span class="n">new_path</span> <span class="o">=</span> <span class="n">path_mapper</span><span class="p">[</span><span class="n">old_path</span><span class="p">]</span>
+                                    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">new_path</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                                    <span class="n">os</span><span class="o">.</span><span class="n">symlink</span><span class="p">(</span><span class="n">old_path</span><span class="p">,</span> <span class="n">new_path</span><span class="p">)</span>
+                                <span class="n">df</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">field</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">path_mapper</span><span class="p">)</span>
+                            <span class="k">elif</span> <span class="n">copy_way</span> <span class="o">==</span> <span class="s2">&quot;file&quot;</span><span class="p">:</span>
+                                <span class="k">for</span> <span class="n">old_path</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">total_files</span><span class="p">):</span>
+                                    <span class="n">new_path</span> <span class="o">=</span> <span class="n">path_mapper</span><span class="p">[</span><span class="n">old_path</span><span class="p">]</span>
+                                    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">new_path</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                                    <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">old_path</span><span class="p">,</span> <span class="n">new_path</span><span class="p">)</span>
+                                <span class="n">df</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">field</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">path_mapper</span><span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected answer &#39;</span><span class="si">{</span><span class="n">copy_way</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+                            
+                            
+                        <span class="k">elif</span> <span class="n">copy_file</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="kc">False</span><span class="p">]:</span>
+                            <span class="n">drop_field</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+                <span class="n">drop_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">drop_indices</span><span class="p">))</span>
+                <span class="n">drop_field</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">drop_field</span><span class="p">))</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">drop_indices</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Some rows are deleted since the file path dosn&#39;t exist. Deleted indices: </span><span class="si">{</span><span class="n">drop_indices</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">delete_indices</span><span class="p">))</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">drop_field</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">drop_field</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">file_location_field_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">file_location_field_list</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">drop_field</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Given file location field(s) &#39;</span><span class="si">{</span><span class="n">file_location_field</span><span class="si">}</span><span class="s2">&#39; is wrong. check </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Save outputs</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="s2">&quot;data_content.csv&quot;</span><span class="p">))</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="s2">&quot;data_content.pkl&quot;</span><span class="p">))</span>
+
+        <span class="n">desc</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;uniqueID&quot;</span><span class="p">:</span> <span class="n">dataset_name</span><span class="p">,</span>
+            <span class="s2">&quot;indexingFieldList&quot;</span><span class="p">:</span> <span class="n">indexing_field_list</span><span class="p">,</span>
+            <span class="s2">&quot;fileLocationFieldList&quot;</span><span class="p">:</span> <span class="n">file_location_field_list</span><span class="p">,</span>
+            <span class="s2">&quot;tagList&quot;</span><span class="p">:</span> <span class="n">tag</span>
+        <span class="p">}</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="s2">&quot;data_description.json&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[✓] Dataset example saved: </span><span class="si">{</span><span class="n">dataset_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+        
+<div class="viewcode-block" id="ProjectBuilder.create_task_template">
+<a class="viewcode-back" href="../../../gencap.html#gencap.ProjectBuilder.create_task_template">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_task_template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Interactively generate a template Python task file for GENCAP.</span>
+
+<span class="sd">        This method prompts the user for task metadata and auto-generates:</span>
+<span class="sd">        * A Python class skeleton inheriting from `Task`.</span>
+<span class="sd">        * Boilerplate for either **full-batch** or **mini-batch** mode.</span>
+<span class="sd">        * A default `_run_quality_control` method section.</span>
+
+<span class="sd">        The generated task includes:</span>
+<span class="sd">          - Input/output field definitions.</span>
+<span class="sd">          - Developer metadata.</span>
+<span class="sd">          - Parameter documentation stubs.</span>
+
+<span class="sd">        The template is saved to the `tasks/` directory of the active module or a user-specified directory.</span>
+
+<span class="sd">        Prompts</span>
+<span class="sd">        -------</span>
+<span class="sd">        * Task name (e.g., `ImageCroppingTask`)</span>
+<span class="sd">        * Version (default: `1.0`)</span>
+<span class="sd">        * Description, application domain, tags</span>
+<span class="sd">        * Developer name and organization</span>
+<span class="sd">        * Batch processing mode (y/n)</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the user provides invalid responses (e.g., non-`y/n` confirmation).</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        * Supports both **mini-batch** and **full-batch** task templates.</span>
+<span class="sd">        * The generated file includes a ready-to-fill `_run_task` or `_run_task_on_sample` stub.</span>
+<span class="sd">        * Also includes a `_run_quality_control` stub for visual validation.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        &gt;&gt;&gt; builder = ProjectBuilder()</span>
+<span class="sd">        &gt;&gt;&gt; builder.create_task_template()</span>
+<span class="sd">        [✓] Task template created: ./my_module/tasks/template.py</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Determine save directory</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;code_dir&quot;</span><span class="p">):</span>
+            <span class="n">use_code_dir</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Do you want to save the template file in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">code_dir</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="s1">&#39;tasks&#39;</span><span class="si">}</span><span class="s2">? [y/n] : &quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">use_code_dir</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>
+                <span class="n">task_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">code_dir</span> <span class="o">/</span> <span class="s2">&quot;tasks&quot;</span>
+            <span class="k">elif</span> <span class="n">use_code_dir</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span>
+                <span class="n">task_dir</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the output directory to create template file. : &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The answer should be y or n&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">task_dir</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the output directory to create template file. : &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        
+        <span class="c1"># Collect task metadata interactively</span>
+        <span class="n">task_name</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter task name (e.g., ImageCroppingTask): &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;ExampleTask&quot;</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter version (default 1.0): &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;1.0&quot;</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the description about the task (e.g., This task cropping the image.): &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">application_domain</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter application domain (e.g., Medical Imaging): &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">application</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter application tags (comma-separated, e.g., pre-processing,segmentation): &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">developer_names</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter your name(s): &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">developer_org</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter your organization: &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">batch</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Is the code implemented in mini batch mode? [y/n] (default y): &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;y&quot;</span>
+        
+        <span class="c1"># Code block: choose mini-batch or full-batch template</span>
+        <span class="k">if</span> <span class="n">batch</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span>
+            <span class="n">batch_process</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="c1"># ✅ Write task file</span>
+            <span class="n">code_block</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">    # -------------------------------</span>
+<span class="s1">    # Full-batch Processing Interface (self.batch_process=False)</span>
+<span class="s1">    # -------------------------------</span>
+<span class="s1">    def _run_task(self,</span>
+<span class="s1">                 input_dataframe: pd.DataFrame=None,</span>
+<span class="s1">                 output_dataframe: pd.DataFrame=None,</span>
+<span class="s1">                 error_dataframe: pd.DataFrame=None,</span>
+<span class="s1">                 base_indexing_fields: list=None,</span>
+<span class="s1">                 parameter_dict: dict=None,</span>
+<span class="s1">                 pathname_policy_dict:dict=None,</span>
+<span class="s1">                 debug_mode: bool = False):</span>
+<span class="s1">        &quot;&quot;&quot;</span>
+<span class="s1">        Process the entire dataset as a single batch.</span>
+
+<span class="s1">        Parameters:</span>
+<span class="s1">            input_dataframe: DataFrame containing all input data.</span>
+<span class="s1">            output_dataframe: Empty DataFrame to be filled with processed output.</span>
+<span class="s1">            error_dataframe: Empty DataFrame to log any processing errors.</span>
+<span class="s1">            base_indexing_fields: List of fields used to iterate over samples.</span>
+<span class="s1">            parameter_dict: Dictionary with algorithm parameters.</span>
+<span class="s1">            debug_mode: If True, perform additional verifications.</span>
+
+<span class="s1">        Returns:</span>
+<span class="s1">            Updated output_dataframe and error_dataframe.</span>
+<span class="s1">        &quot;&quot;&quot;</span>
+<span class="s1">        if input_dataframe is None:</span>
+<span class="s1">            input_dataframe = self.input_dataframe</span>
+<span class="s1">        if output_dataframe is None:</span>
+<span class="s1">            output_dataframe = self.output_dataframe</span>
+<span class="s1">        if error_dataframe is None:</span>
+<span class="s1">            error_dataframe = self.error_dataframe</span>
+<span class="s1">        if base_indexing_fields is None:</span>
+<span class="s1">            base_indexing_fields = self.base_indexing_fields</span>
+<span class="s1">        if parameter_dict is None :</span>
+<span class="s1">            parameter_dict = self.parameter_dict</span>
+<span class="s1">        if pathname_policy_dict is None:</span>
+<span class="s1">            pathname_policy_dict = self.pathname_policy_dict</span>
+
+<span class="s1">        # This method must be implemented by a subclass.</span>
+<span class="s1">        raise NotImplementedError(&quot;The run_task() method must be implemented in a subclass.&quot;)</span>
+
+<span class="s1">        return output_dataframe, error_dataframe</span>
+<span class="s1">&#39;&#39;&#39;</span>
+        <span class="k">elif</span> <span class="n">batch</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span>
+            <span class="n">batch_process</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">code_block</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">    # -------------------------------</span>
+<span class="s1">    # mini-batch Processing Interface (self.batch_process=True)</span>
+<span class="s1">    # -------------------------------        </span>
+<span class="s1">    def _run_task_on_sample(self,</span>
+<span class="s1">                           iteration_counter: int,</span>
+<span class="s1">                           base_index_value,</span>
+<span class="s1">                           row_input_dataframe: pd.DataFrame,</span>
+<span class="s1">                           row_output_dataframe: pd.DataFrame,</span>
+<span class="s1">                           row_error_dataframe: pd.DataFrame,</span>
+<span class="s1">                           parameter_dict: dict,</span>
+<span class="s1">                            pathname_policy_dict:dict,</span>
+<span class="s1">                           debug_mode: bool):</span>
+<span class="s1">        &quot;&quot;&quot;</span>
+<span class="s1">        Process a single sample (or a group corresponding to the same base index).</span>
+
+<span class="s1">        This function must be overridden in a subclass. It should update the row_output_dataframe</span>
+<span class="s1">        and row_error_dataframe for the current sample.</span>
+
+<span class="s1">        Returns:</span>
+<span class="s1">            A tuple: (row_output_dataframe, row_error_dataframe)</span>
+<span class="s1">        &quot;&quot;&quot;</span>
+<span class="s1">        raise NotImplementedError(&quot;The _run_task_on_sample() method must be implemented in a subclass.&quot;)</span>
+
+<span class="s1">    def _start_processing(self,</span>
+<span class="s1">                         input_dataframe: pd.DataFrame,</span>
+<span class="s1">                         error_dataframe: pd.DataFrame,</span>
+<span class="s1">                         base_indexing_fields: list,</span>
+<span class="s1">                         parameter_dict: dict,</span>
+<span class="s1">                         debug_mode: bool):</span>
+<span class="s1">        &quot;&quot;&quot;</span>
+<span class="s1">        Initialize processing. For example, perform dataset integrity checks,</span>
+<span class="s1">        initialize output structures, etc.</span>
+<span class="s1">        &quot;&quot;&quot;</span>
+
+<span class="s1">        self.logger.info(&quot;Starting mini-batch processing...&quot;)</span>
+<span class="s1">        # Additional initialization or validation can be added here.</span>
+<span class="s1">        return True</span>
+
+<span class="s1">    def _stop_iterating(self,</span>
+<span class="s1">                        input_dataframe: pd.DataFrame,</span>
+<span class="s1">                        output_dataframe: pd.DataFrame,</span>
+<span class="s1">                        base_indexing_fields: list,</span>
+<span class="s1">                        error_dataframe: pd.DataFrame):</span>
+<span class="s1">        &quot;&quot;&quot;</span>
+<span class="s1">        Decide whether further iterations are needed.</span>
+<span class="s1">        By default, only one iteration is performed.</span>
+
+<span class="s1">        Returns:</span>
+<span class="s1">            True if processing should stop, False otherwise.</span>
+<span class="s1">        &quot;&quot;&quot;</span>
+<span class="s1">        return True  # Default: perform only one iteration</span>
+
+<span class="s1">    def _end_processing(self,</span>
+<span class="s1">                       input_dataframe: pd.DataFrame=None,</span>
+<span class="s1">                       output_dataframe: pd.DataFrame=None,</span>
+<span class="s1">                       error_dataframe: pd.DataFrame=None,</span>
+<span class="s1">                       base_indexing_fields: list=None,</span>
+<span class="s1">                       parameter_dict: dict=None,</span>
+<span class="s1">                       debug_mode: bool=None):</span>
+<span class="s1">        &quot;&quot;&quot;</span>
+<span class="s1">        Finalize processing. This may involve post-processing validations or calculations</span>
+<span class="s1">        based on the aggregated results.</span>
+<span class="s1">        &quot;&quot;&quot;</span>
+
+<span class="s1">        self.logger.info(&quot;Ending mini-batch processing...&quot;)</span>
+<span class="s1">&#39;&#39;&#39;</span>
+        <span class="n">Path</span><span class="p">(</span><span class="n">task_dir</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">class_name</span> <span class="o">=</span> <span class="n">task_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">task_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">task_dir</span><span class="p">,</span> <span class="s2">&quot;template.py&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Create template string</span>
+        <span class="n">task_code</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
+<span class="s1">import gencap</span>
+<span class="s1">from gencap import Task, task_manager</span>
+<span class="s1">import pandas as pd</span>
+
+
+<span class="s1">@task_manager.register(task_id=&quot;</span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s1">&quot;, version=&quot;</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s1">&quot;)</span>
+<span class="s1">class </span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s1">(Task):</span>
+<span class="s1">    def __init__(self):</span>
+<span class="s1">        super().__init__()</span>
+<span class="s1">        # Indexing fields</span>
+<span class="s1">        self.additional_input_indexing_fields = []               # Additional indexing fields only in input</span>
+<span class="s1">        self.additional_output_indexing_fields = []              # Additional indexing fields produced in output</span>
+
+<span class="s1">        # Input file fields</span>
+<span class="s1">        self.mandatory_input_fields = []                         # Fields required to process each sample</span>
+<span class="s1">        self.optional_input_fields = []                          # Optional fields that may or may not be used</span>
+<span class="s1">        self.input_file_location_fields = []                     # File location fields </span>
+
+<span class="s1">        # Output file fields</span>
+<span class="s1">        self.mandatory_output_fields = []                        # Fields always produced in output</span>
+<span class="s1">        self.optional_output_fields = []                         # Fields that may be generated</span>
+<span class="s1">        self.output_file_location_fields = []                    # Fields where file location is stored </span>
+
+<span class="s1">        # Metadata</span>
+<span class="s1">        self.unique_id = &quot;</span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s1">&quot;</span>
+<span class="s1">        self.version = &quot;</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s1">&quot;</span>
+<span class="s1">        self.description = &quot;</span><span class="si">{</span><span class="n">description</span><span class="si">}</span><span class="s1">&quot;</span>
+<span class="s1">        self.application_domain = &quot;</span><span class="si">{</span><span class="n">application_domain</span><span class="si">}</span><span class="s1">&quot;</span>
+<span class="s1">        self.application = </span><span class="si">{</span><span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">application</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">a</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span><span class="si">}</span>
+<span class="s1">        self.developer_names = &quot;</span><span class="si">{</span><span class="n">developer_names</span><span class="si">}</span><span class="s1">&quot;</span>
+<span class="s1">        self.developer_organization = &quot;</span><span class="si">{</span><span class="n">developer_org</span><span class="si">}</span><span class="s1">&quot;</span>
+<span class="s1">        self.parameter_info = </span><span class="se">{{}}</span><span class="s1"> # Write the task&#39;s parameter to be used as dictionary. key: parameter, value: explanation for the parameter. </span>
+
+<span class="s1">        # Processing mode: True = mini-batch; False = full-batch</span>
+<span class="s1">        self.batch_process = </span><span class="si">{</span><span class="n">batch_process</span><span class="si">}</span>
+
+<span class="s1">        </span><span class="si">{</span><span class="n">code_block</span><span class="si">}</span>
+
+<span class="s1">        </span>
+<span class="s1">    # -------------------------------</span>
+<span class="s1">    # Qulity Control Interface</span>
+<span class="s1">    # -------------------------------</span>
+<span class="s1">    def _run_quality_control(self,HTMLReport:&quot;HTMLReport&quot;,</span>
+<span class="s1">                             nicePlots=True,</span>
+<span class="s1">                            offline_mode=True):</span>
+<span class="s1">        hrQC = HTMLReport </span>
+<span class="s1">        hrQC.addSection(&quot;Quality Control List&quot;)</span>
+<span class="s1">        # -------------------------------------------------------------------------</span>
+<span class="s1">        #</span>
+<span class="s1">        #</span>
+<span class="s1">        #</span>
+<span class="s1">        #</span>
+<span class="s1">        #</span>
+<span class="s1">        #</span>
+<span class="s1">        # Section to be replaced by the developer of the task.</span>
+<span class="s1">        #</span>
+<span class="s1">        #</span>
+<span class="s1">        #</span>
+<span class="s1">        #</span>
+<span class="s1">        #</span>
+<span class="s1">        #</span>
+<span class="s1">        # -------------------------------------------------------------------------</span>
+<span class="s1">        return HTMLReport</span>
+
+<span class="s1">&#39;&#39;&#39;</span>
+
+        <span class="c1"># Save file</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">task_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">task_code</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[✓] Task template created: </span><span class="si">{</span><span class="n">task_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> </div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_dataset_example</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a sample dataset using the sklearn `load_digits` dataset.</span>
+
+<span class="sd">        This method automatically:</span>
+<span class="sd">        - Saves 20 digit images as PNG files.</span>
+<span class="sd">        - Generates a DataFrame containing image metadata:</span>
+<span class="sd">          * Image ID</span>
+<span class="sd">          * File path</span>
+<span class="sd">          * Digit label</span>
+<span class="sd">          * Image shape</span>
+<span class="sd">          * File size (MB)</span>
+<span class="sd">          * Average pixel intensity</span>
+<span class="sd">        - Produces GENCAP-compliant files:</span>
+<span class="sd">          * `data_content.csv`</span>
+<span class="sd">          * `data_content.pkl`</span>
+<span class="sd">          * `data_description.json`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        output_dir : str</span>
+<span class="sd">            Directory path where the dummy dataset will be created. </span>
+<span class="sd">            Typically points to a `raw_data` folder.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        * The sample dataset is stored in a subfolder named **`dummy_digits`**.</span>
+<span class="sd">        * This is primarily used for testing or demonstrating GENCAP workflows.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        &gt;&gt;&gt; builder = ProjectBuilder()</span>
+<span class="sd">        &gt;&gt;&gt; builder._create_dataset_example(&quot;./raw_data&quot;)</span>
+<span class="sd">        Dataset example saved: ./raw_data/dummy_digits</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Load sklearn digits dataset (8x8 grayscale images)</span>
+        <span class="n">digits</span> <span class="o">=</span> <span class="n">load_digits</span><span class="p">()</span>
+        <span class="n">save_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span><span class="s2">&quot;dummy_digits&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">records</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
+            <span class="n">img_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;image-DIGITS_</span><span class="si">{</span><span class="n">img_id</span><span class="si">}</span><span class="s2">.png&quot;</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+            
+            <span class="c1"># Extract image array and metadata</span>
+            <span class="n">img_array</span> <span class="o">=</span> <span class="n">digits</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">digits</span><span class="o">.</span><span class="n">target</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">avg_intensity</span> <span class="o">=</span> <span class="n">img_array</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="n">shape_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">img_array</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c1"># (8, 8)</span>
+            
+            <span class="c1"># Save image as PNG (rescaled to 0-255)</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">((</span><span class="n">img_array</span> <span class="o">*</span> <span class="p">(</span><span class="mf">255.0</span> <span class="o">/</span> <span class="mi">16</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;uint8&quot;</span><span class="p">))</span>
+            <span class="n">img</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+            
+            <span class="c1"># Record metadata</span>
+            <span class="n">size_mb</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span>  <span class="c1">#  MB</span>
+            <span class="n">records</span><span class="o">.</span><span class="n">append</span><span class="p">([</span>
+                <span class="n">img_id</span><span class="p">,</span>
+                <span class="n">filepath</span><span class="p">,</span>
+                <span class="n">label</span><span class="p">,</span>
+                <span class="n">shape_str</span><span class="p">,</span>
+                <span class="nb">round</span><span class="p">(</span><span class="n">size_mb</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+                <span class="n">avg_intensity</span>
+            <span class="p">])</span>
+        
+        <span class="c1"># Convert to DataFrame</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">records</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Image ID&quot;</span><span class="p">,</span> <span class="s2">&quot;Image File&quot;</span><span class="p">,</span> <span class="s2">&quot;Label&quot;</span><span class="p">,</span> <span class="s2">&quot;Shape&quot;</span><span class="p">,</span> <span class="s2">&quot;File Size (MB)&quot;</span><span class="p">,</span><span class="s2">&quot;Avg Intensity&quot;</span><span class="p">])</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;Image ID&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="c1"># Save data_content files</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="s2">&quot;data_content.csv&quot;</span><span class="p">))</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">to_pickle</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="s2">&quot;data_content.pkl&quot;</span><span class="p">))</span>
+        
+        <span class="c1"># Create data_description.json</span>
+        <span class="n">desc</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;uniqueID&quot;</span><span class="p">:</span> <span class="s2">&quot;dummy_digits&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;indexingFieldList&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Image ID&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;fileLocationFieldList&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Image File&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;tagList&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Digits&quot;</span><span class="p">,</span> <span class="s2">&quot;DummyData&quot;</span><span class="p">,</span> <span class="s2">&quot;Example&quot;</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="s2">&quot;data_description.json&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">desc</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[✓] Dataset example saved: </span><span class="si">{</span><span class="n">save_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_task_example</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">batch_process</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create example task implementations (`Mini-Batch` and `Full-Batch`).</span>
+
+<span class="sd">        This method auto-generates a Python file `example.py` inside the given `tasks` directory,</span>
+<span class="sd">        containing:</span>
+<span class="sd">          * A **Mini-Batch Task** class: `ExampleMiniBatchResize`</span>
+<span class="sd">          * A **Full-Batch Task** class: `ExampleFullBatchResize`</span>
+<span class="sd">          * Each task resizes digit images (dummy dataset) and saves results.</span>
+<span class="sd">          * A `_run_quality_control` method with matplotlib-based image comparison.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        output_dir : str</span>
+<span class="sd">            Directory where the generated `example.py` task file will be saved.</span>
+<span class="sd">        batch_process : bool, optional</span>
+<span class="sd">            If `True`, generates only the Full-Batch version.</span>
+<span class="sd">            If `False`, generates only the Mini-Batch version.</span>
+<span class="sd">            If `None`, generates both task versions.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        * Mini-batch tasks process samples iteratively, using `_run_task_on_sample`.</span>
+<span class="sd">        * Full-batch tasks process the entire dataset at once, using `_run_task`.</span>
+<span class="sd">        * Quality control logic visualizes input vs. output images.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        &gt;&gt;&gt; builder = ProjectBuilder()</span>
+<span class="sd">        &gt;&gt;&gt; builder._create_task_example(&quot;./my_module/tasks&quot;)</span>
+<span class="sd">        [✓] Task example was generated in: ./my_module/tasks/example.py</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">py_file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;example.py&quot;</span><span class="p">))</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+        <span class="c1"># Code block: Import boilerplate</span>
+        <span class="n">import_code_block</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;from gencap import Task, task_manager,default_pathname_policy_manager</span>
+<span class="s1">import pandas as pd</span>
+<span class="s1">from IPython.display import display</span>
+
+<span class="s1">&#39;&#39;&#39;</span>
+        <span class="c1"># Mini-Batch Task code</span>
+        <span class="n">mini_batch_code_block</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">@task_manager.register(&quot;Example-MiniBatch-Resize&quot;, version=&quot;1.0&quot;)</span>
+<span class="s1">class ExampleMiniBatchResize(Task):</span>
+<span class="s1">    def __init__(self):</span>
+<span class="s1">        super().__init__()</span>
+
+<span class="s1">        # Indexing fields</span>
+<span class="s1">        self.base_indexing_fields = []  </span>
+<span class="s1">        self.additional_input_indexing_fields = [] </span>
+<span class="s1">        self.additional_output_indexing_fields = []  </span>
+
+<span class="s1">        # Input fields</span>
+<span class="s1">        self.mandatory_input_fields = [&quot;Image File&quot;]</span>
+<span class="s1">        self.optional_input_fields = []</span>
+<span class="s1">        self.input_file_location_fields = [&quot;Image File&quot;]</span>
+
+<span class="s1">        # Output fields</span>
+<span class="s1">        self.mandatory_output_fields = [&quot;Resized Image File&quot;]</span>
+<span class="s1">        self.optional_output_fields = []</span>
+<span class="s1">        self.output_file_location_fields = [&quot;Resized Image File&quot;]</span>
+
+<span class="s1">        # Metadata</span>
+<span class="s1">        self.unique_id = &quot;Example-MiniBatch-Resize&quot;</span>
+<span class="s1">        self.version = &quot;1.0&quot;</span>
+<span class="s1">        self.description = &quot;Resize the input image to a specified size (default: [64, 64]) using PIL (Mini-Batch version)&quot;</span>
+<span class="s1">        self.parameter_info = {&quot;size&quot;: &quot;(list) size to resize [width, height]&quot;}</span>
+<span class="s1">        self.application_domain = &quot;imaging&quot;</span>
+<span class="s1">        self.application = [&quot;pre-processing&quot;]</span>
+<span class="s1">        self.developer_names = &quot;JohnDoe&quot;</span>
+<span class="s1">        self.developer_organization = &quot;JoneDoe-Lab&quot;</span>
+
+<span class="s1">        self.batch_process = True  </span>
+
+<span class="s1">    def _run_task_on_sample(self,</span>
+<span class="s1">                           iteration_counter: int,</span>
+<span class="s1">                           base_index_value,</span>
+<span class="s1">                           row_input_dataframe: pd.DataFrame,</span>
+<span class="s1">                           row_output_dataframe: pd.DataFrame,</span>
+<span class="s1">                           row_error_dataframe: pd.DataFrame,</span>
+<span class="s1">                           parameter_dict: dict,</span>
+<span class="s1">                           pathname_policy_dict:dict,</span>
+<span class="s1">                           debug_mode: bool):</span>
+
+<span class="s1">        try:</span>
+<span class="s1">            # 1. import packages to utilize</span>
+<span class="s1">            import pandas as pd</span>
+<span class="s1">            from PIL import Image</span>
+<span class="s1">            from pathlib import Path</span>
+
+<span class="s1">            # 2. Load inputs</span>
+<span class="s1">            image_path = row_input_dataframe.reset_index().squeeze()[&quot;Image File&quot;]</span>
+<span class="s1">            image = Image.open(str(image_path))</span>
+<span class="s1">            output_size = parameter_dict.get(&quot;size&quot;, [64, 64])</span>
+
+<span class="s1">            # 3. Compute the output</span>
+<span class="s1">            resized_image = image.resize(output_size)</span>
+
+<span class="s1">            # 4. Set the file path</span>
+<span class="s1">            file_ext = Path(image_path).suffix</span>
+<span class="s1">            output_path = default_pathname_policy_manager.get_filename(</span>
+<span class="s1">                keyword_dict=self.get_policy_keywords(pathname_policy_dict, df_input=row_input_dataframe),</span>
+<span class="s1">                suffix=&quot;_resized&quot;+file_ext</span>
+<span class="s1">            )</span>
+
+<span class="s1">            # 5. Save the output</span>
+<span class="s1">            resized_image.save(output_path)</span>
+<span class="s1">            </span>
+<span class="s1">            # 6. Fill row_output_dataframe</span>
+<span class="s1">            row_output_dataframe.loc[base_index_value,&quot;Resized Image File&quot;] = output_path</span>
+<span class="s1">        </span>
+<span class="s1">        # 7. Append errors</span>
+<span class="s1">        except Exception as e:</span>
+<span class="s1">            error_row = {</span>
+<span class="s1">                &quot;Base Indexing Value&quot;: str(base_index_value),</span>
+<span class="s1">                &quot;Additional Indexing Value&quot;: &quot;&quot;,</span>
+<span class="s1">                &quot;Error Code&quot;: &quot;ResizeFail&quot;,</span>
+<span class="s1">                &quot;Description&quot;: str(e),</span>
+<span class="s1">                &quot;Values&quot;: str(input_data_dict_list[0])</span>
+<span class="s1">            }</span>
+<span class="s1">            row_error_dataframe = pd.DataFrame([error_row])</span>
+<span class="s1">            self.logger.error(str(e))</span>
+
+<span class="s1">        return row_output_dataframe, row_error_dataframe</span>
+<span class="s1">&#39;&#39;&#39;</span>
+        <span class="c1"># Full-Batch Task code</span>
+        <span class="n">full_batch_code_block</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">@task_manager.register(&quot;Example-FullBatch-Resize&quot;, version=&quot;1.0&quot;)</span>
+<span class="s1">class ExampleFullBatchResize(Task):</span>
+<span class="s1">    def __init__(self):</span>
+<span class="s1">        super().__init__()</span>
+<span class="s1">        # Indexing fields</span>
+<span class="s1">        self.base_indexing_fields = []</span>
+<span class="s1">        self.additional_input_indexing_fields = []</span>
+<span class="s1">        self.additional_output_indexing_fields = []</span>
+
+<span class="s1">        # Input fields</span>
+<span class="s1">        self.mandatory_input_fields = [&quot;Image File&quot;]</span>
+<span class="s1">        self.optional_input_fields = []</span>
+<span class="s1">        self.input_file_location_fields = [&quot;Image File&quot;]</span>
+
+<span class="s1">        # Output fields</span>
+<span class="s1">        self.mandatory_output_fields = [&quot;Resized Image File&quot;]</span>
+<span class="s1">        self.optional_output_fields = []</span>
+<span class="s1">        self.output_file_location_fields = [&quot;Resized Image File&quot;]</span>
+
+<span class="s1">        # Metadata</span>
+<span class="s1">        self.unique_id = &quot;Example-FullBatch-Resize&quot;</span>
+<span class="s1">        self.version = &quot;1.0&quot;</span>
+<span class="s1">        self.description = &quot;Resize the input image to a specified size (default: [64, 64]) using SimpleITK.&quot;</span>
+<span class="s1">        self.parameter_info = {&quot;size&quot;: &quot;(list) size to resize [width, height]&quot;}</span>
+<span class="s1">        self.application_domain = &quot;imaging&quot;</span>
+<span class="s1">        self.application = [&quot;pre-processing&quot;]</span>
+<span class="s1">        self.developer_names = &quot;JohnDoe&quot;</span>
+<span class="s1">        self.developer_organization = &quot;JoneDoe-Lab&quot;</span>
+
+<span class="s1">        # Processing mode: True = mini-batch; False = full-batch</span>
+<span class="s1">        self.batch_process = False</span>
+
+<span class="s1">    def _run_task(self,</span>
+<span class="s1">                 input_dataframe: pd.DataFrame=None,</span>
+<span class="s1">                 output_dataframe: pd.DataFrame=None,</span>
+<span class="s1">                 error_dataframe: pd.DataFrame=None,</span>
+<span class="s1">                 base_indexing_fields: list=None,</span>
+<span class="s1">                 parameter_dict: dict=None,</span>
+<span class="s1">                 pathname_policy_dict: dict=None,</span>
+<span class="s1">                 debug_mode: bool = False):</span>
+
+<span class="s1">        if input_dataframe is None:</span>
+<span class="s1">            input_dataframe = self.input_dataframe</span>
+<span class="s1">        if output_dataframe is None:</span>
+<span class="s1">            output_dataframe = self.output_dataframe</span>
+<span class="s1">        if error_dataframe is None:</span>
+<span class="s1">            error_dataframe = self.error_dataframe</span>
+<span class="s1">        if base_indexing_fields is None:</span>
+<span class="s1">            base_indexing_fields = self.base_indexing_fields</span>
+<span class="s1">        if parameter_dict is None:</span>
+<span class="s1">            parameter_dict = self.parameter_dict </span>
+<span class="s1">        if pathname_policy_dict is None:</span>
+<span class="s1">            pathname_policy_dict = self.pathname_policy_dict</span>
+<span class="s1">            </span>
+<span class="s1">        # 1. import packages to utilize</span>
+<span class="s1">        import numpy as np</span>
+<span class="s1">        from PIL import Image</span>
+<span class="s1">        from pathlib import Path</span>
+<span class="s1">    </span>
+<span class="s1">        # 2. Load inputs</span>
+<span class="s1">        output_size = parameter_dict.get(&quot;size&quot;, [64, 64])</span>
+
+<span class="s1">        for index, row in input_dataframe.reset_index().iterrows():</span>
+<span class="s1">            try:</span>
+<span class="s1">                image_path = row[&quot;Image File&quot;]</span>
+<span class="s1">                image = Image.open(str(image_path))</span>
+<span class="s1">                </span>
+<span class="s1">                # 3. Compute the output</span>
+<span class="s1">                resized_image = image.resize(output_size)  # (W, H)</span>
+<span class="s1">                </span>
+<span class="s1">                # 4. Set the file path</span>
+<span class="s1">                file_ext = Path(image_path).suffix</span>
+<span class="s1">                output_path = default_pathname_policy_manager.get_filename(</span>
+<span class="s1">                    keyword_dict=self.get_policy_keywords(pathname_policy_dict, df_input=row),</span>
+<span class="s1">                    suffix=&quot;_resized&quot;+file_ext</span>
+<span class="s1">                )</span>
+<span class="s1">                # 5. Save the output</span>
+<span class="s1">                resized_image.save(output_path)</span>
+<span class="s1">                </span>
+<span class="s1">                # 6. Fill output_dataframe</span>
+<span class="s1">                row[&quot;Resized Image File&quot;] = output_path</span>
+<span class="s1">                row_output = pd.DataFrame([row])</span>
+<span class="s1">                </span>
+<span class="s1">                output_dataframe = pd.concat([output_dataframe,  row_output], ignore_index=False)</span>
+<span class="s1">            </span>
+<span class="s1">            # 7. Append errors</span>
+<span class="s1">            except Exception as e:</span>
+<span class="s1">                error_row = {</span>
+<span class="s1">                    &quot;Base Indexing Value&quot;: str(row.index),</span>
+<span class="s1">                    &quot;Additional Indexing Value&quot;: &quot;&quot;,</span>
+<span class="s1">                    &quot;Error Code&quot;: &quot;ResizeFail&quot;,</span>
+<span class="s1">                    &quot;Description&quot;: str(e),</span>
+<span class="s1">                    &quot;Values&quot;: str(row)</span>
+<span class="s1">                }</span>
+<span class="s1">                error_dataframe = pd.concat([error_dataframe, pd.DataFrame([error_row])], ignore_index=False)</span>
+<span class="s1">                self.logger.error(str(e))</span>
+
+<span class="s1">        return output_dataframe, error_dataframe</span>
+<span class="s1">&#39;&#39;&#39;</span>
+        <span class="c1"># QC Report code block</span>
+        <span class="n">qc_report_code_block</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">    def _run_quality_control(self, HTMLReport:&quot;HTMLReport&quot;,</span>
+<span class="s1">                             nicePlots=True,</span>
+<span class="s1">                            offline_mode=True):</span>
+<span class="s1">        input_dataframe = self.input_dataframe</span>
+<span class="s1">        output_dataframe = self.output_dataframe</span>
+<span class="s1">        error_dataframe = self.error_dataframe</span>
+<span class="s1">        hrQC = HTMLReport </span>
+<span class="s1">        hrQC.addSection(&quot;Quality Control List&quot;)</span>
+<span class="s1">        # -------------------------------------------------------------------------</span>
+<span class="s1">        from PIL import Image</span>
+<span class="s1">        import matplotlib.pyplot as plt</span>
+<span class="s1">        </span>
+<span class="s1">        hrQC.addContent(&quot;Show Results:&quot;)</span>
+<span class="s1">        for index, row in input_dataframe.iterrows():</span>
+<span class="s1">            orig_img = Image.open(input_dataframe.loc[index,&quot;Image File&quot;])</span>
+<span class="s1">            resized_img = Image.open(output_dataframe.loc[index,&quot;Resized Image File&quot;])      </span>
+<span class="s1">            </span>
+<span class="s1">            # Create figure with 2 subplots</span>
+<span class="s1">            fig, axes = plt.subplots(1, 2, figsize=(10, 5))  # 1 row, 2 columns</span>
+
+<span class="s1">            # Display each image</span>
+<span class="s1">            axes[0].imshow(orig_img)</span>
+<span class="s1">            axes[0].axis(&#39;off&#39;)</span>
+<span class="s1">            axes[0].set_title(f&quot;Original Image&quot;)</span>
+
+<span class="s1">            axes[1].imshow(resized_img)</span>
+<span class="s1">            axes[1].axis(&#39;off&#39;)</span>
+<span class="s1">            axes[1].set_title(&quot;Resized Image&quot;)</span>
+<span class="s1">        </span>
+<span class="s1">            hrQC.addFigure(fig=fig, title=index,fig_type=&quot;plt&quot;)</span>
+<span class="s1">        return hrQC</span>
+<span class="s1">&#39;&#39;&#39;</span>
+        <span class="c1"># Combine code based on batch_process flag</span>
+        <span class="k">if</span> <span class="n">batch_process</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">example_code</span> <span class="o">=</span> <span class="n">import_code_block</span> <span class="o">+</span> <span class="n">mini_batch_code_block</span> <span class="o">+</span> <span class="n">qc_report_code_block</span>
+        <span class="k">elif</span> <span class="n">batch_process</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">example_code</span> <span class="o">=</span> <span class="n">import_code_block</span> <span class="o">+</span> <span class="n">full_batch_code_block</span> <span class="o">+</span> <span class="n">qc_report_code_block</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">example_code</span> <span class="o">=</span> <span class="n">import_code_block</span> <span class="o">+</span> <span class="n">full_batch_code_block</span> <span class="o">+</span> <span class="n">qc_report_code_block</span> <span class="o">+</span> <span class="n">mini_batch_code_block</span> <span class="o">+</span> <span class="n">qc_report_code_block</span>
+        
+        <span class="c1"># Save example.py</span>
+        <span class="n">py_file_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">example_code</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[✓] Task example was generated in: </span><span class="si">{</span><span class="n">py_file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+    
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Hye-Lim LEE (Epione team, Inria).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

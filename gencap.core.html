@@ -1,0 +1,730 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gencap.core package &mdash; GENCAP 0.9.0-dev documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=6c04cfde"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GENCAP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">🛠️ API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">gencap</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GENCAP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">gencap.core package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/gencap.core.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="gencap-core-package">
+<h1>gencap.core package<a class="headerlink" href="#gencap-core-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-gencap.core.cohort">
+<span id="gencap-core-cohort-module"></span><h2>gencap.core.cohort module<a class="headerlink" href="#module-gencap.core.cohort" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="gencap.core.cohort.Cohort">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gencap.core.cohort.</span></span><span class="sig-name descname"><span class="pre">Cohort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datasetDir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datasetList</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tagList</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fieldFormatDict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additionalIndexingFieldDict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additionalColumnFieldDict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replaceValueDict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">changeFieldNamesDict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excludeFieldList</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mandatoryFieldList</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optionalFieldList</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excludeEntriesList</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queryString</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/core/cohort.html#Cohort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.core.cohort.Cohort" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A Cohort class represents a structured and unified view of one or more datasets for algorithmic processing.</p>
+<p>This class provides mechanisms to:
+- Load and validate multiple raw or derived datasets.
+- Apply standard transformations such as type casting, field renaming, value replacement, and column exclusion.
+- Merge datasets into a single DataFrame with consistent indexing fields.
+- Filter rows and columns based on field requirements or custom queries.</p>
+<p>Cohort objects serve as a critical interface between datasets and pipelines in the GENCAP framework:
+- From datasets: It retrieves and harmonizes tabular data (via <cite>data_content.pkl</cite>) and structural metadata (via <cite>data_description.json</cite>).
+- To pipelines: It exposes the final merged DataFrame, indexing fields, and file location fields needed for batch or iterative computation.</p>
+<dl>
+<dt>Typical usage:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cohort</span> <span class="o">=</span> <span class="n">Cohort</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">datasetDir</span><span class="o">=</span><span class="s2">&quot;/path/to/data&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">datasetList</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;dataset1&quot;</span><span class="p">,</span> <span class="s2">&quot;dataset2&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">mandatoryFieldList</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Image File&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">replaceValueDict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Gender&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;M&quot;</span><span class="p">:</span> <span class="s2">&quot;Male&quot;</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">:</span> <span class="s2">&quot;Female&quot;</span><span class="p">}},</span>
+<span class="gp">... </span>    <span class="n">queryString</span><span class="o">=</span><span class="s2">&quot;Age &gt; 60&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">cohort</span><span class="o">.</span><span class="n">get_dataframe</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cohort</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<p>The resulting Cohort enables standardized downstream processing, reproducibility, and traceability of computation pipelines.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.core.cohort.Cohort.get_dataframe">
+<span class="sig-name descname"><span class="pre">get_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/gencap/core/cohort.html#Cohort.get_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.core.cohort.Cohort.get_dataframe" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the final merged and filtered cohort dataframe.</p>
+<p>This dataframe is produced after all processing steps:
+dataset selection, validation, transformation, merging,
+filtering, and final output validation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The final dataframe containing the unified cohort data.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pd.DataFrame</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cohort</span> <span class="o">=</span> <span class="n">Cohort</span><span class="p">(</span><span class="n">datasetDir</span><span class="o">=</span><span class="s2">&quot;/path/to/data&quot;</span><span class="p">,</span> <span class="n">datasetList</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Dataset1&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">cohort</span><span class="o">.</span><span class="n">get_dataframe</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="go">(120, 8)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.core.cohort.Cohort.get_file_location_fields">
+<span class="sig-name descname"><span class="pre">get_file_location_fields</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/gencap/core/cohort.html#Cohort.get_file_location_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.core.cohort.Cohort.get_file_location_fields" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the file location fields from the cohort.</p>
+<p>File location fields represent columns that contain absolute file paths
+to complex data (e.g., images or reports) associated with cohort entries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of field names corresponding to file locations.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[str]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cohort</span><span class="o">.</span><span class="n">get_file_location_fields</span><span class="p">()</span>
+<span class="go">[&#39;Image File&#39;, &#39;Mask File&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.core.cohort.Cohort.get_indexing_fields">
+<span class="sig-name descname"><span class="pre">get_indexing_fields</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/gencap/core/cohort.html#Cohort.get_indexing_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.core.cohort.Cohort.get_indexing_fields" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the indexing fields used for the final dataframe.</p>
+<p>Indexing fields are derived from the datasets included in the cohort
+and are validated to ensure consistency and subset relationships
+during the initialization process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of indexing field names in the final cohort.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[str]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cohort</span><span class="o">.</span><span class="n">get_indexing_fields</span><span class="p">()</span>
+<span class="go">[&#39;Patient ID&#39;, &#39;Study ID&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.core.cohort.Cohort.get_input_argument">
+<span class="sig-name descname"><span class="pre">get_input_argument</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/gencap/core/cohort.html#Cohort.get_input_argument"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.core.cohort.Cohort.get_input_argument" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the input arguments used to initialize this cohort.</p>
+<p>This includes all configuration parameters such as dataset directory,
+dataset/tag filters, transformation rules, filtering options, and query strings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary of all initialization arguments with their values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">args</span> <span class="o">=</span> <span class="n">cohort</span><span class="o">.</span><span class="n">get_input_argument</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;datasetList&quot;</span><span class="p">])</span>
+<span class="go">[&#39;Dataset1&#39;, &#39;Dataset2&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="gencap.core.cohort.CohortError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gencap.core.cohort.</span></span><span class="sig-name descname"><span class="pre">CohortError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_error</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/core/cohort.html#CohortError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.core.cohort.CohortError" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Custom exception raised during cohort initialization or transformation.</p>
+<p>This exception captures error context and saves diagnostic information
+to <cite>cohortErrorInformation.csv</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> (<em>str</em>) – Human-readable error description.</p></li>
+<li><p><strong>df_error</strong> (<em>pd.DataFrame</em>) – Error log dataframe with structured details.</p></li>
+<li><p><strong>logger</strong> (<em>logging.Logger</em>) – Logger instance used for error reporting.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Logs an error message with a link to the saved CSV file.</p></li>
+<li><p>Displays the error dataframe in Jupyter/IPython environments.</p></li>
+<li><p>Saves the dataframe as <cite>cohortErrorInformation.csv</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">raise</span> <span class="n">CohortError</span><span class="p">(</span><span class="s2">&quot;Failed to merge datasets&quot;</span><span class="p">,</span> <span class="n">dfError</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="gencap.core.cohort.ErrorConfig">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gencap.core.cohort.</span></span><span class="sig-name descname"><span class="pre">ErrorConfig</span></span><a class="reference internal" href="_modules/gencap/core/cohort.html#ErrorConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.core.cohort.ErrorConfig" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Configuration class defining standardized error codes used in Cohort operations.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.core.cohort.ErrorConfig.loadingFail">
+<span class="sig-name descname"><span class="pre">loadingFail</span></span><a class="headerlink" href="#gencap.core.cohort.ErrorConfig.loadingFail" title="Link to this definition"></a></dt>
+<dd><p>Error during dataset loading.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.core.cohort.ErrorConfig.validationFail">
+<span class="sig-name descname"><span class="pre">validationFail</span></span><a class="headerlink" href="#gencap.core.cohort.ErrorConfig.validationFail" title="Link to this definition"></a></dt>
+<dd><p>Error during dataset validation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.core.cohort.ErrorConfig.transformationFail">
+<span class="sig-name descname"><span class="pre">transformationFail</span></span><a class="headerlink" href="#gencap.core.cohort.ErrorConfig.transformationFail" title="Link to this definition"></a></dt>
+<dd><p>Error during data transformation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.core.cohort.ErrorConfig.mergeFail">
+<span class="sig-name descname"><span class="pre">mergeFail</span></span><a class="headerlink" href="#gencap.core.cohort.ErrorConfig.mergeFail" title="Link to this definition"></a></dt>
+<dd><p>Error during merging datasets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.core.cohort.ErrorConfig.filteringFail">
+<span class="sig-name descname"><span class="pre">filteringFail</span></span><a class="headerlink" href="#gencap.core.cohort.ErrorConfig.filteringFail" title="Link to this definition"></a></dt>
+<dd><p>Error during filtering rows/columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.core.cohort.ErrorConfig.selectingFail">
+<span class="sig-name descname"><span class="pre">selectingFail</span></span><a class="headerlink" href="#gencap.core.cohort.ErrorConfig.selectingFail" title="Link to this definition"></a></dt>
+<dd><p>Error during dataset selection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.core.cohort.ErrorConfig.indexingFieldInconsistent">
+<span class="sig-name descname"><span class="pre">indexingFieldInconsistent</span></span><a class="headerlink" href="#gencap.core.cohort.ErrorConfig.indexingFieldInconsistent" title="Link to this definition"></a></dt>
+<dd><p>Error due to inconsistent indexing fields.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.core.cohort.ErrorConfig.outputValidationFail">
+<span class="sig-name descname"><span class="pre">outputValidationFail</span></span><a class="headerlink" href="#gencap.core.cohort.ErrorConfig.outputValidationFail" title="Link to this definition"></a></dt>
+<dd><p>Error during final output validation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.core.cohort.ErrorConfig.notSubset">
+<span class="sig-name descname"><span class="pre">notSubset</span></span><a class="headerlink" href="#gencap.core.cohort.ErrorConfig.notSubset" title="Link to this definition"></a></dt>
+<dd><p>Error when indexing fields are not subsets of each other.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">filteringFail</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">14</span></em><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">indexingFieldInconsistent</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">16</span></em><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">loadingFail</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#id2" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">mergeFail</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">13</span></em><a class="headerlink" href="#id3" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">notSubset</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">18</span></em><a class="headerlink" href="#id4" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">outputValidationFail</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">17</span></em><a class="headerlink" href="#id5" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">selectingFail</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">15</span></em><a class="headerlink" href="#id6" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id7">
+<span class="sig-name descname"><span class="pre">transformationFail</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">12</span></em><a class="headerlink" href="#id7" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id8">
+<span class="sig-name descname"><span class="pre">validationFail</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">11</span></em><a class="headerlink" href="#id8" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-gencap.core.pipeline">
+<span id="gencap-core-pipeline-module"></span><h2>gencap.core.pipeline module<a class="headerlink" href="#module-gencap.core.pipeline" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="gencap.core.pipeline.Pipeline">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gencap.core.pipeline.</span></span><span class="sig-name descname"><span class="pre">Pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first_task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="gencap.html#gencap.Task" title="gencap.Task"><span class="pre">Task</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">following_tasks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique_ID</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/core/pipeline.html#Pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.core.pipeline.Pipeline" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A sequential, DAG-based pipeline for chaining GENCAP tasks.</p>
+<p>This class manages task orchestration within a Directed Acyclic Graph (DAG),
+enabling sequential or branching task execution following the GENCAP specification.
+It can be instantiated either from a series of task objects or by loading
+a previously saved pipeline/dataset configuration.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.core.pipeline.Pipeline.get_error_dataframe">
+<span class="sig-name descname"><span class="pre">get_error_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/gencap/core/pipeline.html#Pipeline.get_error_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.core.pipeline.Pipeline.get_error_dataframe" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the pipeline’s error dataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The dataframe containing error logs collected during task execution.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pd.DataFrame</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">error_df</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">get_error_dataframe</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">error_df</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.core.pipeline.Pipeline.get_output_dataframe">
+<span class="sig-name descname"><span class="pre">get_output_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/gencap/core/pipeline.html#Pipeline.get_output_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.core.pipeline.Pipeline.get_output_dataframe" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the pipeline’s final output dataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The dataframe produced by the pipeline’s execution,
+containing task outputs merged according to the pipeline structure.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pd.DataFrame</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">output_df</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">get_output_dataframe</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">output_df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.core.pipeline.Pipeline.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cohort</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="gencap.html#gencap.Cohort" title="gencap.Cohort"><span class="pre">Cohort</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_tag_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_dir_replacement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_intermediate_datasets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pathname_policy_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Default</span> <span class="pre">Pathname</span> <span class="pre">Policy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pathname_policy_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{'Index':</span> <span class="pre">'output</span> <span class="pre">indexing</span> <span class="pre">fields'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_multithreading</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nb_max_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/gencap/core/pipeline.html#Pipeline.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.core.pipeline.Pipeline.run" title="Link to this definition"></a></dt>
+<dd><p>Execute the pipeline by running its tasks sequentially according to the dependency graph.</p>
+<dl class="simple">
+<dt>This method orchestrates pipeline execution, managing:</dt><dd><ul class="simple">
+<li><p>Runtime initialization (logger, task IDs, graph updates)</p></li>
+<li><p>Cohort validation or auto-generation for system tasks</p></li>
+<li><p>Parameter resolution and I/O preparation for each task</p></li>
+<li><p>Execution of all tasks in topological order</p></li>
+<li><p>Logging, error handling, and result consolidation</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_dir</strong> (<em>str</em>) – Directory to save pipeline outputs and logs.</p></li>
+<li><p><strong>dataset_id</strong> (<em>str</em>) – Unique identifier for the pipeline output dataset.</p></li>
+<li><p><strong>cohort</strong> (<a class="reference internal" href="gencap.html#gencap.Cohort" title="gencap.Cohort"><em>Cohort</em></a><em>, </em><em>optional</em>) – Cohort object providing the input dataset for the pipeline.
+Required unless running system tasks (e.g., reproduction, display, verification).</p></li>
+<li><p><strong>input_dict</strong> (<em>dict</em>) – Field-to-source mapping for task inputs (overrides cohort fields).</p></li>
+<li><p><strong>parameter_dict</strong> (<em>dict</em>) – Task parameter dictionary (runtime overrides applied).</p></li>
+<li><p><strong>additional_tag_list</strong> (<em>list</em>) – Additional descriptive tags for the derived dataset.</p></li>
+<li><p><strong>force_dir_replacement</strong> (<em>bool</em>) – Overwrite existing output directories if True.</p></li>
+<li><p><strong>keep_intermediate_datasets</strong> (<em>bool</em>) – Retain intermediate datasets if True.</p></li>
+<li><p><strong>pathname_policy_id</strong> (<em>str</em>) – Identifier for the pathname policy used for file generation.</p></li>
+<li><p><strong>pathname_policy_dict</strong> (<em>dict</em>) – Mapping of keywords to dataset fields, constants, or nested policies.</p></li>
+<li><p><strong>use_multithreading</strong> (<em>bool</em>) – Enable multithreading for task-level processing if supported.</p></li>
+<li><p><strong>nb_max_threads</strong> (<em>int</em>) – Maximum number of threads when <cite>use_multithreading</cite> is enabled.</p></li>
+<li><p><strong>debug_mode</strong> (<em>bool</em>) – Enable verbose logging and save debug logs to <cite>debug.log</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – If no cohort is provided for non-system tasks.</p></li>
+<li><p><strong>ValueError</strong> – If <cite>dataset_id</cite> already exists and <cite>force_dir_replacement</cite> is False.
+    If multiple tasks reference inconsistent index structures during merging.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Maintains pipeline execution state and saves a <cite>processing_in_progress.json</cite> marker.</p></li>
+<li><p>Automatically appends cohort tags to output tags.</p></li>
+<li><p>Supports dynamic input field renaming based on I/O mappings.</p></li>
+</ul>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">output_dir</span><span class="o">=</span><span class="s2">&quot;/path/to/derivatives&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">dataset_id</span><span class="o">=</span><span class="s2">&quot;segmentation_pipeline_output&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">cohort</span><span class="o">=</span><span class="n">my_cohort</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">input_dict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Image File&quot;</span><span class="p">:</span> <span class="s2">&quot;Input Image&quot;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="n">parameter_dict</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;SegmentationTask&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;threshold&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">}},</span>
+<span class="gp">... </span>    <span class="n">debug_mode</span><span class="o">=</span><span class="kc">True</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.core.pipeline.Pipeline.to_json">
+<span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique_ID</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_replacement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">information_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/gencap/core/pipeline.html#Pipeline.to_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.core.pipeline.Pipeline.to_json" title="Link to this definition"></a></dt>
+<dd><p>Export the pipeline definition to a JSON file.</p>
+<dl class="simple">
+<dt>The JSON file contains:</dt><dd><ul class="simple">
+<li><p>Task configurations (unique ID, version).</p></li>
+<li><p>IO mappings between tasks.</p></li>
+<li><p>Task parameters and pipeline metadata.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_dir</strong> (<em>str</em><em>, </em><em>optional</em>) – Directory where the JSON file will be saved.
+If None, uses the default GENCAP cache directory under <code class="docutils literal notranslate"><span class="pre">pipelines/</span></code>.</p></li>
+<li><p><strong>unique_ID</strong> (<em>str</em><em>, </em><em>optional</em>) – Unique pipeline identifier. Defaults to a combination of username and timestamp.</p></li>
+<li><p><strong>version</strong> (<em>float</em>) – Pipeline version identifier. Default is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+<li><p><strong>force_replacement</strong> (<em>bool</em>) – If True, overwrite existing JSON file if it already exists.</p></li>
+<li><p><strong>information_string</strong> (<em>str</em>) – Additional descriptive information about the pipeline (metadata field).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If <cite>output_dir</cite> is None and no <cite>GENCAP_CACHE_DIR</cite> is configured.</p></li>
+<li><p><strong>RuntimeError</strong> – If the JSON file already exists and <cite>force_replacement</cite> is False.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Automatically registers the pipeline in the <cite>gc.pipeline_manager</cite> after saving.</p></li>
+<li><p>Pipeline JSON includes versioned tasks, IO mappings, and parameter definitions.</p></li>
+</ul>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pipeline</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">output_dir</span><span class="o">=</span><span class="s2">&quot;/path/to/save&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">unique_ID</span><span class="o">=</span><span class="s2">&quot;preproc_pipeline_v1&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">force_replacement</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">information_string</span><span class="o">=</span><span class="s2">&quot;Preprocessing pipeline for MRI data&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-gencap.core.task">
+<span id="gencap-core-task-module"></span><h2>gencap.core.task module<a class="headerlink" href="#module-gencap.core.task" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="gencap.core.task.Task">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gencap.core.task.</span></span><span class="sig-name descname"><span class="pre">Task</span></span><a class="reference internal" href="_modules/gencap/core/task.html#Task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.core.task.Task" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.core.task.Task.get_fields">
+<span class="sig-name descname"><span class="pre">get_fields</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/gencap/core/task.html#Task.get_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.core.task.Task.get_fields" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the task’s defined input and output field structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary containing field definitions:
+* <strong>Base Indexing Fields</strong>: Common indexing fields between input and output.
+* <strong>Additional Input Indexing Fields</strong>: Extra indexing fields for input.
+* <strong>Mandatory Input Fields</strong>: Required input fields for processing.
+* <strong>Optional Input Fields</strong>: Optional input fields.
+* <strong>Additional Output Indexing Fields</strong>: Extra indexing fields for output.
+* <strong>Mandatory Output Fields</strong>: Fields always produced.
+* <strong>Optional Output Fields</strong>: Fields optionally produced.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">task</span><span class="o">.</span><span class="n">get_fields</span><span class="p">()</span>
+<span class="go">{</span>
+<span class="go">    &#39;Base Indexing Fields&#39;: [&#39;Patient ID&#39;],</span>
+<span class="go">    &#39;Mandatory Input Fields&#39;: [&#39;Image File&#39;],</span>
+<span class="go">    ...</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.core.task.Task.get_policy_keywords">
+<span class="sig-name descname"><span class="pre">get_policy_keywords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pathname_policy_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/gencap/core/task.html#Task.get_policy_keywords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.core.task.Task.get_policy_keywords" title="Link to this definition"></a></dt>
+<dd><p>Generate a dictionary of pathname keywords from task input/output data.</p>
+<p>This is used to build file paths following a selected pathname policy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pathname_policy_dict</strong> (<em>dict</em>) – Mapping of keywords to field names, field lists, or constants.
+Special key: <cite>“output indexing fields”</cite> concatenates base and additional output indexes.</p></li>
+<li><p><strong>df_input</strong> (<em>pd.DataFrame</em><em>, </em><em>optional</em>) – Input dataframe for deriving keyword values.</p></li>
+<li><p><strong>df_output</strong> (<em>pd.DataFrame</em><em>, </em><em>optional</em>) – Output dataframe for deriving keyword values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary mapping pathname policy keywords to resolved values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – <ul class="simple">
+<li><p>If both <cite>df_input</cite> and <cite>df_output</cite> are None.
+    * If <cite>pathname_policy_dict</cite> contains unsupported mapping types.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">task</span><span class="o">.</span><span class="n">get_policy_keywords</span><span class="p">({</span><span class="s2">&quot;Index&quot;</span><span class="p">:</span> <span class="s2">&quot;output indexing fields&quot;</span><span class="p">},</span> <span class="n">df_output</span><span class="o">=</span><span class="n">output_df</span><span class="p">)</span>
+<span class="go">{&#39;Index&#39;: &#39;Patient1_SessionA&#39;}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.core.task.Task.get_task_ID">
+<span class="sig-name descname"><span class="pre">get_task_ID</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/gencap/core/task.html#Task.get_task_ID"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.core.task.Task.get_task_ID" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the unique identifier of the task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The task’s unique ID assigned by the developer.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">task</span><span class="o">.</span><span class="n">get_task_ID</span><span class="p">()</span>
+<span class="go">&#39;ImageNormalization&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.core.task.Task.get_version">
+<span class="sig-name descname"><span class="pre">get_version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/gencap/core/task.html#Task.get_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.core.task.Task.get_version" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the version string of the task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The version of the task (default: “1.0”).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">task</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
+<span class="go">&#39;1.0&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.core.task.Task.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_unique_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_dir_replacement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_tag_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cohort</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="gencap.html#gencap.Cohort" title="gencap.Cohort"><span class="pre">Cohort</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_indexing_fields</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeline_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pathname_policy_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Default</span> <span class="pre">Pathname</span> <span class="pre">Policy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pathname_policy_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{'Index':</span> <span class="pre">'output</span> <span class="pre">indexing</span> <span class="pre">fields'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_multithreading</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nb_max_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/gencap/core/task.html#Task.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.core.task.Task.run" title="Link to this definition"></a></dt>
+<dd><p>Execute the task on the provided cohort or dataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_dir</strong> (<em>str</em>) – Output directory where results will be saved.</p></li>
+<li><p><strong>dataset_unique_id</strong> (<em>str</em>) – Unique ID for the derived dataset.</p></li>
+<li><p><strong>force_dir_replacement</strong> (<em>bool</em>) – If True, overwrite existing dataset directory.</p></li>
+<li><p><strong>additional_tag_list</strong> (<em>list</em>) – Tags to include in the resulting dataset.</p></li>
+<li><p><strong>cohort</strong> (<a class="reference internal" href="gencap.html#gencap.Cohort" title="gencap.Cohort"><em>Cohort</em></a><em>, </em><em>optional</em>) – Input cohort object.</p></li>
+<li><p><strong>input_dataframe</strong> (<em>pd.DataFrame</em><em>, </em><em>optional</em>) – Input dataframe for processing.</p></li>
+<li><p><strong>output_dataframe</strong> (<em>pd.DataFrame</em><em>, </em><em>optional</em>) – Pre-initialized output dataframe.</p></li>
+<li><p><strong>error_dataframe</strong> (<em>pd.DataFrame</em><em>, </em><em>optional</em>) – Pre-initialized error dataframe.</p></li>
+<li><p><strong>base_indexing_fields</strong> (<em>list</em><em>, </em><em>optional</em>) – Indexing fields shared between input and output.</p></li>
+<li><p><strong>parameter_dict</strong> (<em>dict</em><em>, </em><em>optional</em>) – Task parameter overrides.</p></li>
+<li><p><strong>pipeline_dict</strong> (<em>dict</em><em>, </em><em>optional</em>) – Pipeline metadata dictionary.</p></li>
+<li><p><strong>debug_mode</strong> (<em>bool</em>) – Enable debug logging and verbose checks.</p></li>
+<li><p><strong>pathname_policy_id</strong> (<em>str</em>) – Selected pathname policy ID.</p></li>
+<li><p><strong>pathname_policy_dict</strong> (<em>dict</em>) – Keyword-to-field mapping for pathname generation.</p></li>
+<li><p><strong>use_multithreading</strong> (<em>bool</em>) – Enable multi-threaded execution.</p></li>
+<li><p><strong>nb_max_threads</strong> (<em>int</em>) – Max number of threads to use in multi-threading.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Final output dataframe.
+* <strong>pd.DataFrame</strong>: Error dataframe listing failed entries.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>pd.DataFrame</strong></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">output_df</span><span class="p">,</span> <span class="n">error_df</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">output_dir</span><span class="o">=</span><span class="s2">&quot;/path/to/output&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">dataset_unique_id</span><span class="o">=</span><span class="s2">&quot;NormalizedImages&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">cohort</span><span class="o">=</span><span class="n">cohort_obj</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-gencap.core">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gencap.core" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Hye-Lim LEE (Epione team, Inria).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

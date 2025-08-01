@@ -1,0 +1,239 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gencap &mdash; GENCAP 0.9.0-dev documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=6c04cfde"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Core objects" href="gencap.html" />
+    <link rel="prev" title="GENCAP documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GENCAP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">🛠️ API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">gencap</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gencap.html">Core objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gencap.html#global-managers">Global managers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gencap.html#project-builder">Project Builder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gencap.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GENCAP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">gencap</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/modules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="gencap">
+<h1>gencap<a class="headerlink" href="#gencap" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gencap.html">Core objects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gencap.html#gencap.Cohort"><code class="docutils literal notranslate"><span class="pre">Cohort</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gencap.html#gencap.Cohort.get_dataframe"><code class="docutils literal notranslate"><span class="pre">Cohort.get_dataframe()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gencap.html#gencap.Cohort.get_file_location_fields"><code class="docutils literal notranslate"><span class="pre">Cohort.get_file_location_fields()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gencap.html#gencap.Cohort.get_indexing_fields"><code class="docutils literal notranslate"><span class="pre">Cohort.get_indexing_fields()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gencap.html#gencap.Cohort.get_input_argument"><code class="docutils literal notranslate"><span class="pre">Cohort.get_input_argument()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gencap.html#gencap.Pipeline"><code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gencap.html#gencap.Pipeline.get_error_dataframe"><code class="docutils literal notranslate"><span class="pre">Pipeline.get_error_dataframe()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gencap.html#gencap.Pipeline.get_output_dataframe"><code class="docutils literal notranslate"><span class="pre">Pipeline.get_output_dataframe()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gencap.html#gencap.Pipeline.run"><code class="docutils literal notranslate"><span class="pre">Pipeline.run()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gencap.html#gencap.Pipeline.to_json"><code class="docutils literal notranslate"><span class="pre">Pipeline.to_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gencap.html#gencap.Task"><code class="docutils literal notranslate"><span class="pre">Task</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gencap.html#gencap.Task.get_fields"><code class="docutils literal notranslate"><span class="pre">Task.get_fields()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gencap.html#gencap.Task.get_policy_keywords"><code class="docutils literal notranslate"><span class="pre">Task.get_policy_keywords()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gencap.html#gencap.Task.get_task_ID"><code class="docutils literal notranslate"><span class="pre">Task.get_task_ID()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gencap.html#gencap.Task.get_version"><code class="docutils literal notranslate"><span class="pre">Task.get_version()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gencap.html#gencap.Task.run"><code class="docutils literal notranslate"><span class="pre">Task.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gencap.html#global-managers">Global managers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gencap.html#gencap.task_manager"><code class="docutils literal notranslate"><span class="pre">gencap.task_manager</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="gencap.html#gencap.pipeline_manager"><code class="docutils literal notranslate"><span class="pre">gencap.pipeline_manager</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="gencap.html#gencap.default_pathname_policy_manager"><code class="docutils literal notranslate"><span class="pre">gencap.default_pathname_policy_manager</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gencap.html#project-builder">Project Builder</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gencap.html#gencap.ProjectBuilder"><code class="docutils literal notranslate"><span class="pre">ProjectBuilder</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gencap.html#gencap.ProjectBuilder.create_database"><code class="docutils literal notranslate"><span class="pre">ProjectBuilder.create_database()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gencap.html#gencap.ProjectBuilder.create_dataset_from_dataframe"><code class="docutils literal notranslate"><span class="pre">ProjectBuilder.create_dataset_from_dataframe()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gencap.html#gencap.ProjectBuilder.create_dataset_from_file"><code class="docutils literal notranslate"><span class="pre">ProjectBuilder.create_dataset_from_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gencap.html#gencap.ProjectBuilder.create_module"><code class="docutils literal notranslate"><span class="pre">ProjectBuilder.create_module()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gencap.html#gencap.ProjectBuilder.create_task_template"><code class="docutils literal notranslate"><span class="pre">ProjectBuilder.create_task_template()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="gencap.html#gencap.ProjectBuilder.generate_sample_code"><code class="docutils literal notranslate"><span class="pre">ProjectBuilder.generate_sample_code()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gencap.html#utilities">Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gencap.html#gencap.add_module"><code class="docutils literal notranslate"><span class="pre">add_module</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="gencap.html#gencap.auto_import_from"><code class="docutils literal notranslate"><span class="pre">auto_import_from</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="gencap.utils.html">gencap.utils</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gencap.utils.html#module-gencap.utils.builder">gencap.utils.builder module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.builder.ProjectBuilder"><code class="docutils literal notranslate"><span class="pre">ProjectBuilder</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="gencap.utils.html#module-gencap.utils.config">gencap.utils.config module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.config.clean_cache"><code class="docutils literal notranslate"><span class="pre">clean_cache()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.config.clean_config"><code class="docutils literal notranslate"><span class="pre">clean_config()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.config.get_cache_dir"><code class="docutils literal notranslate"><span class="pre">get_cache_dir()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.config.initialize_cache"><code class="docutils literal notranslate"><span class="pre">initialize_cache()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.config.initialize_config"><code class="docutils literal notranslate"><span class="pre">initialize_config()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.config.load_config"><code class="docutils literal notranslate"><span class="pre">load_config()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.config.load_path_cache"><code class="docutils literal notranslate"><span class="pre">load_path_cache()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.config.save_path_cache"><code class="docutils literal notranslate"><span class="pre">save_path_cache()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.config.set_cache_dir"><code class="docutils literal notranslate"><span class="pre">set_cache_dir()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.config.update_path_cache"><code class="docutils literal notranslate"><span class="pre">update_path_cache()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.config.write_config"><code class="docutils literal notranslate"><span class="pre">write_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="gencap.utils.html#module-gencap.utils.dataset">gencap.utils.dataset module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.dataset.check_col_type"><code class="docutils literal notranslate"><span class="pre">check_col_type()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.dataset.launch_validation_dataset"><code class="docutils literal notranslate"><span class="pre">launch_validation_dataset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.dataset.validate_data_content"><code class="docutils literal notranslate"><span class="pre">validate_data_content()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.dataset.validate_data_description"><code class="docutils literal notranslate"><span class="pre">validate_data_description()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.dataset.validate_file_existence"><code class="docutils literal notranslate"><span class="pre">validate_file_existence()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.dataset.validate_required_files"><code class="docutils literal notranslate"><span class="pre">validate_required_files()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="gencap.utils.html#module-gencap.utils.helpers">gencap.utils.helpers module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.assign_alias_ids"><code class="docutils literal notranslate"><span class="pre">assign_alias_ids()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.build_dependency_graph"><code class="docutils literal notranslate"><span class="pre">build_dependency_graph()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.build_dependency_graph_dataset"><code class="docutils literal notranslate"><span class="pre">build_dependency_graph_dataset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.calculate_total_size"><code class="docutils literal notranslate"><span class="pre">calculate_total_size()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.compare_datasets"><code class="docutils literal notranslate"><span class="pre">compare_datasets()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.convert_all_tuples_to_strings"><code class="docutils literal notranslate"><span class="pre">convert_all_tuples_to_strings()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.count_total_files"><code class="docutils literal notranslate"><span class="pre">count_total_files()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.deduplicate_paths"><code class="docutils literal notranslate"><span class="pre">deduplicate_paths()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.ensure_unique_instances"><code class="docutils literal notranslate"><span class="pre">ensure_unique_instances()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.find_dataset_path"><code class="docutils literal notranslate"><span class="pre">find_dataset_path()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.find_dataset_path_with_prefix"><code class="docutils literal notranslate"><span class="pre">find_dataset_path_with_prefix()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.fix_mixed_column_types"><code class="docutils literal notranslate"><span class="pre">fix_mixed_column_types()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.format_size"><code class="docutils literal notranslate"><span class="pre">format_size()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.generate_empty_output_df"><code class="docutils literal notranslate"><span class="pre">generate_empty_output_df()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.generate_unique_name_with_prefix"><code class="docutils literal notranslate"><span class="pre">generate_unique_name_with_prefix()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.get_name_mapper"><code class="docutils literal notranslate"><span class="pre">get_name_mapper()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.get_sorted_execution_order"><code class="docutils literal notranslate"><span class="pre">get_sorted_execution_order()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.get_username"><code class="docutils literal notranslate"><span class="pre">get_username()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.make_key"><code class="docutils literal notranslate"><span class="pre">make_key()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.remove_used_intermediate_data"><code class="docutils literal notranslate"><span class="pre">remove_used_intermediate_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.rename_io_mapping"><code class="docutils literal notranslate"><span class="pre">rename_io_mapping()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.resolve_io_mapping"><code class="docutils literal notranslate"><span class="pre">resolve_io_mapping()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.resolve_parameter_dict"><code class="docutils literal notranslate"><span class="pre">resolve_parameter_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.trace_pipeline_tree"><code class="docutils literal notranslate"><span class="pre">trace_pipeline_tree()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.validate_dict_or_list_of_dict"><code class="docutils literal notranslate"><span class="pre">validate_dict_or_list_of_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.validate_values_are_dict"><code class="docutils literal notranslate"><span class="pre">validate_values_are_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.visualize_graph_dataset"><code class="docutils literal notranslate"><span class="pre">visualize_graph_dataset()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.helpers.visualize_pipeline"><code class="docutils literal notranslate"><span class="pre">visualize_pipeline()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="gencap.utils.html#module-gencap.utils.htmlReport">gencap.utils.htmlReport module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.htmlReport.HTMLReport"><code class="docutils literal notranslate"><span class="pre">HTMLReport</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="gencap.utils.html#module-gencap.utils.module">gencap.utils.module module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.module.add_module"><code class="docutils literal notranslate"><span class="pre">add_module()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.module.auto_import_from"><code class="docutils literal notranslate"><span class="pre">auto_import_from()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.module.list_modules"><code class="docutils literal notranslate"><span class="pre">list_modules()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="gencap.utils.html#gencap.utils.module.remove_module"><code class="docutils literal notranslate"><span class="pre">remove_module()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="GENCAP documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="gencap.html" class="btn btn-neutral float-right" title="Core objects" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Hye-Lim LEE (Epione team, Inria).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

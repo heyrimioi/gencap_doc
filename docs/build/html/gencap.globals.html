@@ -1,0 +1,658 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gencap.globals package &mdash; GENCAP 0.9.0-dev documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=6c04cfde"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            GENCAP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">🛠️ API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">gencap</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GENCAP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">gencap.globals package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/gencap.globals.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="gencap-globals-package">
+<h1>gencap.globals package<a class="headerlink" href="#gencap-globals-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-gencap.globals.data_loader">
+<span id="gencap-globals-data-loader-module"></span><h2>gencap.globals.data_loader module<a class="headerlink" href="#module-gencap.globals.data_loader" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.globals.data_loader.get_all_data_managers">
+<span class="sig-prename descclassname"><span class="pre">gencap.globals.data_loader.</span></span><span class="sig-name descname"><span class="pre">get_all_data_managers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/globals/data_loader.html#get_all_data_managers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.data_loader.get_all_data_managers" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the entire dictionary (optional).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.globals.data_loader.get_data_manager">
+<span class="sig-prename descclassname"><span class="pre">gencap.globals.data_loader.</span></span><span class="sig-name descname"><span class="pre">get_data_manager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_description</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/globals/data_loader.html#get_data_manager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.data_loader.get_data_manager" title="Link to this definition"></a></dt>
+<dd><p>Retrieve a value by key.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.globals.data_loader.load_csv">
+<span class="sig-prename descclassname"><span class="pre">gencap.globals.data_loader.</span></span><span class="sig-name descname"><span class="pre">load_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/globals/data_loader.html#load_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.data_loader.load_csv" title="Link to this definition"></a></dt>
+<dd><p>Load data from a CSV file into a list of dictionaries.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.globals.data_loader.load_itk">
+<span class="sig-prename descclassname"><span class="pre">gencap.globals.data_loader.</span></span><span class="sig-name descname"><span class="pre">load_itk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/globals/data_loader.html#load_itk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.data_loader.load_itk" title="Link to this definition"></a></dt>
+<dd><p>Load data from an itk file.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.globals.data_loader.load_json">
+<span class="sig-prename descclassname"><span class="pre">gencap.globals.data_loader.</span></span><span class="sig-name descname"><span class="pre">load_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/globals/data_loader.html#load_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.data_loader.load_json" title="Link to this definition"></a></dt>
+<dd><p>Load data from a JSON file.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.globals.data_loader.load_txt">
+<span class="sig-prename descclassname"><span class="pre">gencap.globals.data_loader.</span></span><span class="sig-name descname"><span class="pre">load_txt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/globals/data_loader.html#load_txt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.data_loader.load_txt" title="Link to this definition"></a></dt>
+<dd><p>Load data from a text file.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.globals.data_loader.register_data_manager">
+<span class="sig-prename descclassname"><span class="pre">gencap.globals.data_loader.</span></span><span class="sig-name descname"><span class="pre">register_data_manager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/globals/data_loader.html#register_data_manager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.data_loader.register_data_manager" title="Link to this definition"></a></dt>
+<dd><p>Register a new key-value pair. e.g. register_data_manager(“simpleITK image”, load_itk)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gencap.globals.data_loader.register_loader">
+<span class="sig-prename descclassname"><span class="pre">gencap.globals.data_loader.</span></span><span class="sig-name descname"><span class="pre">register_loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/globals/data_loader.html#register_loader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.data_loader.register_loader" title="Link to this definition"></a></dt>
+<dd><p>Decorator to register a function as a loader for a given file type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_type</strong> – The string key used to register the function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-gencap.globals.path_manager">
+<span id="gencap-globals-path-manager-module"></span><h2>gencap.globals.path_manager module<a class="headerlink" href="#module-gencap.globals.path_manager" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="gencap.globals.path_manager.DAICAPPathnamePolicyManager">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gencap.globals.path_manager.</span></span><span class="sig-name descname"><span class="pre">DAICAPPathnamePolicyManager</span></span><a class="reference internal" href="_modules/gencap/globals/path_manager.html#DAICAPPathnamePolicyManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.path_manager.DAICAPPathnamePolicyManager" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gencap.globals.path_manager.PathnamePolicyManager" title="gencap.globals.path_manager.PathnamePolicyManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">PathnamePolicyManager</span></code></a></p>
+<p>DAICAP policy for structured dataset path generation.</p>
+<dl class="simple">
+<dt>Keywords:</dt><dd><ul class="simple">
+<li><p>“Patient”: Subject identifier.</p></li>
+<li><p>“Series”: Series identifier.</p></li>
+<li><p>“Label”: Label or annotation identifier.</p></li>
+<li><p>“Sequence”: Sequence identifier.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="gencap.globals.path_manager.DefaultPathnamePolicyManager">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gencap.globals.path_manager.</span></span><span class="sig-name descname"><span class="pre">DefaultPathnamePolicyManager</span></span><a class="reference internal" href="_modules/gencap/globals/path_manager.html#DefaultPathnamePolicyManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.path_manager.DefaultPathnamePolicyManager" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gencap.globals.path_manager.PathnamePolicyManager" title="gencap.globals.path_manager.PathnamePolicyManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">PathnamePolicyManager</span></code></a></p>
+<p>Default policy for generating file paths.</p>
+<dl class="simple">
+<dt>Keywords:</dt><dd><ul class="simple">
+<li><p>“Index”: Used as the filename prefix.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="gencap.globals.path_manager.PathnamePolicyManager">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gencap.globals.path_manager.</span></span><span class="sig-name descname"><span class="pre">PathnamePolicyManager</span></span><a class="reference internal" href="_modules/gencap/globals/path_manager.html#PathnamePolicyManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.path_manager.PathnamePolicyManager" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for implementing pathname policies.</p>
+<p>Subclasses must implement the <cite>_generate_dir_path</cite> and <cite>_generate_file_name</cite>
+methods to define how directories and filenames are generated based on provided
+keyword mappings.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.globals.path_manager.PathnamePolicyManager.supported_keywords">
+<span class="sig-name descname"><span class="pre">supported_keywords</span></span><a class="headerlink" href="#gencap.globals.path_manager.PathnamePolicyManager.supported_keywords" title="Link to this definition"></a></dt>
+<dd><p>List of keywords supported by this policy for directory and filename generation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="gencap.globals.path_manager.PathnamePolicyRegistry">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gencap.globals.path_manager.</span></span><span class="sig-name descname"><span class="pre">PathnamePolicyRegistry</span></span><a class="reference internal" href="_modules/gencap/globals/path_manager.html#PathnamePolicyRegistry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.path_manager.PathnamePolicyRegistry" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Registry and context manager for pathname policies.</p>
+<p>This class allows registering multiple pathname policies and provides methods
+to retrieve policies, generate paths, and manage global pathname context.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.globals.path_manager.PathnamePolicyRegistry._registry">
+<span class="sig-name descname"><span class="pre">_registry</span></span><a class="headerlink" href="#gencap.globals.path_manager.PathnamePolicyRegistry._registry" title="Link to this definition"></a></dt>
+<dd><p>Mapping of policy IDs to their corresponding PathnamePolicyManager instances.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.globals.path_manager.PathnamePolicyRegistry.pathname_policy_id">
+<span class="sig-name descname"><span class="pre">pathname_policy_id</span></span><a class="headerlink" href="#gencap.globals.path_manager.PathnamePolicyRegistry.pathname_policy_id" title="Link to this definition"></a></dt>
+<dd><p>Currently active policy ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.globals.path_manager.PathnamePolicyRegistry.pathname_policy_dict">
+<span class="sig-name descname"><span class="pre">pathname_policy_dict</span></span><a class="headerlink" href="#gencap.globals.path_manager.PathnamePolicyRegistry.pathname_policy_dict" title="Link to this definition"></a></dt>
+<dd><p>Mapping of policy keywords to field names or constants.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.globals.path_manager.PathnamePolicyRegistry.root_dir">
+<span class="sig-name descname"><span class="pre">root_dir</span></span><a class="headerlink" href="#gencap.globals.path_manager.PathnamePolicyRegistry.root_dir" title="Link to this definition"></a></dt>
+<dd><p>Root directory for path generation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.globals.path_manager.PathnamePolicyRegistry.get_filename">
+<span class="sig-name descname"><span class="pre">get_filename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pathname_policy_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">make_subdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/gencap/globals/path_manager.html#PathnamePolicyRegistry.get_filename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.path_manager.PathnamePolicyRegistry.get_filename" title="Link to this definition"></a></dt>
+<dd><p>Generate a full file path based on the selected pathname policy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>keyword_dict</strong> (<em>dict</em>) – Mapping of keywords to their values (e.g., {“Patient”: “001”}).</p></li>
+<li><p><strong>suffix</strong> (<em>str</em>) – File suffix or extension (e.g., <cite>.nii</cite>, <cite>.csv</cite>).</p></li>
+<li><p><strong>pathname_policy_id</strong> (<em>str</em><em>, </em><em>optional</em>) – ID of the pathname policy to use. Defaults to the current context.</p></li>
+<li><p><strong>root_dir</strong> (<em>str</em><em>, </em><em>optional</em>) – Root directory for path generation. Defaults to context root_dir.</p></li>
+<li><p><strong>make_subdir</strong> (<em>bool</em>) – If True, creates missing directories for the generated path.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Full file path combining root directory, generated directory, and filename.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – If directory or filename generation fails.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.globals.path_manager.PathnamePolicyRegistry.get_keywords">
+<span class="sig-name descname"><span class="pre">get_keywords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pathname_policy_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/globals/path_manager.html#PathnamePolicyRegistry.get_keywords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.path_manager.PathnamePolicyRegistry.get_keywords" title="Link to this definition"></a></dt>
+<dd><p>Get the list of supported keywords for a registered pathname policy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pathname_policy_id</strong> (<em>str</em>) – The ID of the registered pathname policy.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of supported keywords defined by the policy.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.globals.path_manager.PathnamePolicyRegistry.get_policies">
+<span class="sig-name descname"><span class="pre">get_policies</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#gencap.globals.path_manager.PathnamePolicyManager" title="gencap.globals.path_manager.PathnamePolicyManager"><span class="pre">PathnamePolicyManager</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/gencap/globals/path_manager.html#PathnamePolicyRegistry.get_policies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.path_manager.PathnamePolicyRegistry.get_policies" title="Link to this definition"></a></dt>
+<dd><p>Retrieve all registered pathname policies.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Mapping of policy IDs to policy instances.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.globals.path_manager.PathnamePolicyRegistry.register">
+<span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pathname_policy_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/globals/path_manager.html#PathnamePolicyRegistry.register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.path_manager.PathnamePolicyRegistry.register" title="Link to this definition"></a></dt>
+<dd><p>Register a new pathname policy class with a given identifier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pathname_policy_id</strong> (<em>str</em>) – Unique identifier for the policy.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A decorator that registers the policy class.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Callable</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If a policy with the same ID is already registered.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-gencap.globals.pipeline_registry">
+<span id="gencap-globals-pipeline-registry-module"></span><h2>gencap.globals.pipeline_registry module<a class="headerlink" href="#module-gencap.globals.pipeline_registry" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="gencap.globals.pipeline_registry.PipelineRegistry">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gencap.globals.pipeline_registry.</span></span><span class="sig-name descname"><span class="pre">PipelineRegistry</span></span><a class="reference internal" href="_modules/gencap/globals/pipeline_registry.html#PipelineRegistry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.pipeline_registry.PipelineRegistry" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Registry for managing pipeline metadata and cached pipeline configurations.</p>
+<p>This class maintains a centralized registry of available pipelines, stored
+in a local JSON file cache. It supports registering new pipelines,
+removing outdated ones, loading pipeline metadata, and describing pipeline details.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.globals.pipeline_registry.PipelineRegistry.registry_file_path">
+<span class="sig-name descname"><span class="pre">registry_file_path</span></span><a class="headerlink" href="#gencap.globals.pipeline_registry.PipelineRegistry.registry_file_path" title="Link to this definition"></a></dt>
+<dd><p>File path to the pipeline registry JSON cache.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.globals.pipeline_registry.PipelineRegistry._registry">
+<span class="sig-name descname"><span class="pre">_registry</span></span><a class="headerlink" href="#gencap.globals.pipeline_registry.PipelineRegistry._registry" title="Link to this definition"></a></dt>
+<dd><p>In-memory mapping of pipeline IDs to their metadata and file paths.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Cached pipelines are automatically synchronized with JSON files
+stored in the pipelines directory.</p></li>
+<li><p>The registry persists across sessions by saving its state in <cite>pipeline_registry.json</cite>.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.globals.pipeline_registry.PipelineRegistry.get_description">
+<span class="sig-name descname"><span class="pre">get_description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/globals/pipeline_registry.html#PipelineRegistry.get_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.pipeline_registry.PipelineRegistry.get_description" title="Link to this definition"></a></dt>
+<dd><p>Print a human-readable description of a registered pipeline.</p>
+<dl class="simple">
+<dt>The description includes:</dt><dd><ul class="simple">
+<li><p>Pipeline information text (if available)</p></li>
+<li><p>Task alias IDs with associated task unique IDs and versions</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pipeline_id</strong> (<em>str</em>) – ID of the pipeline to describe.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the pipeline ID is not registered.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.globals.pipeline_registry.PipelineRegistry.get_pipelines">
+<span class="sig-name descname"><span class="pre">get_pipelines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="_modules/gencap/globals/pipeline_registry.html#PipelineRegistry.get_pipelines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.pipeline_registry.PipelineRegistry.get_pipelines" title="Link to this definition"></a></dt>
+<dd><p>Retrieve a list of registered pipeline IDs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of registered pipeline IDs.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.globals.pipeline_registry.PipelineRegistry.load_pipeline">
+<span class="sig-name descname"><span class="pre">load_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/gencap/globals/pipeline_registry.html#PipelineRegistry.load_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.pipeline_registry.PipelineRegistry.load_pipeline" title="Link to this definition"></a></dt>
+<dd><p>Load pipeline metadata for a registered pipeline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pipeline_id</strong> (<em>str</em>) – ID of the pipeline to load.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The pipeline JSON metadata.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the pipeline is not registered.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.globals.pipeline_registry.PipelineRegistry.register">
+<span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeline_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_replacement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/globals/pipeline_registry.html#PipelineRegistry.register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.pipeline_registry.PipelineRegistry.register" title="Link to this definition"></a></dt>
+<dd><p>Register a new pipeline in the registry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>json_path</strong> (<em>str</em>) – Path to the pipeline JSON file to register.</p></li>
+<li><p><strong>pipeline_id</strong> (<em>str</em><em>, </em><em>optional</em>) – Explicit pipeline ID to register. If None, reads from the JSON file.</p></li>
+<li><p><strong>force_replacement</strong> (<em>bool</em>) – If True, overwrite an existing pipeline with the same ID.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – <ul class="simple">
+<li><p>If the pipeline file is invalid or missing required keys.
+    * If the pipeline already exists and <cite>force_replacement</cite> is False.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.globals.pipeline_registry.PipelineRegistry.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/globals/pipeline_registry.html#PipelineRegistry.remove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.pipeline_registry.PipelineRegistry.remove" title="Link to this definition"></a></dt>
+<dd><p>Remove a pipeline from the registry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pipeline_id</strong> (<em>str</em>) – The ID of the pipeline to remove.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the specified pipeline is not found in the registry.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-gencap.globals.task_manager">
+<span id="gencap-globals-task-manager-module"></span><h2>gencap.globals.task_manager module<a class="headerlink" href="#module-gencap.globals.task_manager" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="gencap.globals.task_manager.TaskRegistry">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gencap.globals.task_manager.</span></span><span class="sig-name descname"><span class="pre">TaskRegistry</span></span><a class="reference internal" href="_modules/gencap/globals/task_manager.html#TaskRegistry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.task_manager.TaskRegistry" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Registry for managing task classes and their versions.</p>
+<p>This class allows registration, retrieval, and instantiation of tasks.
+It also supports grouping tasks by ID, retrieving available versions,
+and loading built-in tasks automatically.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.globals.task_manager.TaskRegistry._registry">
+<span class="sig-name descname"><span class="pre">_registry</span></span><a class="headerlink" href="#gencap.globals.task_manager.TaskRegistry._registry" title="Link to this definition"></a></dt>
+<dd><p>Dictionary mapping (task_id, version) pairs to task classes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[Tuple[str, str], <a class="reference internal" href="gencap.html#gencap.Task" title="gencap.Task">Task</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="gencap.globals.task_manager.TaskRegistry._grouped_registry">
+<span class="sig-name descname"><span class="pre">_grouped_registry</span></span><a class="headerlink" href="#gencap.globals.task_manager.TaskRegistry._grouped_registry" title="Link to this definition"></a></dt>
+<dd><p>Dictionary grouping task IDs with their available versions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, List[str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.globals.task_manager.TaskRegistry.create">
+<span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/globals/task_manager.html#TaskRegistry.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.task_manager.TaskRegistry.create" title="Link to this definition"></a></dt>
+<dd><p>Create an instance of a registered task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task_id</strong> (<em>str</em>) – The unique task identifier.</p></li>
+<li><p><strong>version</strong> (<em>str</em><em>, </em><em>optional</em>) – Task version. If None, the latest version will be used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An instantiated task object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="gencap.html#gencap.Task" title="gencap.Task">Task</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – <ul class="simple">
+<li><p>If the task is not registered.
+    - If the specified version does not exist.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.globals.task_manager.TaskRegistry.get_description">
+<span class="sig-name descname"><span class="pre">get_description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/globals/task_manager.html#TaskRegistry.get_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.task_manager.TaskRegistry.get_description" title="Link to this definition"></a></dt>
+<dd><p>Print a detailed description of a registered task.</p>
+<dl class="simple">
+<dt>The description includes:</dt><dd><ul class="simple">
+<li><p>Task description text</p></li>
+<li><p>Fields information (mandatory/optional input/output fields)</p></li>
+<li><p>Parameter details</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>task_id</strong> (<em>str</em>) – Unique task identifier.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the task ID is not registered.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.globals.task_manager.TaskRegistry.get_tasks">
+<span class="sig-name descname"><span class="pre">get_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">show_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/globals/task_manager.html#TaskRegistry.get_tasks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.task_manager.TaskRegistry.get_tasks" title="Link to this definition"></a></dt>
+<dd><p>Retrieve all registered tasks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>show_version</strong> (<em>bool</em>) – If True, return tasks with their versions grouped.
+If False, return only task IDs.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Grouped task versions or a list of task IDs.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[Dict[str, List[str]], List[str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.globals.task_manager.TaskRegistry.get_versions">
+<span class="sig-name descname"><span class="pre">get_versions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/globals/task_manager.html#TaskRegistry.get_versions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.task_manager.TaskRegistry.get_versions" title="Link to this definition"></a></dt>
+<dd><p>Retrieve all available versions of a specific task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>task_id</strong> (<em>str</em>) – Unique task identifier.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sorted list of available versions.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>KeyError</strong> – If the task is not registered.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.globals.task_manager.TaskRegistry.register">
+<span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gencap/globals/task_manager.html#TaskRegistry.register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.task_manager.TaskRegistry.register" title="Link to this definition"></a></dt>
+<dd><p>Register a new task class in the registry.</p>
+<p>This is used as a decorator for task classes. It verifies that the
+<cite>unique_id</cite> and <cite>version</cite> attributes of the class instance match
+the provided arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task_id</strong> (<em>str</em>) – Unique identifier of the task.</p></li>
+<li><p><strong>version</strong> (<em>str</em>) – Version string of the task.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A decorator function for registering the task.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Callable</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – <ul class="simple">
+<li><p>If <cite>task_id</cite> does not match the class’s <cite>unique_id</cite>.
+    - If <cite>version</cite> does not match the class’s <cite>version</cite>.
+    - If the task with the same ID and version is already registered
+      (except for predefined examples).</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gencap.globals.task_manager.TaskRegistry.supports">
+<span class="sig-name descname"><span class="pre">supports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/gencap/globals/task_manager.html#TaskRegistry.supports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gencap.globals.task_manager.TaskRegistry.supports" title="Link to this definition"></a></dt>
+<dd><p>Check if a task with a specific ID and version is registered.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task_id</strong> (<em>str</em>) – Unique task identifier.</p></li>
+<li><p><strong>version</strong> (<em>str</em>) – Version string.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if supported, otherwise False.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="gencap-globals-task-manager-newversion-module">
+<h2>gencap.globals.task_manager_newVersion module<a class="headerlink" href="#gencap-globals-task-manager-newversion-module" title="Link to this heading"></a></h2>
+</section>
+<section id="module-gencap.globals">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gencap.globals" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Hye-Lim LEE (Epione team, Inria).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

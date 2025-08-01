@@ -1,0 +1,405 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gencap.globals.path_manager &mdash; GENCAP 0.9.0-dev documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=6c04cfde"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            GENCAP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">🛠️ API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">gencap</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GENCAP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">gencap.globals.path_manager</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for gencap.globals.path_manager</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Type</span>
+
+
+<span class="c1"># ====== Path Manager Base ======</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Type</span>
+
+
+<span class="c1"># ====== Path Manager Base ======</span>
+<div class="viewcode-block" id="PathnamePolicyManager">
+<a class="viewcode-back" href="../../../gencap.globals.html#gencap.globals.path_manager.PathnamePolicyManager">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PathnamePolicyManager</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for implementing pathname policies.</span>
+
+<span class="sd">    Subclasses must implement the `_generate_dir_path` and `_generate_file_name` </span>
+<span class="sd">    methods to define how directories and filenames are generated based on provided </span>
+<span class="sd">    keyword mappings.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        supported_keywords (list): </span>
+<span class="sd">            List of keywords supported by this policy for directory and filename generation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Initialize supported keywords (to be defined in subclasses)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">supported_keywords</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_generate_dir_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">make_subdir</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a directory path based on provided keywords.</span>
+
+<span class="sd">        This method must be implemented by subclasses.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            keyword_dict (dict): </span>
+<span class="sd">                Mapping of keywords to their corresponding values (e.g., patient ID, series ID).</span>
+<span class="sd">            make_subdir (bool): </span>
+<span class="sd">                Whether subdirectories should be created.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: </span>
+<span class="sd">                Must be overridden in subclasses to define custom path rules.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;The _generate_dir_path() method must be implemented in a subclass.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_generate_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a filename based on provided keywords.</span>
+
+<span class="sd">        This method must be implemented by subclasses.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            keyword_dict (dict): </span>
+<span class="sd">                Mapping of keywords to their corresponding values.</span>
+<span class="sd">            suffix (str): </span>
+<span class="sd">                File extension or suffix (e.g., `.nii`, `.csv`).</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: </span>
+<span class="sd">                Must be overridden in subclasses to define custom filename rules.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;The _generate_file_name() method must be implemented in a subclass.&quot;</span><span class="p">)</span></div>
+
+
+
+
+<span class="c1"># ====== Global Context Registry ======</span>
+<div class="viewcode-block" id="PathnamePolicyRegistry">
+<a class="viewcode-back" href="../../../gencap.globals.html#gencap.globals.path_manager.PathnamePolicyRegistry">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PathnamePolicyRegistry</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Registry and context manager for pathname policies.</span>
+
+<span class="sd">    This class allows registering multiple pathname policies and provides methods </span>
+<span class="sd">    to retrieve policies, generate paths, and manage global pathname context.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        _registry (dict): </span>
+<span class="sd">            Mapping of policy IDs to their corresponding PathnamePolicyManager instances.</span>
+<span class="sd">        pathname_policy_id (str): </span>
+<span class="sd">            Currently active policy ID.</span>
+<span class="sd">        pathname_policy_dict (dict): </span>
+<span class="sd">            Mapping of policy keywords to field names or constants.</span>
+<span class="sd">        root_dir (str): </span>
+<span class="sd">            Root directory for path generation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathnamePolicyManager</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pathname_policy_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Default Pathname Policy&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pathname_policy_dict</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Index&quot;</span><span class="p">:</span> <span class="s2">&quot;output indexing fields&quot;</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+<div class="viewcode-block" id="PathnamePolicyRegistry.register">
+<a class="viewcode-back" href="../../../gencap.globals.html#gencap.globals.path_manager.PathnamePolicyRegistry.register">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pathname_policy_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Register a new pathname policy class with a given identifier.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pathname_policy_id (str): </span>
+<span class="sd">                Unique identifier for the policy.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Callable: A decorator that registers the policy class.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError:</span>
+<span class="sd">                If a policy with the same ID is already registered.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">decorator</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">PathnamePolicyManager</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">pathname_policy_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Path manager &#39;</span><span class="si">{</span><span class="n">pathname_policy_id</span><span class="si">}</span><span class="s2">&#39; is already registered.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">pathname_policy_id</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">cls</span>
+        <span class="k">return</span> <span class="n">decorator</span></div>
+
+
+<div class="viewcode-block" id="PathnamePolicyRegistry.get_policies">
+<a class="viewcode-back" href="../../../gencap.globals.html#gencap.globals.path_manager.PathnamePolicyRegistry.get_policies">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_policies</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">PathnamePolicyManager</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve all registered pathname policies.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Mapping of policy IDs to policy instances.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span></div>
+
+
+<div class="viewcode-block" id="PathnamePolicyRegistry.get_keywords">
+<a class="viewcode-back" href="../../../gencap.globals.html#gencap.globals.path_manager.PathnamePolicyRegistry.get_keywords">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_keywords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pathname_policy_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the list of supported keywords for a registered pathname policy.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pathname_policy_id (str): </span>
+<span class="sd">                The ID of the registered pathname policy.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: List of supported keywords defined by the policy.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">pathname_policy_id</span><span class="p">]</span><span class="o">.</span><span class="n">supported_keywords</span></div>
+
+
+<div class="viewcode-block" id="PathnamePolicyRegistry.get_filename">
+<a class="viewcode-back" href="../../../gencap.globals.html#gencap.globals.path_manager.PathnamePolicyRegistry.get_filename">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_filename</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">keyword_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">pathname_policy_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">root_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">make_subdir</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a full file path based on the selected pathname policy.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            keyword_dict (dict): </span>
+<span class="sd">                Mapping of keywords to their values (e.g., {&quot;Patient&quot;: &quot;001&quot;}).</span>
+<span class="sd">            suffix (str): </span>
+<span class="sd">                File suffix or extension (e.g., `.nii`, `.csv`).</span>
+<span class="sd">            pathname_policy_id (str, optional): </span>
+<span class="sd">                ID of the pathname policy to use. Defaults to the current context.</span>
+<span class="sd">            root_dir (str, optional): </span>
+<span class="sd">                Root directory for path generation. Defaults to context root_dir.</span>
+<span class="sd">            make_subdir (bool): </span>
+<span class="sd">                If True, creates missing directories for the generated path.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: Full file path combining root directory, generated directory, and filename.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError:</span>
+<span class="sd">                If directory or filename generation fails.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Resolve policy ID and root directory</span>
+        <span class="k">if</span> <span class="n">pathname_policy_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pathname_policy_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pathname_policy_id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pathname_policy_id</span> <span class="o">=</span> <span class="n">pathname_policy_id</span>
+        <span class="k">if</span> <span class="n">root_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">root_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span> <span class="o">=</span> <span class="n">root_dir</span>
+
+        <span class="c1"># Retrieve selected policy</span>
+        <span class="n">path_policy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_registry</span><span class="p">[</span><span class="n">pathname_policy_id</span><span class="p">]</span>
+
+        <span class="c1"># Generate directory path</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">dir_path</span> <span class="o">=</span> <span class="n">path_policy</span><span class="o">.</span><span class="n">_generate_dir_path</span><span class="p">(</span><span class="n">keyword_dict</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">error_message</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to generate dir_path in _generate_dir_path(). Error: </span><span class="si">{</span><span class="n">error_message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Generate filename</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">path_policy</span><span class="o">.</span><span class="n">_generate_file_name</span><span class="p">(</span><span class="n">keyword_dict</span><span class="p">,</span> <span class="n">suffix</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">error_message</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to generate filename in _generate_file_name(). Error: </span><span class="si">{</span><span class="n">error_message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Combine into full path</span>
+        <span class="n">full_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root_dir</span><span class="p">,</span> <span class="n">dir_path</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span> <span class="k">if</span> <span class="n">root_dir</span> <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+        <span class="c1"># Create directory if required</span>
+        <span class="k">if</span> <span class="n">make_subdir</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">full_path</span><span class="p">)):</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">full_path</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">error_message</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to make subdir. Refer the error message. </span><span class="si">{</span><span class="n">error_message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">full_path</span></div>
+
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pathname_policy_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pathname_policy_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">root_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the global context for pathname generation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pathname_policy_id (str): </span>
+<span class="sd">                ID of the pathname policy to set as context.</span>
+<span class="sd">            pathname_policy_dict (dict): </span>
+<span class="sd">                Mapping of keywords to fields or constants for file generation.</span>
+<span class="sd">            root_dir (str): </span>
+<span class="sd">                Root directory for path creation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pathname_policy_id</span> <span class="o">=</span> <span class="n">pathname_policy_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pathname_policy_dict</span> <span class="o">=</span> <span class="n">pathname_policy_dict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span> <span class="o">=</span> <span class="n">root_dir</span></div>
+
+
+<span class="c1"># Create a global default registry instance</span>
+<span class="n">default_pathname_policy_manager</span> <span class="o">=</span> <span class="n">PathnamePolicyRegistry</span><span class="p">()</span>
+
+<span class="c1"># ====== Default Pathname Policy ======</span>
+<div class="viewcode-block" id="DefaultPathnamePolicyManager">
+<a class="viewcode-back" href="../../../gencap.globals.html#gencap.globals.path_manager.DefaultPathnamePolicyManager">[docs]</a>
+<span class="nd">@default_pathname_policy_manager</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Default Pathname Policy&quot;</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DefaultPathnamePolicyManager</span><span class="p">(</span><span class="n">PathnamePolicyManager</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Default policy for generating file paths.</span>
+
+<span class="sd">    Keywords:</span>
+<span class="sd">        * &quot;Index&quot;: Used as the filename prefix.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">supported_keywords</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Index&quot;</span><span class="p">]</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_generate_dir_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword_dict</span><span class="p">):</span>
+        <span class="n">dir_path</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">dir_path</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_generate_file_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword_dict</span><span class="p">,</span> <span class="n">suffix</span><span class="p">):</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">keyword_dict</span><span class="p">[</span><span class="s2">&quot;Index&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">suffix</span>
+        <span class="k">return</span> <span class="n">filename</span></div>
+
+
+
+<span class="c1"># ====== DAICAP Pathname Policy ======</span>
+<div class="viewcode-block" id="DAICAPPathnamePolicyManager">
+<a class="viewcode-back" href="../../../gencap.globals.html#gencap.globals.path_manager.DAICAPPathnamePolicyManager">[docs]</a>
+<span class="nd">@default_pathname_policy_manager</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;DAICAP Pathname Policy&quot;</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DAICAPPathnamePolicyManager</span><span class="p">(</span><span class="n">PathnamePolicyManager</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    DAICAP policy for structured dataset path generation.</span>
+
+<span class="sd">    Keywords:</span>
+<span class="sd">        * &quot;Patient&quot;: Subject identifier.</span>
+<span class="sd">        * &quot;Series&quot;: Series identifier.</span>
+<span class="sd">        * &quot;Label&quot;: Label or annotation identifier.</span>
+<span class="sd">        * &quot;Sequence&quot;: Sequence identifier.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">supported_keywords</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Patient&quot;</span><span class="p">,</span> <span class="s2">&quot;Series&quot;</span><span class="p">,</span><span class="s2">&quot;Sequence&quot;</span><span class="p">,</span><span class="s2">&quot;Label&quot;</span><span class="p">]</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_generate_dir_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword_dict</span><span class="p">):</span>
+        <span class="n">subdir_parts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">dirname</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Patient&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">dirname</span> <span class="o">==</span> <span class="s2">&quot;Patient&quot;</span> <span class="ow">and</span> <span class="s2">&quot;Patient&quot;</span> <span class="ow">in</span> <span class="n">keyword_dict</span><span class="p">:</span>
+                <span class="n">subdir_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;sub-</span><span class="si">{</span><span class="n">keyword_dict</span><span class="p">[</span><span class="s1">&#39;Patient&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">dir_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="o">*</span><span class="n">subdir_parts</span><span class="p">)</span> <span class="k">if</span> <span class="n">subdir_parts</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">dir_path</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_generate_file_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyword_dict</span><span class="p">,</span> <span class="n">suffix</span><span class="p">):</span>
+        <span class="n">name_parts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Patient&quot;</span><span class="p">,</span> <span class="s2">&quot;Session&quot;</span><span class="p">,</span> <span class="s2">&quot;Series&quot;</span><span class="p">,</span><span class="s2">&quot;Label&quot;</span><span class="p">,</span><span class="s2">&quot;Sequence&quot;</span><span class="p">]</span> <span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;Patient&quot;</span> <span class="o">==</span> <span class="n">keyword</span> <span class="ow">and</span> <span class="s2">&quot;Patient&quot;</span> <span class="ow">in</span> <span class="n">keyword_dict</span><span class="p">:</span>
+                <span class="n">name_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;sub-</span><span class="si">{</span><span class="n">keyword_dict</span><span class="p">[</span><span class="s1">&#39;Patient&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;Series&quot;</span> <span class="o">==</span> <span class="n">keyword</span> <span class="ow">and</span> <span class="s2">&quot;Series&quot;</span> <span class="ow">in</span> <span class="n">keyword_dict</span><span class="p">:</span>
+                <span class="n">name_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;series-</span><span class="si">{</span><span class="n">keyword_dict</span><span class="p">[</span><span class="s1">&#39;Series&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;Label&quot;</span> <span class="o">==</span> <span class="n">keyword</span> <span class="ow">and</span> <span class="s2">&quot;Label&quot;</span> <span class="ow">in</span> <span class="n">keyword_dict</span><span class="p">:</span>
+                <span class="n">name_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;label-</span><span class="si">{</span><span class="n">keyword_dict</span><span class="p">[</span><span class="s1">&#39;Label&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;Sequence&quot;</span> <span class="o">==</span> <span class="n">keyword</span> <span class="ow">and</span> <span class="s2">&quot;Sequence&quot;</span> <span class="ow">in</span> <span class="n">keyword_dict</span><span class="p">:</span>
+                <span class="n">name_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;seq-</span><span class="si">{</span><span class="n">keyword_dict</span><span class="p">[</span><span class="s1">&#39;Sequence&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">name_parts</span><span class="p">)</span> <span class="o">+</span> <span class="n">suffix</span>
+        <span class="k">return</span> <span class="n">filename</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Hye-Lim LEE (Epione team, Inria).</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
